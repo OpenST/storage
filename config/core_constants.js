@@ -29,7 +29,7 @@ CoreConstants.prototype = {
    */
   DYNAMODB_API_VERSION: '2012-08-10',
 
-  CACHING_ENGINE:"none",
+  CACHING_ENGINE: process.env.CACHING_ENGINE || "none",
 
   ERROR_CONFIG: {
     param_error_config: paramErrorConfig,
