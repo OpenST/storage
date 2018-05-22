@@ -21,21 +21,19 @@ const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || "";
   options = options || {
-    wrongEntityType: false,
-    invalidSchema: false,
-    corruptSchema: false
+    invalidShardName: false,
+    wrongEntityType: false
   };
 
   it(optionsDesc, async function () {
     this.timeout(1000000);
     let shardName = testConstants.shardTableName;
     let entity_type = testConstants.shardEntityType;
-    let schema = helper.createTableParamsFor("test");
     if (options.wrongEntityType) {
       entity_type = '';
     }
-    if (options.invalidSchema) {
-      schema = {};
+    if (options.invalidShardName) {
+      shardName = "";
     }
     const response = await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type});
     logger.log("LOG", response);
@@ -59,6 +57,10 @@ describe('services/shard_management/available_shard/add_shard', function () {
 
   createTestCasesForOptions("Shard adding empty shard name", {
     wrongEntityType: true
+  }, false);
+
+  createTestCasesForOptions("Shard adding invalid shard name", {
+    invalidShardName: true
   }, false);
 
   after(async function () {

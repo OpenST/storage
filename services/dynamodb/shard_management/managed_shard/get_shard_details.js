@@ -97,7 +97,7 @@ GetShardDetails.prototype = {
 
     return new Promise(async function (onResolve) {
       let errorCode = null,
-        params_error_identifier = null;
+        params_error_identifier = null
       ;
 
       if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {

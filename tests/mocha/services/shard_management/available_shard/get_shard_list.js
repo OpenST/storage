@@ -25,6 +25,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || "";
   options = options || {
     invalidShardType: false,
+    inValidEntityType: false
   };
   let entity_type = testConstants.shardEntityType;
 
@@ -33,6 +34,10 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     if (options.invalidShardType) {
       shardType = "test"
     }
+    if (options.inValidEntityType) {
+      entity_type = "invalidType"
+    }
+
     const response = await shardManagementObject.getShardsByType({entity_type: entity_type, shard_type: shardType});
 
     logger.log("LOG", response);
@@ -63,6 +68,10 @@ describe('services/shard_management/available_shard/get_shards', function () {
 
   createTestCasesForOptions("Get shard list having invalid shard type", {
     invalidShardType: true
+  }, false);
+
+  createTestCasesForOptions("Get shard list having invalid entity type", {
+    inValidEntityType: true
   }, false);
 
   after(async function () {

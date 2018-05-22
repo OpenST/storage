@@ -29,9 +29,9 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 
     if (!options.hasShard) {
       // delete table
-      await dynamoDbObject.deleteTable({
-        TableName: shardName
-      });
+      await helper.cleanShardMigrationTables(dynamoDbObject);
+
+      await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
     }
     const response = await shardManagementObject.hasShard({shard_names: [shardName]});
 
@@ -48,7 +48,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 
 describe('services/dynamodb/shard_management/available_shard/has_shard', function () {
 
-  before(async function () {
+  beforeEach(async function () {
 
     // delete table
     await helper.cleanShardMigrationTables(dynamoDbObject);
@@ -64,9 +64,9 @@ describe('services/dynamodb/shard_management/available_shard/has_shard', functio
 
   createTestCasesForOptions("does not have shard case", {
     hasShard: false
-  }, true);
+  }, false);
 
-  after(async function () {
+  afterEach(async function () {
     // delete table
     await helper.cleanShardMigrationTables(dynamoDbObject);
   });

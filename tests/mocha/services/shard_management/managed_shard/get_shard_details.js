@@ -22,7 +22,7 @@ const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_
 
 
 
-const createTestCasesForOptions = function (optionsDesc, options, toAssert, returnCount) {
+const createTestCasesForOptions = function (optionsDesc, options, toAssert, returnCount, dataToAssert) {
   optionsDesc = optionsDesc || "";
   options = options || {
     inValidEntityType: false,
@@ -43,7 +43,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
 
     const response = await shardManagementObject.getManagedShard({entity_type: entity_type, identifiers: [id]});
 
-    logger.log("shardManagementObject Response", JSON.stringify(response));
+    logger.info("shardManagementObject Response", JSON.stringify(response));
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
       assert.equal(Object.keys(response.data).length, returnCount);
@@ -52,6 +52,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
       }
     } else {
       assert.isTrue(response.isFailure(), "Failure");
+      assert.equal(response.internalErrorCode, dataToAssert);
     }
   });
 
@@ -74,15 +75,15 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard_details', f
 
   });
 
-  createTestCasesForOptions("Get shard happy case", {}, true, 1);
+  createTestCasesForOptions("Get shard happy case", {}, true, 1, {});
 
   createTestCasesForOptions("Get shard details having invalid shard type", {
     inValidEntityType: true
-  }, false, 1);
+  }, false, 1, "s_sm_as_gsd_validateParams_1");
 
   createTestCasesForOptions("Get shard details having invalid Id", {
     inValidId: true
-  }, true, 0);
+  }, true, 0, {});
 
   after(async function() {
     // delete table
