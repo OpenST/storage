@@ -67,7 +67,7 @@ MochaTestConstants.prototype = {
 
   transactionLogsTableName: 'shard_00001_transaction_logs',
 
-  shardEntityType: 'user_balances',
+  shardEntityType: 'userBalances',
 
   shardTableName: 'shard_00001_user_balances',
 

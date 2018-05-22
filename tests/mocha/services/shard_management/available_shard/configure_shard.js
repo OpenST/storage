@@ -8,18 +8,16 @@ const Chai    = require('chai')
 // Load dependencies package
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
-  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
-  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
+  , shouldAutoScale = false
   ;
 
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
@@ -58,28 +56,13 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 describe('services/shard_management/available_shard/configure_shard', function () {
 
   before(async function () {
-
-    // delete table
-    await dynamoDbObject.deleteTable({
-      TableName: managedShardConst.getTableName()
-    });
-
-    await dynamoDbObject.deleteTable({
-      TableName: availableShardConst.getTableName()
-    });
-
-    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
+    await helper.cleanShardMigrationTables(dynamoDbObject);
+    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
 
     let entity_type = testConstants.shardEntityType;
-    let schema = helper.createTableParamsFor("test");
-
-    // delete table
-    await dynamoDbObject.deleteTable({
-      TableName: testConstants.shardTableName
-    });
-
     let shardName = testConstants.shardTableName;
-    await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
+
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type});
   });
 
 
@@ -96,4 +79,8 @@ describe('services/shard_management/available_shard/configure_shard', function (
   createTestCasesForOptions("Configuring shard having redundantAllocationType", {
     redundantAllocationType: true
   }, true);
+
+  after(async function () {
+    await helper.cleanShardMigrationTables(dynamoDbObject);
+  });
 });

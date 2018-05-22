@@ -7,20 +7,17 @@ const Chai    = require('chai')
 
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
-  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
-  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
-  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
   , identifier = '0x1234'
   , shardName = testConstants.shardTableName
+  , shouldAutoScale = false
 ;
 
 
@@ -65,21 +62,13 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard_details', f
   before(async function () {
 
     // delete table
-    await dynamoDbObject.deleteTable({
-      TableName: managedShardConst.getTableName()
-    });
+    await helper.cleanShardMigrationTables(dynamoDbObject);
 
-    await dynamoDbObject.deleteTable({
-      TableName: availableShardConst.getTableName()
-    });
+    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
 
-    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'userBalances'});
 
-    await dynamoDbObject.deleteTable({
-      TableName: shardName
-    });
-    let schema = helper.createTableParamsFor("test");
-    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'userBalances', table_schema: schema});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'userBalances'});
 
     await shardManagementObject.assignShard({identifier: identifier, entity_type: "userBalances" ,shard_name: shardName});
 
@@ -94,4 +83,9 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard_details', f
   createTestCasesForOptions("Get shard details having invalid Id", {
     inValidId: true
   }, true, 0);
+
+  after(async function() {
+    // delete table
+    await helper.cleanShardMigrationTables(dynamoDbObject);
+  });
 });

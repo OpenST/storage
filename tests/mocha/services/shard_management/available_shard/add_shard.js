@@ -8,17 +8,14 @@ const Chai = require('chai')
 // Load dependencies package
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
-  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
-  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
-  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
+  , shouldAutoScale = false
 ;
 
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
@@ -32,7 +29,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   it(optionsDesc, async function () {
     this.timeout(1000000);
     let shardName = testConstants.shardTableName;
-    let entity_type =  testConstants.shardEntityType;
+    let entity_type = testConstants.shardEntityType;
     let schema = helper.createTableParamsFor("test");
     if (options.wrongEntityType) {
       entity_type = '';
@@ -40,7 +37,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     if (options.invalidSchema) {
       schema = {};
     }
-    const response = await shardManagementObject.addShard({shard_name: shardName ,entity_type: entity_type, table_schema: schema});
+    const response = await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type});
     logger.log("LOG", response);
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
@@ -54,38 +51,17 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 describe('services/shard_management/available_shard/add_shard', function () {
   before(async function () {
     this.timeout(1000000);
-
-    let checkTableExistsResponse = await dynamoDbObject.checkTableExist({TableName: managedShardConst.getTableName()});
-    if (checkTableExistsResponse.data.response === true) {
-      await dynamoDbObject.deleteTable({
-        TableName: managedShardConst.getTableName()
-      });
-    }
-
-    checkTableExistsResponse = await dynamoDbObject.checkTableExist({TableName: availableShardConst.getTableName()});
-    if (checkTableExistsResponse.data.response === true) {
-      await dynamoDbObject.deleteTable({
-        TableName: availableShardConst.getTableName()
-      });
-    }
-
-    checkTableExistsResponse = await dynamoDbObject.checkTableExist({TableName: testConstants.shardTableName});
-    if (checkTableExistsResponse.data.response === true) {
-      await dynamoDbObject.deleteTable({
-        TableName: testConstants.shardTableName
-      });
-    }
-
-    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
+    await helper.cleanShardMigrationTables(dynamoDbObject);
+    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
   });
 
-  createTestCasesForOptions("Shard adding happy case", {}, true);
+  createTestCasesForOptions("Shard adding happy case", null, true);
 
-  // createTestCasesForOptions("Shard adding empty shard name", {
-  //   wrongEntityType: true
-  // }, false);
-  //
-  // createTestCasesForOptions("Shard adding having invalid schema", {
-  //   invalidSchema: true
-  // }, false);
+  createTestCasesForOptions("Shard adding empty shard name", {
+    wrongEntityType: true
+  }, false);
+
+  after(async function () {
+    await helper.cleanShardMigrationTables(dynamoDbObject);
+  });
 });

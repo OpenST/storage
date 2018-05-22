@@ -7,20 +7,16 @@ const Chai    = require('chai')
 
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
-  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
-  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
-  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
   , shardName = testConstants.shardTableName
-
+  , shouldAutoScale = false
 ;
 
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
@@ -55,30 +51,23 @@ describe('services/dynamodb/shard_management/available_shard/has_shard', functio
   before(async function () {
 
     // delete table
-    await dynamoDbObject.deleteTable({
-      TableName: managedShardConst.getTableName()
-    });
+    await helper.cleanShardMigrationTables(dynamoDbObject);
 
-    await dynamoDbObject.deleteTable({
-      TableName: availableShardConst.getTableName()
-    });
-
-    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
+    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
 
     let entity_type = testConstants.shardEntityType;
-    let schema = helper.createTableParamsFor("test");
 
-    // delete table
-    await dynamoDbObject.deleteTable({
-      TableName: shardName
-    });
-
-    await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type, table_schema: schema});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type});
   });
 
-  createTestCasesForOptions("has shard case", {}, true);
+  createTestCasesForOptions("has shard case", null, true);
 
   createTestCasesForOptions("does not have shard case", {
     hasShard: false
   }, true);
+
+  after(async function () {
+    // delete table
+    await helper.cleanShardMigrationTables(dynamoDbObject);
+  });
 });

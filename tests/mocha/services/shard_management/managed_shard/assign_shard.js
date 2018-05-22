@@ -7,19 +7,16 @@ const Chai    = require('chai')
 
 const rootPrefix = "../../../../.."
   , DynamoDbObject = require(rootPrefix + "/index").Dynamodb
-  , AutoScaleApiKlass = require(rootPrefix + "/index").AutoScaling
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
-  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
-  , autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
   , userBalancesShardName = testConstants.shardTableName
+  , shouldAutoScale = false
 ;
 
 
@@ -39,15 +36,9 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 
     if (options.invalidShardName) {
       // delete table
-      await dynamoDbObject.deleteTable({
-        TableName: managedShardConst.getTableName()
-      });
+      await helper.cleanShardMigrationTables(dynamoDbObject);
 
-      await dynamoDbObject.deleteTable({
-        TableName: availableShardConst.getTableName()
-      });
-
-      await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
+      await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
     }
 
     if (options.undefined_force_assignment) {
@@ -71,23 +62,11 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
   beforeEach(async function() {
 
     // delete table
-    await dynamoDbObject.deleteTable({
-      TableName: managedShardConst.getTableName()
-    });
+    await helper.cleanShardMigrationTables(dynamoDbObject);
 
-    await dynamoDbObject.deleteTable({
-      TableName: availableShardConst.getTableName()
-    });
+    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
 
-    await shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
-
-    // delete table
-    await dynamoDbObject.deleteTable({
-      TableName: testConstants.shardTableName
-    });
-
-    let schema = helper.createTableParamsFor("test");
-    await shardManagementObject.addShard({shard_name: userBalancesShardName, entity_type: 'userBalances', table_schema: schema});
+    await shardManagementObject.addShard({shard_name: userBalancesShardName, entity_type: 'userBalances'});
   });
 
   createTestCasesForOptions("Assign shard adding happy case", {}, true);
@@ -99,4 +78,9 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
   createTestCasesForOptions("Assign shard having undefined force assignment", {
     undefined_force_assignment: true
   }, true);
+
+  afterEach(async function() {
+    // delete table
+    await helper.cleanShardMigrationTables(dynamoDbObject);
+  });
 });
