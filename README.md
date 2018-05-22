@@ -1,7 +1,5 @@
 # openst-storage
 
-```
-
 # OpenST Dynamodb Services
 
 ```bash
