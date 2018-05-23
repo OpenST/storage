@@ -1,4 +1,7 @@
-# openst-storage
+# OpenST Storage
+
+It has DB storage libraries and respective services. It also contains shard management libraries and services. 
+While OpenST Storage is available as-is for anyone to use, we caution that this is early stage software and under heavy ongoing development and improvement. Please report bugs and suggested improvements.
 
 # OpenST Dynamodb Services
 

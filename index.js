@@ -18,5 +18,7 @@ module.exports = {
 };
 
 /*
+  Usage:
+
   OSTStorage = require("./index");
 */

@@ -5,13 +5,16 @@ branches:
   only:
   - master
   - develop
-  - storage-migration-ostbase
 notifications:
   email:
     recipients:
       - ci.report@ost.com
     on_success: always
     on_failure: always
+env:
+  global:
+    - OST_CACHING_ENGINE=memcached
+    - OST_MEMCACHE_SERVERS=127.0.0.1:11211
 node_js:
   - "8"
 services:
@@ -20,8 +23,7 @@ before_install:
   - sudo apt-get update 
   - sudo apt-get install nodejs 
   - sudo apt-get install npm  
-  - sudo apt-get install software-properties-common
-install: 
+install:
   - npm install 
 before_script:
   - mkdir -p dynamodb
@@ -29,8 +31,6 @@ before_script:
   - unzip ./dynamodb/dynamodb_local_latest.zip
   - nohup java -Djava.library.path=./dynamodb/DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb &
 script:
-  - export OST_CACHING_ENGINE='memcached'
-  - export OST_MEMCACHE_SERVERS='127.0.0.1:11211'
   - node_modules/mocha/bin/mocha tests/mocha/services/dynamodb/* tests/mocha/services/shard_management/* --timeout 10000 --exit
 after_script:
   - kill $(ps aux | grep 'DynamoDBLocal.jar' | awk '{print $2}')
