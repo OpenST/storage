@@ -1,73 +1,72 @@
 # OpenST Storage
 
-It has DB storage libraries and respective services. It also contains shard management libraries and services. 
+OpenST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
 While OpenST Storage is available as-is for anyone to use, we caution that this is early stage software and under heavy ongoing development and improvement. Please report bugs and suggested improvements.
 
-# Dynamodb Services
+# DynamoDB Services
+
+For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
 
 ```bash
 
-For Parametes description refer - https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html
-
 const OSTStorage = require('@openstfoundation/openst-storage')
-    , dynamodbApiObject  = new OSTStorage.Dynamodb(dynamodbConnectionParams)
+    , ddbServiceObj  = new OSTStorage.Dynamodb(dynamodbConnectionParams)
    ;
     
-    //Create Dynamodb Table
-    dynamodbApiObject.createTable(createTableParams);
+    //Create DynamoDB Table
+    ddbServiceObj.createTable(createTableParams);
     
     // Create Table Migration
     // 1. Creates table
-    // 2. Enables ContinuousBackup 
-    // 3. Enables read/write auto scaling
-    // 4. Returns describe table response 
-    dynamodbApiObject.createTableMigration(createTableMigrationParams);
+    // 2. Enables read/write auto scaling
+    // 3. Returns describe table response 
+    ddbServiceObj.createTableMigration(createTableMigrationParams);
     
-    // Update Dynamodb Table
-    dynamodbApiObject.updateTable(updateTableParams)
+    // Update DynamoDB Table
+    ddbServiceObj.updateTable(updateTableParams)
     
-    // Describe Dynamodb Table 
-    dynamodbApiObject.describeTable(describeTableParams)
+    // Describe DynamoDB Table 
+    ddbServiceObj.describeTable(describeTableParams)
     
-    // List Dynamodb Tables
-    dynamodbApiObject.describeTable(listTableParams)
+    // List DynamoDB Tables
+    ddbServiceObj.describeTable(listTableParams)
     
-    // Point in time recovery for Dynamodb Table
-    dynamodbApiObject.updateContinuousBackup(updateConitnousParams)
+    // Point in time recovery for DynamoDB Table
+    ddbServiceObj.updateContinuousBackup(updateConitnousParams)
     
-    // Delete Dynamodb table
-    dynamodbApiObject.deleteTable(deleteTableParams)
+    // Delete DynamoDB table
+    ddbServiceObj.deleteTable(deleteTableParams)
     
     // Batch Get Items
-    dynamodbApiObject.batchGet(batchGetParams)
+    ddbServiceObj.batchGet(batchGetParams)
     
     // Batch Write Items
-    dynamodbApiObject.batchWrite(batchWriteParams)
+    ddbServiceObj.batchWrite(batchWriteParams)
     
     // Query Items
-    dynamodbApiObject.query(queryParams)
+    ddbServiceObj.query(queryParams)
     
     // Scan Items
-    dynamodbApiObject.scan(queryParams)
+    ddbServiceObj.scan(queryParams)
     
     // Put Items
-    dynamodbApiObject.putItem(putItemParams)
+    ddbServiceObj.putItem(putItemParams)
     
     // Update an Item
-    dynamodbApiObject.updateItem(updateItemParams)
+    ddbServiceObj.updateItem(updateItemParams)
     
     // Delete Items
-    dynamodbApiObject.deleteItem(deleteItemParams)
+    ddbServiceObj.deleteItem(deleteItemParams)
     
-    // Check if table exists using wait for method
-    dynamodbApiObject.tableExistsUsingWaitFor(tableExistsParams)
+    // Check if table exists and is in ACTIVE state using wait for method
+    ddbServiceObj.tableExistsUsingWaitFor(tableExistsParams)
     
     // Check if table doesn't exists using wait for method
-    dynamodbApiObject.tableNotExistsUsingWaitFor(tableNotExistsParams)
+    ddbServiceObj.tableNotExistsUsingWaitFor(tableNotExistsParams)
     
     // Check if table exist in ACTIVE state using describe table method
     // If table is being created, then response will be false
-    dynamodbApiObject.checkTableExist(tableExistParams)
+    ddbServiceObj.checkTableExist(tableExistParams)
     
 ```
 
@@ -75,64 +74,64 @@ const OSTStorage = require('@openstfoundation/openst-storage')
 
 ```bash
 const OSTStorage = require('@openstfoundation/openst-storage')
-    , dynamodbApiObject  = new OSTStorage.Dynamodb(dynamodbConnectionParams)
-    , shardManagementObject = dynamodbApiObject.shardManagement()
+    , ddbServiceObj  = new OSTStorage.Dynamodb(dynamodbConnectionParams)
+    , shardMgmtObj = ddbServiceObj.shardManagement()
    ;
     
     // Run Shard Migration
     // Created available_shards and managed_shards table
-    shardManagementObject.runShardMigration(dynamoDbObject, autoScaleObj);
+    shardMgmtObj.runShardMigration(dynamoDbObject, autoScaleObj);
     
     // Add Shard
     // Creates item in available_shards table
-    shardManagementObject.addShard(addShardParams);
+    shardMgmtObj.addShard(addShardParams);
     
     // Configure Shard
     // Configure Enable/Disable allocation type
-    shardManagementObject.configureShard(configureShardParams);
+    shardMgmtObj.configureShard(configureShardParams);
     
     // Get Shards By Different Types
     // Type Values : all/enabled/disabled
-    shardManagementObject.getShardsByType(getShardsByTypeParams);
+    shardMgmtObj.getShardsByType(getShardsByTypeParams);
     
     // Does this shard exist in available_shards table
-    shardManagementObject.hasShard(hasShardParams);
+    shardMgmtObj.hasShard(hasShardParams);
     
     // Assign Shard to an identifier
     // Creates entry in managed_shards table
-    shardManagementObject.assignShard(assignShardParams);
+    shardMgmtObj.assignShard(assignShardParams);
     
     // Get Managed shards
-    shardManagementObject.getManagedShard(managedShardParams);
+    shardMgmtObj.getManagedShard(managedShardParams);
     
 ```
 
 # Auto Scaling Services
 
+For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html)
+
 ```bash
 
-For Parametes description refer - https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html
-
 const OSTStorage = require('@openstfoundation/openst-storage')
-    , autoScalingObject  = new OSTStorage.AutoScaling(autoScalingConnectionParams)
+    , autoScalingObj  = new OSTStorage.AutoScaling(autoScalingConnectionParams)
    ;
     
-    // Registers or updates a scalable target.  scalable target is a resource that Application Auto Scaling can scale out or scale in. After you have registered a scalable target, you can use this operation to update the minimum and maximum values for its scalable dimension.
-    autoScalingObject.registerScalableTarget(registerScalableTargetParams);
+    // Registers or updates a scalable target. Scalable target is a resource that Application Auto Scaling can scale out or scale in. After you have registered a scalable target, you can use this operation to update the minimum and maximum values for its scalable dimension.
+    autoScalingObj.registerScalableTarget(registerScalableTargetParams);
     
     // Creates or updates a policy for an Application Auto Scaling scalable target
-    autoScalingObject.putScalingPolicy(putScalingPolicyParams);
+    autoScalingObj.putScalingPolicy(putScalingPolicyParams);
     
     // Deletes the specified Application Auto Scaling scaling policy
-    autoScalingObject.deleteScalingPolicy(deletecalingPolicyParams);
+    autoScalingObj.deleteScalingPolicy(deletecalingPolicyParams);
     
     // Deregistering a scalable target deletes the scaling policies that are associated with it.
-    autoScalingObject.deregisterScalableTarget(deregisterScalableTargetParams);
+    autoScalingObj.deregisterScalableTarget(deregisterScalableTargetParams);
       
     // Gets information about the scalable targets in the specified namespace. 
-    autoScalingObject.describeScalableTargets(describeScalableTargetsParams); 
+    autoScalingObj.describeScalableTargets(describeScalableTargetsParams); 
    
    // Describes the scaling policies for the specified service namespace.
-    autoScalingObject.describeScalingPolicies(describeScalingPoliciesParams);   
+    autoScalingObj.describeScalingPolicies(describeScalingPoliciesParams);   
     
 ```
