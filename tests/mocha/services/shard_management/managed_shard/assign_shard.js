@@ -16,7 +16,6 @@ const rootPrefix = "../../../../.."
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
   , userBalancesShardName = testConstants.shardTableName
-  , shouldAutoScale = false
 ;
 
 
@@ -40,7 +39,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, data
       // delete table
       await helper.cleanShardMigrationTables(dynamoDbObject);
 
-      await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
+      await shardManagementObject.runShardMigration(dynamoDbObject);
     }
 
     if (options.invalidIdentifier) {
@@ -76,7 +75,7 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
     // delete table
     await helper.cleanShardMigrationTables(dynamoDbObject);
 
-    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
+    await shardManagementObject.runShardMigration(dynamoDbObject);
 
     await shardManagementObject.addShard({shard_name: userBalancesShardName, entity_type: 'userBalances'});
   });

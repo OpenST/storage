@@ -17,7 +17,6 @@ const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_
   , shardManagementObject = dynamoDbObject.shardManagement()
   , identifier = '0x1234'
   , shardName = testConstants.shardTableName
-  , shouldAutoScale = false
 ;
 
 
@@ -65,7 +64,7 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard_details', f
     // delete table
     await helper.cleanShardMigrationTables(dynamoDbObject);
 
-    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
+    await shardManagementObject.runShardMigration(dynamoDbObject);
 
     await shardManagementObject.addShard({shard_name: shardName, entity_type: 'userBalances'});
 

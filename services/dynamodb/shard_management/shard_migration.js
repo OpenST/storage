@@ -24,7 +24,6 @@ const rootPrefix = '../../..'
  * @params {object} params
  * @params {object} params.ddb_api_object - ddb api object
  * @params {object} params.auto_scaling_api_object - auto scaling api object
- * @params {boolean} params.should_auto_scale - should auto scale flag
  *
  * @return {Object}
  *
@@ -34,7 +33,6 @@ const ShardMigration = function (params) {
   ;
   oThis.ddbApiObject = params.ddb_api_object;
   oThis.autoScalingApiObject = params.auto_scaling_api_object;
-  oThis.shouldAutoScale = params.should_auto_scale === undefined ? true : params.should_auto_scale;
 };
 
 ShardMigration.prototype = {
@@ -84,16 +82,6 @@ ShardMigration.prototype = {
         internal_error_identifier: "d_sm_sm_validateParams_1",
         api_error_identifier: "invalid_api_params",
         params_error_identifiers: ["ddb_object_missing"],
-        debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
-      });
-    }
-
-    if (!oThis.autoScalingApiObject) {
-      return responseHelper.paramValidationError({
-        internal_error_identifier: "d_sm_sm_validateParams_2",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["auto_scale_object_missing"],
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });
@@ -155,7 +143,6 @@ ShardMigration.prototype = {
       , arn = "ARN"
     ;
     params.autoScalingConfig = oThis.getAvailableShardsAutoScalingParams(tableName, arn, resourceId);
-    params = Object.assign(params, {should_auto_scale: oThis.shouldAutoScale});
     const availableShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
 
     logger.debug(availableShardsResponse);
@@ -184,7 +171,6 @@ ShardMigration.prototype = {
       , arn = "ARN"
     ;
     params.autoScalingConfig = await oThis.getManagedShardsAutoScalingParams(tableName, arn, resourceId);
-    params = Object.assign(params, {should_auto_scale: oThis.shouldAutoScale});
     const managedShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
     logger.debug(managedShardsResponse);
     if (managedShardsResponse.isFailure()) {

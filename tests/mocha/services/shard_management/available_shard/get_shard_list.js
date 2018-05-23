@@ -16,7 +16,6 @@ const rootPrefix = "../../../../.."
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
-  , shouldAutoScale = false
 ;
 
 
@@ -56,7 +55,7 @@ describe('services/shard_management/available_shard/get_shards', function () {
 
   before(async function () {
     await helper.cleanShardMigrationTables(dynamoDbObject);
-    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
+    await shardManagementObject.runShardMigration(dynamoDbObject);
 
     let entity_type = testConstants.shardEntityType;
     let shardName = testConstants.shardTableName;

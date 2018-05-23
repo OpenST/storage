@@ -26,7 +26,6 @@ const rootPrefix  = "../.."
  * @params {object} params - params
  * @params {object} params.createTableConfig - create table configurations
  * @params {object} params.updateContinuousBackupConfig - update Continuous Backup configurations
- * @params {boolean} params.shouldAutoScale - should auto scale flag
  * @params {object} params.autoScalingConfig - scaling params
  * @params {object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
  * @params {object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
@@ -45,7 +44,7 @@ const CreateTableMigration = function(ddbObject, autoScalingObject ,params) {
   logger.debug("\nparams.createTableConfig", params.createTableConfig, "\nparams.autoScalingConfig", params.autoScalingConfig);
   //logger.debug("\nautoScalingMethods");
   //console.log(Object.getOwnPropertyNames(autoScalingObject));
-  oThis.shouldAutoScale = params.should_auto_scale === undefined ? true : params.should_auto_scale;
+  oThis.shouldAutoScale = !!oThis.autoScalingObject;
 
   DDBServiceBaseKlass.call(oThis, ddbObject, 'createTableMigration', params);
 };
@@ -82,7 +81,7 @@ const CreateTableMigrationPrototype = {
 
     if (oThis.shouldAutoScale) {
 
-      if ( !oThis.autoScalingObject) {
+      if (oThis.autoScalingObject.constructor.name !== 'AutoScaleService') {
         return responseHelper.paramValidationError({
           internal_error_identifier:"l_dy_ctm_validateParams_1",
           api_error_identifier: "invalid_api_params",
@@ -141,6 +140,8 @@ const CreateTableMigrationPrototype = {
           error_config: coreConstants.ERROR_CONFIG
         });
       }
+    } else {
+      logger.warn("AutoScale Object is not provided. Auto Scaling will not be done for the same");
     }
 
     return responseHelper.successWithData({});

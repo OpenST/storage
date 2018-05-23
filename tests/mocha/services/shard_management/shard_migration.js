@@ -16,7 +16,6 @@ const rootPrefix = "../../../.."
 
 const dynamoDbObject = new DynamoDbKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
-  , shouldAutoScale = false
 ;
 
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
@@ -38,7 +37,8 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
     }
 
     console.log("starting runShardMigration");
-    const response = await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
+
+    const response = await shardManagementObject.runShardMigration(dynamoDbObject);
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
     } else {

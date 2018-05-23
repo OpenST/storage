@@ -15,7 +15,6 @@ const rootPrefix = "../../../../.."
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
-  , shouldAutoScale = false
 ;
 
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
@@ -50,7 +49,7 @@ describe('services/shard_management/available_shard/add_shard', function () {
   before(async function () {
     this.timeout(1000000);
     await helper.cleanShardMigrationTables(dynamoDbObject);
-    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
+    await shardManagementObject.runShardMigration(dynamoDbObject);
   });
 
   createTestCasesForOptions("Shard adding happy case", null, true);

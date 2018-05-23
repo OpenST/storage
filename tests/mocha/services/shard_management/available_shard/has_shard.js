@@ -16,7 +16,6 @@ const rootPrefix = "../../../../.."
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
   , shardName = testConstants.shardTableName
-  , shouldAutoScale = false
 ;
 
 const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
@@ -31,7 +30,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
       // delete table
       await helper.cleanShardMigrationTables(dynamoDbObject);
 
-      await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
+      await shardManagementObject.runShardMigration(dynamoDbObject);
     }
     const response = await shardManagementObject.hasShard({shard_names: [shardName]});
 
@@ -53,7 +52,7 @@ describe('services/dynamodb/shard_management/available_shard/has_shard', functio
     // delete table
     await helper.cleanShardMigrationTables(dynamoDbObject);
 
-    await shardManagementObject.runShardMigration(dynamoDbObject, {}, shouldAutoScale);
+    await shardManagementObject.runShardMigration(dynamoDbObject);
 
     let entity_type = testConstants.shardEntityType;
 
