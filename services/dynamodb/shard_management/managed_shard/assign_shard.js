@@ -98,7 +98,7 @@ AssignShard.prototype = {
 
     return new Promise(async function (onResolve) {
       let errorCode = null;
-      let params_error_identifier = null;
+      let error_identifier = null;
 
       oThis.hasShard = async function () {
         const oThis = this
@@ -130,28 +130,27 @@ AssignShard.prototype = {
 
       if (!oThis.identifier) {
         errorCode = errorCodePrefix + '1';
-        params_error_identifier = "invalid_shard_identifier";
+        error_identifier = "invalid_shard_identifier";
       } else if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
         errorCode = errorCodePrefix + '2';
-        params_error_identifier = "invalid_entity_type";
+        error_identifier = "invalid_entity_type";
       } else if (!oThis.ddbObject) {
         errorCode = errorCodePrefix + '3';
-        params_error_identifier = "ddb_object_missing";
+        error_identifier = "invalid_ddb_object";
       } else if (!(await oThis.hasShard())) {
         errorCode = errorCodePrefix + '4';
-        params_error_identifier = "invalid_shard_name";
+        error_identifier = "invalid_shard_name";
       } else if (!oThis.forceAssignment && (await oThis.isAllocatedShard())) {
         errorCode = errorCodePrefix + '5';
-        params_error_identifier = "invalid_force_allocation";
+        error_identifier = "invalid_force_allocation";
       } else {
         return onResolve(responseHelper.successWithData({}));
       }
 
-      logger.debug(errorCode, params_error_identifier);
-      return onResolve(responseHelper.paramValidationError({
+      logger.debug(errorCode, error_identifier);
+      return onResolve(responseHelper.error({
         internal_error_identifier: errorCode,
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: [params_error_identifier],
+        api_error_identifier: error_identifier,
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       }));

@@ -99,7 +99,7 @@ ConfigureShard.prototype = {
     return new Promise(async function (onResolve) {
       let errorCode = null
         , errorMsg = null
-        , params_error_identifier = null
+        , error_identifier = null
       ;
 
       oThis.hasShard = async function() {
@@ -117,26 +117,25 @@ ConfigureShard.prototype = {
 
       if (!oThis.shardName) {
         errorCode = errorCodePrefix + '1';
-        params_error_identifier = "shard_name_mandatory";
+        error_identifier = "invalid_shard_name";
       } else if (String(typeof(oThis.allocationType)) !== 'string') {
         errorCode = errorCodePrefix + '2';
-        params_error_identifier = "invalid_allocation_type";
+        error_identifier = "invalid_allocation_type";
       } else if (undefined === availableShardConst.ALLOCATION_TYPES[oThis.allocationType]) {
         errorCode = errorCodePrefix + '3';
-        params_error_identifier = "invalid_allocation_type";
+        error_identifier = "invalid_allocation_type";
       } else if (!(await oThis.hasShard())) {
         errorCode = errorCodePrefix + '4';
         errorMsg = 'shardName does not exists';
-        params_error_identifier = "invalid_shard_name";
+        error_identifier = "invalid_shard_name";
       } else {
         return onResolve(responseHelper.successWithData({}));
       }
 
-      logger.debug(errorCode, params_error_identifier);
-      return onResolve(responseHelper.paramValidationError({
+      logger.debug(errorCode, error_identifier);
+      return onResolve(responseHelper.error({
         internal_error_identifier: errorCode,
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: [params_error_identifier],
+        api_error_identifier: error_identifier,
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       }));

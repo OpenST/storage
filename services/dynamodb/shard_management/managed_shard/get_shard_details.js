@@ -97,34 +97,33 @@ GetShardDetails.prototype = {
 
     return new Promise(async function (onResolve) {
       let errorCode = null,
-        params_error_identifier = null
+        error_identifier = null
       ;
 
       if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {
         errorCode = errorCodePrefix + '1';
-        params_error_identifier = "invalid_entity_type";
+        error_identifier = "invalid_entity_type";
       }
 
       if (!oThis.identifiers || oThis.identifiers.constructor.name !== 'Array') {
         errorCode = errorCodePrefix + '2';
-        params_error_identifier = "invalid_input_array";
+        error_identifier = "invalid_ids_array";
       }
 
       for (let ind = 0; ind < oThis.identifiers.length; ind++) {
         let id = oThis.identifiers[ind];
         if (!id) {
           errorCode = errorCodePrefix + '3';
-          params_error_identifier = "invalid_shard_identifier";
+          error_identifier = "invalid_shard_identifier";
           break;
         }
       }
 
-      if (params_error_identifier != null) {
-        logger.debug(errorCode, params_error_identifier);
-        return onResolve(responseHelper.paramValidationError({
+      if (error_identifier != null) {
+        logger.debug(errorCode, error_identifier);
+        return onResolve(responseHelper.error({
           internal_error_identifier: errorCode,
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: [params_error_identifier],
+          api_error_identifier: error_identifier,
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         }));

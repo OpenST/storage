@@ -46,10 +46,9 @@ const TableExistPrototype = {
     ;
     if (baseValidationResponse.isFailure()) return baseValidationResponse;
 
-    if (!oThis.params.TableName) return responseHelper.paramValidationError({
+    if (!oThis.params.TableName) return responseHelper.error({
         internal_error_identifier:"l_dy_te_validateParams_1",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["table_name_mandatory"],
+        api_error_identifier: "invalid_table_name",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
     });

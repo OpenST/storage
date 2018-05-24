@@ -75,30 +75,27 @@ Base.prototype = {
     const oThis = this;
 
     if (!oThis.methodName) {
-      return responseHelper.paramValidationError({
+      return responseHelper.error({
         internal_error_identifier:"l_dy_b_validateParams_1",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["ddb_method_missing"],
+        api_error_identifier: "invalid_method_name",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });
     }
 
     if (!oThis.ddbObject){
-      return responseHelper.paramValidationError({
+      return responseHelper.error({
         internal_error_identifier:"l_dy_b_validateParams_2",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["ddb_object_missing"],
+        api_error_identifier: "invalid_ddb_object",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });
     }
 
     if (!oThis.params) {
-      return responseHelper.paramValidationError({
+      return responseHelper.error({
         internal_error_identifier:"l_dy_b_validateParams_3",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["ddb_params_missing"],
+        api_error_identifier: "invalid_params",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });

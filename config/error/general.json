@@ -1,0 +1,147 @@
+{
+  "exception": {
+    "http_code": "500",
+    "code": "INTERNAL_SERVER_ERROR",
+    "message": "Something went wrong exception."
+  },
+  "ddb_method_call_error":{
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "DynamoDB method was called successfully but returned error"
+  },
+  "auto_scale_method_call_error":{
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Auto Scale method was called successfully but returned error"
+  },
+  "invalid_db_instance": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "DB instance is not defined"
+  },
+  "invalid_method_ref": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Method ref is not defined"
+  },
+  "invalid_auto_scale_instance": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Auto scale instance is not provided"
+  },
+  "invalid_wait_for_method": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Method to wait for is not defined"
+  },
+  "invalid_table_name": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Table name is not defined"
+  },
+  "invalid_create_table_config": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Create table config is not defined"
+  },
+  "invalid_auto_scale_object": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Provided auto scale object is not of Auto Scale Service"
+  },
+  "invalid_auto_scale_config": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Auto scale config is not defined"
+  },
+  "invalid_register_scalable_target_write": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Register Scalable Target Write config is not defined"
+  },
+  "invalid_register_scalable_target_read": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Register Scalable Target Read config is not defined"
+  },
+  "invalid_put_scaling_policy_write": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Put Scaling Policy Write config is not defined"
+  },
+  "invalid_put_scaling_policy_read": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Put Scaling Policy Read config is not defined"
+  },
+  "invalid_method_name": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Method name is not defined"
+  },
+  "invalid_ddb_object": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "DDB object is not defined"
+  },
+  "invalid_params": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "params are not defined"
+  },
+  "invalid_ddb_api_object": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "DDB api object is not defined"
+  },
+  "invalid_shard_type": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Shard type is not valid"
+  },
+  "invalid_shard_name": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Shard name is not defined"
+  },
+  "invalid_entity_type": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Entity type is not valid"
+  },
+  "invalid_shard_array": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Shard name array is not valid"
+  },
+  "invalid_ids_array": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Ids array is not valid"
+  },
+  "exceeded_batch_limit": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Batch limit is exceeded"
+  },
+  "invalid_allocation_type": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Allocation type is not valid"
+  },
+  "invalid_shard_identifier": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Shard identifier is not defined"
+  },
+  "invalid_force_allocation": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "force_allocation flag is not valid"
+  },
+  "invalid_cache_ids": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Cache ids are not defined"
+  }
+}

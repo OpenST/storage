@@ -78,10 +78,9 @@ ShardMigration.prototype = {
     ;
 
     if (!oThis.ddbApiObject) {
-      return responseHelper.paramValidationError({
+      return responseHelper.error({
         internal_error_identifier: "d_sm_sm_validateParams_1",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["ddb_object_missing"],
+        api_error_identifier: "invalid_ddb_api_object",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });

@@ -66,10 +66,9 @@ const CreateTableMigrationPrototype = {
     if (baseValidationResponse.isFailure()) return baseValidationResponse;
 
     if (!oThis.params.createTableConfig) {
-      return responseHelper.paramValidationError({
+      return responseHelper.error({
         internal_error_identifier:"l_dy_ctm_validateParams_2",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["create_table_config_missing"],
+        api_error_identifier: "invalid_create_table_config",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });
@@ -82,60 +81,54 @@ const CreateTableMigrationPrototype = {
     if (oThis.shouldAutoScale) {
 
       if (oThis.autoScalingObject.constructor.name !== 'AutoScaleService') {
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_1",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["auto_scale_object_missing"],
+          api_error_identifier: "invalid_auto_scale_object",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_4",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["auto_scale_config_missing"],
+          api_error_identifier: "invalid_auto_scale_config",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig.registerScalableTargetWrite){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_5",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["register_scalable_target_write_missing"],
+          api_error_identifier: "invalid_register_scalable_target_write",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig.registerScalableTargetRead){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_6",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["register_scalable_target_read"],
+          api_error_identifier: "invalid_register_scalable_target_read",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig.putScalingPolicyWrite){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_7",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["put_scaling_policy_write"],
+          api_error_identifier: "invalid_put_scaling_policy_write",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig.putScalingPolicyRead){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_8",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["put_scaling_policy_read"],
+          api_error_identifier: "invalid_put_scaling_policy_read",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
