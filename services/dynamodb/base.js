@@ -16,9 +16,9 @@ const rootPrefix  = "../.."
 /**
  * Constructor for base service class
  *
- * @param {object} ddbObject - connection object
- * @param {string} methodName - DDB method name
- * @param {object} params - DDB method params
+ * @param {Object} ddbObject - connection object
+ * @param {String} methodName - DDB method name
+ * @param {Object} params - DDB method params
  *
  * @constructor
  */

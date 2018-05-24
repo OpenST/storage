@@ -20,10 +20,10 @@ const rootPrefix = '../../../..'
  *
  * @constructor
  *
- * @params {object} params -
- * @param {string} params.ddb_object - dynamoDbObject
- * @param {string} params.shard_names - Name of the shard
- * @param {boolean} params.enable_allocation - to enable or disable allocation
+ * @params {Object} params - Parameters
+ * @param {String} params.ddb_object - dynamoDbObject
+ * @param {String} params.shard_names - Name of the shard
+ * @param {Boolean} params.enable_allocation - to enable or disable allocation
  *
  * @return {Object}
  *

@@ -21,16 +21,16 @@ const rootPrefix  = "../.."
 /**
  * Constructor for TableExist service class
  *
- * @params {object} ddbObject - DynamoDB Object
- * @params {object} autoScalingObject - auto scaling Object
- * @params {object} params - params
- * @params {object} params.createTableConfig - create table configurations
- * @params {object} params.updateContinuousBackupConfig - update Continuous Backup configurations
- * @params {object} params.autoScalingConfig - scaling params
- * @params {object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
- * @params {object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
- * @params {object} params.autoScalingConfig.putScalingPolicyWrite- Put scaling policy write configurations
- * @params {object} params.autoScalingConfig.putScalingPolicyRead - Put scaling policy read configurations
+ * @params {Object} ddbObject - DynamoDB Object
+ * @params {Object} autoScalingObject - auto scaling Object
+ * @params {Object} params - params
+ * @params {Object} params.createTableConfig - create table configurations
+ * @params {Object} params.updateContinuousBackupConfig - update Continuous Backup configurations
+ * @params {Object} params.autoScalingConfig - scaling params
+ * @params {Object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
+ * @params {Object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
+ * @params {Object} params.autoScalingConfig.putScalingPolicyWrite- Put scaling policy write configurations
+ * @params {Object} params.autoScalingConfig.putScalingPolicyRead - Put scaling policy read configurations
  *
  * @constructor
  */
@@ -143,7 +143,7 @@ const CreateTableMigrationPrototype = {
   /**
    * run create table migration
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {Promise} true/false
    *

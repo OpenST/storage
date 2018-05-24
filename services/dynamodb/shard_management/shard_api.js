@@ -51,7 +51,7 @@ ShardServiceApi.prototype = {
   /**
    *  To add Shard
    *
-   * @param params
+   * @param {Object} params - Parameters
    *
    * @return {*|promise<result>}
    */
@@ -66,7 +66,7 @@ ShardServiceApi.prototype = {
   /**
    * To configure shard
    *
-   * @param params
+   * @param {Object} params - Parameters
    *
    * @return {*|promise<result>}
    */
@@ -81,7 +81,7 @@ ShardServiceApi.prototype = {
   /**
    * get Shard list by type
    *
-   * @param params
+   * @param {Object} params - Parameters
    *
    * @return {*|promise<result>}
    */
@@ -96,7 +96,7 @@ ShardServiceApi.prototype = {
   /**
    * To assign shard
    *
-   * @param params
+   * @param {Object} params - Parameters
    *
    * @return {*|promise<result>}
    */
@@ -111,7 +111,7 @@ ShardServiceApi.prototype = {
   /**
    * has shard
    *
-   * @param params
+   * @param {Object} params - Parameters
    */
   hasShard: function (params) {
     const oThis = this
@@ -124,7 +124,7 @@ ShardServiceApi.prototype = {
   /**
    * get Managed shard
    *
-   * @param params
+   * @param {Object} params - Parameters
    */
   getManagedShard: function (params) {
     const oThis = this

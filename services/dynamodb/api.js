@@ -19,7 +19,7 @@ const rootPrefix  = "../.."
 /**
  * Constructor for DynamoDB api service class
  *
- * @params {object} params - DynamoDB connection configurations
+ * @params {Object} params - DynamoDB connection configurations
  *
  * @constructor
  */
@@ -35,7 +35,7 @@ DynamoDBService.prototype = {
   /**
    * Create table
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -53,7 +53,7 @@ DynamoDBService.prototype = {
    *  2. enabling continuous back up
    *  3. enabling auto scaling
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -68,7 +68,7 @@ DynamoDBService.prototype = {
   /**
    * Update table
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -83,7 +83,7 @@ DynamoDBService.prototype = {
   /**
    * Describe table
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -98,7 +98,7 @@ DynamoDBService.prototype = {
   /**
    * List table
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -113,7 +113,7 @@ DynamoDBService.prototype = {
   /**
    * Enables or disables point in time recovery for the specified table
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -128,7 +128,7 @@ DynamoDBService.prototype = {
   /**
    * Delete table
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -143,7 +143,7 @@ DynamoDBService.prototype = {
   /**
    * Batch get
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -158,7 +158,7 @@ DynamoDBService.prototype = {
   /**
    * Batch write
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -173,7 +173,7 @@ DynamoDBService.prototype = {
   /**
    * Query
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -188,7 +188,7 @@ DynamoDBService.prototype = {
   /**
    * Scan
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -203,7 +203,7 @@ DynamoDBService.prototype = {
   /**
    * Put item
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -218,7 +218,7 @@ DynamoDBService.prototype = {
   /**
    * Update item
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -233,7 +233,7 @@ DynamoDBService.prototype = {
   /**
    * Delete item
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -248,7 +248,7 @@ DynamoDBService.prototype = {
   /**
    * Table exists
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -263,7 +263,7 @@ DynamoDBService.prototype = {
   /**
    * Table not exists
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *
@@ -278,7 +278,7 @@ DynamoDBService.prototype = {
   /**
    * Check if Table exists using describe table
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {promise<result>}
    *

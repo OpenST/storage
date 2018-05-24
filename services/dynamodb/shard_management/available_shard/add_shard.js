@@ -22,10 +22,10 @@ const rootPrefix = '../../../..'
  *
  * @constructor
  *
- * @params {object} params -
- * @param {string} params.ddb_object - dynamoDbObject
- * @param {string} params.shard_name - Shard Name
- * @param {string} params.entity_type - entity type of shard
+ * @params {Object} params - Parameters
+ * @param {String} params.ddb_object - dynamoDbObject
+ * @param {String} params.shard_name - Shard Name
+ * @param {String} params.entity_type - entity type of shard
  *
  * @return {Object}
  *

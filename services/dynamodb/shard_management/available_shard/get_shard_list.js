@@ -22,10 +22,10 @@ const rootPrefix = '../../../..'
  *
  * @constructor
  *
- * @params {object} params -
- * @param {object} params.ddb_object - Dynamo db object
- * @param {string} params.entity_type - entity type
- * @param {string} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'All')
+ * @params {Object} params - Parameters
+ * @param {Object} params.ddb_object - Dynamo db object
+ * @param {String} params.entity_type - entity type
+ * @param {String} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'All')
  * @param {JSON} params.table_schema - schema of the table in shard
  *
  * @return {Object}

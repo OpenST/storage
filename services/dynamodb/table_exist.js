@@ -17,9 +17,9 @@ const rootPrefix  = "../.."
 /**
  * Constructor for TableExist service class
  *
- * @params {object} ddbObject - DynamoDB Object
- * @params {object} params - TableExist configurations
- *    @params {string} TableName - name of table
+ * @params {Object} ddbObject - DynamoDB Object
+ * @params {Object} params - TableExist configurations
+ * @params {String} TableName - name of table
  *
  * @constructor
  */
@@ -59,7 +59,7 @@ const TableExistPrototype = {
   /**
    * Check if Table exists using describe table
    *
-   * @params {object} params
+   * @params {object} params - Parameters
    *
    * @return {Promise} true/false
    *

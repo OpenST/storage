@@ -21,9 +21,9 @@ const rootPrefix = '../../..'
  *
  * @constructor
  *
- * @params {object} params
- * @params {object} params.ddb_api_object - ddb api object
- * @params {object} params.auto_scaling_api_object - auto scaling api object
+ * @params {Object} params - Parameters
+ * @params {Object} params.ddb_api_object - ddb api object
+ * @params {Object} params.auto_scaling_api_object - auto scaling api object
  *
  * @return {Object}
  *

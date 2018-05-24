@@ -17,7 +17,9 @@ const rootPrefix  = "../.."
 
 /**
  * Constructor for wait for service class
- * @param params -
+ * @param {Object} params - Parameters
+ * @param {Object} ddbObject - DynamoDB Object
+ * @param {String} waitForMethod - wait for method
  *
  * @constructor
  */
@@ -36,8 +38,7 @@ const waitForPrototype = {
   /**
    * Validation of params
    *
-   * @return {<result>}
-   *
+   * @return {*}
    */
   validateParams: function () {
 

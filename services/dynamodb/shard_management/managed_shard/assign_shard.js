@@ -25,12 +25,12 @@ const rootPrefix = '../../../..'
  *
  * @constructor
  *
- * @params {object} params -
- * @param {object} params.ddb_object - dynamo db object
- * @param {string} params.identifier - identifier of the shard
- * @param {string} params.entity_type - schema of the table in shard
- * @param {string} params.shard_name - shard name
- * @param {bool} params.force_assignment - true/false
+ * @params {Object} params - Parameters
+ * @param {Object} params.ddb_object - dynamo db object
+ * @param {String} params.identifier - identifier of the shard
+ * @param {String} params.entity_type - schema of the table in shard
+ * @param {String} params.shard_name - shard name
+ * @param {Boolean} params.force_assignment - true/false
  *
  * @return {Object}
  *
