@@ -17,9 +17,9 @@ const rootPrefix  = "../.."
 /**
  * Constructor for TableExist service class
  *
- * @params {object} ddbObject - DynamoDB Object
- * @params {object} params - TableExist configurations
- *    @params {string} TableName - name of table
+ * @params {Object} ddbObject - DynamoDB Object
+ * @params {Object} params - TableExist configurations
+ * @params {String} TableName - name of table
  *
  * @constructor
  */
@@ -46,10 +46,9 @@ const TableExistPrototype = {
     ;
     if (baseValidationResponse.isFailure()) return baseValidationResponse;
 
-    if (!oThis.params.TableName) return responseHelper.paramValidationError({
+    if (!oThis.params.TableName) return responseHelper.error({
         internal_error_identifier:"l_dy_te_validateParams_1",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["table_name_mandatory"],
+        api_error_identifier: "invalid_table_name",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
     });
@@ -60,7 +59,7 @@ const TableExistPrototype = {
   /**
    * Check if Table exists using describe table
    *
-   * @params {object} params
+   * @params {object} params - Parameters
    *
    * @return {Promise} true/false
    *

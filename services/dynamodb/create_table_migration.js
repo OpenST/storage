@@ -21,16 +21,16 @@ const rootPrefix  = "../.."
 /**
  * Constructor for TableExist service class
  *
- * @params {object} ddbObject - DynamoDB Object
- * @params {object} autoScalingObject - auto scaling Object
- * @params {object} params - params
- * @params {object} params.createTableConfig - create table configurations
- * @params {object} params.updateContinuousBackupConfig - update Continuous Backup configurations
- * @params {object} params.autoScalingConfig - scaling params
- * @params {object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
- * @params {object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
- * @params {object} params.autoScalingConfig.putScalingPolicyWrite- Put scaling policy write configurations
- * @params {object} params.autoScalingConfig.putScalingPolicyRead - Put scaling policy read configurations
+ * @params {Object} ddbObject - DynamoDB Object
+ * @params {Object} autoScalingObject - auto scaling Object
+ * @params {Object} params - params
+ * @params {Object} params.createTableConfig - create table configurations
+ * @params {Object} params.updateContinuousBackupConfig - update Continuous Backup configurations
+ * @params {Object} params.autoScalingConfig - scaling params
+ * @params {Object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
+ * @params {Object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
+ * @params {Object} params.autoScalingConfig.putScalingPolicyWrite- Put scaling policy write configurations
+ * @params {Object} params.autoScalingConfig.putScalingPolicyRead - Put scaling policy read configurations
  *
  * @constructor
  */
@@ -66,10 +66,9 @@ const CreateTableMigrationPrototype = {
     if (baseValidationResponse.isFailure()) return baseValidationResponse;
 
     if (!oThis.params.createTableConfig) {
-      return responseHelper.paramValidationError({
+      return responseHelper.error({
         internal_error_identifier:"l_dy_ctm_validateParams_2",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["create_table_config_missing"],
+        api_error_identifier: "invalid_create_table_config",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });
@@ -82,60 +81,54 @@ const CreateTableMigrationPrototype = {
     if (oThis.shouldAutoScale) {
 
       if (oThis.autoScalingObject.constructor.name !== 'AutoScaleService') {
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_1",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["auto_scale_object_missing"],
+          api_error_identifier: "invalid_auto_scale_object",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_4",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["auto_scale_config_missing"],
+          api_error_identifier: "invalid_auto_scale_config",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig.registerScalableTargetWrite){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_5",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["register_scalable_target_write_missing"],
+          api_error_identifier: "invalid_register_scalable_target_write",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig.registerScalableTargetRead){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_6",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["register_scalable_target_read"],
+          api_error_identifier: "invalid_register_scalable_target_read",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig.putScalingPolicyWrite){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_7",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["put_scaling_policy_write"],
+          api_error_identifier: "invalid_put_scaling_policy_write",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
       }
 
       if (!oThis.params.autoScalingConfig.putScalingPolicyRead){
-        return responseHelper.paramValidationError({
+        return responseHelper.error({
           internal_error_identifier:"l_dy_ctm_validateParams_8",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["put_scaling_policy_read"],
+          api_error_identifier: "invalid_put_scaling_policy_read",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         });
@@ -150,7 +143,7 @@ const CreateTableMigrationPrototype = {
   /**
    * run create table migration
    *
-   * @params {object} params
+   * @params {Object} params - Parameters
    *
    * @return {Promise} true/false
    *

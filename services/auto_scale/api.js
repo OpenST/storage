@@ -15,7 +15,7 @@ const rootPrefix  = "../.."
 /**
  * Constructor for AutoScale api service class
  *
- * @params {object} params - AutoScale connection configurations
+ * @params {Object} params - AutoScale connection configurations
  *
  * @constructor
  */
@@ -31,7 +31,7 @@ AutoScaleService.prototype = {
   /**
    * Register scalable Target
    *
-   * @param params
+   * @param {Object} params - Parameters
    *
    * @return {*}
    */
@@ -45,7 +45,7 @@ AutoScaleService.prototype = {
   /**
    * Put Scaling Policy
    *
-   * @param params
+   * @param {Object} params - Parameters
    *
    * @return {*}
    */
@@ -58,7 +58,10 @@ AutoScaleService.prototype = {
 
   /**
    * Delete Scaling policy
-   * @param params
+   *
+   * @param {Object} params - Parameters
+   *
+   * @return {*}
    */
   deleteScalingPolicy: function(params) {
     const oThis = this
@@ -69,7 +72,10 @@ AutoScaleService.prototype = {
 
   /**
    * De Register Scalable Target
-   * @param params
+   *
+   * @param {Object} params - Parameters
+   *
+   * @return {*}
    */
   deregisterScalableTarget: function(params) {
     const oThis = this
@@ -80,7 +86,10 @@ AutoScaleService.prototype = {
 
   /**
    * Describe Scalable Targets
-   * @param params
+   *
+   * @param {Object} params - Parameters
+   *
+   * @return {*}
    */
   describeScalableTargets: function(params) {
     const oThis = this
@@ -91,7 +100,9 @@ AutoScaleService.prototype = {
 
   /**
    * Describe scaling policies
-   * @param params
+   *
+   * @param {Object} params - Parameters
+   *
    * @return {*}
    */
   describeScalingPolicies: function(params) {

@@ -76,7 +76,7 @@ baseCacheMultiManagementKlass.prototype = {
   },
 
   /**
-   * clear cache
+   * Clear cache
    *
    * @return {Promise<Result>}
    */
@@ -94,7 +94,7 @@ baseCacheMultiManagementKlass.prototype = {
   // methods which sub class would have to implement
 
   /**
-   * set cache keys in oThis.cacheKeys and return it
+   * Set cache keys in oThis.cacheKeys and return it
    *
    * @return {String}
    */

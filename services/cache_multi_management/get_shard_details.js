@@ -72,10 +72,9 @@ GetShardDetailsCacheKlass.prototype.fetchDataFromSource = async function (cacheI
 
   if (!cacheIds) {
     
-    return responseHelper.paramValidationError({
+    return responseHelper.error({
       internal_error_identifier:"s_cmm_gsd_1",
-      api_error_identifier: "invalid_api_params",
-      params_error_identifiers: ["blank_ids"],
+      api_error_identifier: "invalid_cache_ids",
       debug_options: {},
       error_config: coreConstants.ERROR_CONFIG
     })

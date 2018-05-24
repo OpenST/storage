@@ -87,6 +87,4 @@ describe('Delete Table', function() {
   after(function() {
     logger.debug("Delete Table Mocha Tests Complete");
   });
-
-
 });
