@@ -22,10 +22,10 @@ const rootPrefix = '../../../..'
  *
  * @constructor
  *
- * @params {object} params -
- * @param {object} params.ddb_object - Dynamo db object
- * @param {string} params.entity_type - entity type
- * @param {string} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'All')
+ * @params {Object} params - Parameters
+ * @param {Object} params.ddb_object - Dynamo db object
+ * @param {String} params.entity_type - entity type
+ * @param {String} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'All')
  * @param {JSON} params.table_schema - schema of the table in shard
  *
  * @return {Object}
@@ -90,10 +90,9 @@ GetShardList.prototype = {
 
       if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
         logger.debug('s_sm_as_gsl_validateParams_1', 'entityType is', oThis.entityType);
-        return onResolve(responseHelper.paramValidationError({
+        return onResolve(responseHelper.error({
           internal_error_identifier: "s_sm_as_gsl_validateParams_1",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["invalid_entity_type"],
+          api_error_identifier: "invalid_entity_type",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         }));
@@ -101,10 +100,9 @@ GetShardList.prototype = {
 
       if (!oThis.shardType || (availableShardGlobalConstant.getShardTypes()[oThis.shardType] === undefined) ) {
         logger.debug('s_sm_as_gsl_validateParams_2', 'shardType is', oThis.shardType);
-        return onResolve(responseHelper.paramValidationError({
+        return onResolve(responseHelper.error({
           internal_error_identifier: "s_sm_as_gsl_validateParams_2",
-          api_error_identifier: "invalid_api_params",
-          params_error_identifiers: ["invalid_shard_type"],
+          api_error_identifier: "invalid_shard_type",
           debug_options: {},
           error_config: coreConstants.ERROR_CONFIG
         }));

@@ -8,8 +8,8 @@
  */
 
 const rootPrefix = '..'
-  , paramErrorConfig = require(rootPrefix + '/config/param_error_config')
-  , apiErrorConfig = require(rootPrefix + '/config/api_error_config')
+  , paramErrorConfig = require(rootPrefix + '/config/error/param')
+  , apiErrorConfig = require(rootPrefix + '/config/error/general')
 ;
 
 /**

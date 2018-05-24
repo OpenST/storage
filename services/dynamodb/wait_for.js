@@ -17,7 +17,9 @@ const rootPrefix  = "../.."
 
 /**
  * Constructor for wait for service class
- * @param params -
+ * @param {Object} params - Parameters
+ * @param {Object} ddbObject - DynamoDB Object
+ * @param {String} waitForMethod - wait for method
  *
  * @constructor
  */
@@ -36,8 +38,7 @@ const waitForPrototype = {
   /**
    * Validation of params
    *
-   * @return {<result>}
-   *
+   * @return {*}
    */
   validateParams: function () {
 
@@ -46,10 +47,9 @@ const waitForPrototype = {
     ;
     if (validationResponse.isFailure()) return validationResponse;
 
-    if (!oThis.waitForMethod) return responseHelper.paramValidationError({
+    if (!oThis.waitForMethod) return responseHelper.error({
         internal_error_identifier:"l_dy_wf_validateParams_1",
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: ["wait_for_method_mandatory"],
+        api_error_identifier: "invalid_wait_for_method",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
     });

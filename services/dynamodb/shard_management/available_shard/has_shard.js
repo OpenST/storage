@@ -20,10 +20,10 @@ const rootPrefix = '../../../..'
  *
  * @constructor
  *
- * @params {object} params -
- * @param {string} params.ddb_object - dynamoDbObject
- * @param {string} params.shard_names - Name of the shard
- * @param {boolean} params.enable_allocation - to enable or disable allocation
+ * @params {Object} params - Parameters
+ * @param {String} params.ddb_object - dynamoDbObject
+ * @param {String} params.shard_names - Name of the shard
+ * @param {Boolean} params.enable_allocation - to enable or disable allocation
  *
  * @return {Object}
  *
@@ -87,7 +87,7 @@ HasShard.prototype = {
     return new Promise(async function (onResolve) {
       let errorCode = null
         , errorMsg = null
-        , params_error_identifier = null
+        , error_identifier = null
       ;
 
       oThis.hasAnyInvalidShard = function(){
@@ -102,22 +102,21 @@ HasShard.prototype = {
 
       if (!oThis.shardNames || oThis.shardNames.constructor.name !== 'Array') {
         errorCode = errorCodePrefix + '1';
-        params_error_identifier = "invalid_input_array";
+        error_identifier = "invalid_shard_array";
       } else if (oThis.shardNames.length > BATCH_SIZE_LIMIT) {
         errorCode = errorCodePrefix + '2';
-        params_error_identifier = "wrong_limit";
+        error_identifier = "exceeded_batch_limit";
       } else if (oThis.hasAnyInvalidShard()) {
         errorCode = errorCodePrefix + '3';
-        params_error_identifier = "invalid_shard_name";
+        error_identifier = "invalid_shard_name";
       } else {
         return onResolve(responseHelper.successWithData({}));
       }
 
-      logger.debug(errorCode, params_error_identifier);
-      return onResolve(responseHelper.paramValidationError({
+      logger.debug(errorCode, error_identifier);
+      return onResolve(responseHelper.error({
         internal_error_identifier: errorCode,
-        api_error_identifier: "invalid_api_params",
-        params_error_identifiers: [params_error_identifier],
+        api_error_identifier: error_identifier,
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       }));

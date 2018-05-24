@@ -1,9 +1,11 @@
 {
   "name": "@openstfoundation/openst-storage",
   "version": "1.0.0-beta.1",
-  "description": "openst storage provided data storage utilites",
+  "description": "openst storage provided data storage and sharding services",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "make-docs": "node_modules/.bin/jsdoc -c .jsdoc.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/OpenSTFoundation/openst-storage.git"
@@ -11,15 +13,16 @@
   "keywords": [
     "OST",
     "openst",
+    "simpletoken",
     "storage",
-    "openst-storage"
+    "DynamoDB"
   ],
   "author": "OpenST Foundation Ltd.",
   "license": "LGPL-3.0",
   "bugs": {
     "url": "https://github.com/OpenSTFoundation/openst-storage/issues"
   },
-  "homepage": "https://github.com/OpenSTFoundation/openst-storage#readme",
+  "homepage": "https://openst.org",
   "dependencies": {
     "@openstfoundation/openst-base": "0.9.0",
     "@openstfoundation/openst-cache": "1.0.3",
@@ -27,6 +30,9 @@
   },
   "devDependencies": {
     "chai": "4.1.2",
-    "mocha": "5.0.0"
+    "mocha": "5.0.0",
+    "ink-docstrap": "1.3.2",
+    "jsdoc-route-plugin": "0.1.0",
+    "jsdoc": "3.5.5"
   }
 }
