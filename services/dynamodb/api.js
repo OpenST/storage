@@ -297,6 +297,8 @@ DynamoDBService.prototype = {
   },
 
   /**
+   * It returns Shard service object
+   *
    * To run shard service apis
    * runShardMigration()
    * addShard()
@@ -304,7 +306,7 @@ DynamoDBService.prototype = {
    * assignShard()
    * hasShard()
    * getShardsByType()
-   * getManagedShard
+   * getManagedShard()
    */
   shardManagement: function() {
     const oThis = this
