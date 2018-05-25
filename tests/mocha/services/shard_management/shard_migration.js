@@ -22,7 +22,8 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || "";
   options = options || {
     availableShard: false,
-    managedShard: false
+    managedShard: false,
+    runMigrationTwice: false
   };
 
   it(optionsDesc, async function () {
@@ -36,9 +37,13 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
       await dynamoDbObject.createTable(helper.createTableParamsFor(managedShardConst.getTableName()));
     }
 
+    if (options.runMigrationTwice) {
+      await shardManagementObject.runShardMigration(dynamoDbObject);
+    }
     console.log("starting runShardMigration");
 
     const response = await shardManagementObject.runShardMigration(dynamoDbObject);
+
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
     } else {
@@ -54,16 +59,17 @@ describe('lib/services/shard_management/shard_migration', function () {
   });
 
   createTestCasesForOptions("Shard migration happy case", {}, true);
+
   createTestCasesForOptions("Shard migration available shard table already exists", {
     availableShard: true
-  }, false);
+  }, true);
   createTestCasesForOptions("Shard migration managed shared table already exists", {
     managedShard: true
-  }, false);
+  }, true);
   createTestCasesForOptions("Shard migration managed and available share both table already exists", {
     availableShard: true,
     managedShard: true
-  }, false);
+  }, true);
 
   afterEach(async function () {
     await helper.cleanShardMigrationTables(dynamoDbObject);

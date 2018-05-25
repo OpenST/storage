@@ -3,11 +3,11 @@
 OpenST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
 While OpenST Storage is available as-is for anyone to use, we caution that this is early stage software and under heavy ongoing development and improvement. Please report bugs and suggested improvements.
 
-# DynamoDB Services
+## DynamoDB Services
 
-For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
+For all below methods parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
 
-```bash
+```js
 
 const OSTStorage = require('@openstfoundation/openst-storage')
     , ddbServiceObj  = new OSTStorage.Dynamodb(dynamodbConnectionParams)
@@ -23,56 +23,56 @@ const OSTStorage = require('@openstfoundation/openst-storage')
     ddbServiceObj.createTableMigration(createTableMigrationParams);
     
     // Update DynamoDB Table
-    ddbServiceObj.updateTable(updateTableParams)
+    ddbServiceObj.updateTable(updateTableParams);
     
     // Describe DynamoDB Table 
-    ddbServiceObj.describeTable(describeTableParams)
+    ddbServiceObj.describeTable(describeTableParams);
     
     // List DynamoDB Tables
-    ddbServiceObj.describeTable(listTableParams)
+    ddbServiceObj.listTables(listTableParams);
     
     // Point in time recovery for DynamoDB Table
-    ddbServiceObj.updateContinuousBackup(updateConitnousParams)
+    ddbServiceObj.updateContinuousBackups(updateConitnousParams);
     
     // Delete DynamoDB table
-    ddbServiceObj.deleteTable(deleteTableParams)
+    ddbServiceObj.deleteTable(deleteTableParams);
     
     // Batch Get Items
-    ddbServiceObj.batchGet(batchGetParams)
+    ddbServiceObj.batchGetItem(batchGetParams);
     
     // Batch Write Items
-    ddbServiceObj.batchWrite(batchWriteParams)
+    ddbServiceObj.batchWriteItem(batchWriteParams);
     
     // Query Items
-    ddbServiceObj.query(queryParams)
+    ddbServiceObj.query(queryParams);
     
     // Scan Items
-    ddbServiceObj.scan(queryParams)
+    ddbServiceObj.scan(queryParams);
     
     // Put Items
-    ddbServiceObj.putItem(putItemParams)
+    ddbServiceObj.putItem(putItemParams);
     
     // Update an Item
-    ddbServiceObj.updateItem(updateItemParams)
+    ddbServiceObj.updateItem(updateItemParams);
     
     // Delete Items
-    ddbServiceObj.deleteItem(deleteItemParams)
+    ddbServiceObj.deleteItem(deleteItemParams);
     
     // Check if table exists and is in ACTIVE state using wait for method
-    ddbServiceObj.tableExistsUsingWaitFor(tableExistsParams)
+    ddbServiceObj.tableExistsUsingWaitFor(tableExistsParams);
     
     // Check if table doesn't exists using wait for method
-    ddbServiceObj.tableNotExistsUsingWaitFor(tableNotExistsParams)
+    ddbServiceObj.tableNotExistsUsingWaitFor(tableNotExistsParams);
     
     // Check if table exist in ACTIVE state using describe table method
     // If table is being created, then response will be false
-    ddbServiceObj.checkTableExist(tableExistParams)
+    ddbServiceObj.checkTableExist(tableExistParams);
     
 ```
 
-# Shard Management Services
+## Shard Management Services
 
-```bash
+```js
 const OSTStorage = require('@openstfoundation/openst-storage')
     , ddbServiceObj  = new OSTStorage.Dynamodb(dynamodbConnectionParams)
     , shardMgmtObj = ddbServiceObj.shardManagement()
@@ -106,11 +106,11 @@ const OSTStorage = require('@openstfoundation/openst-storage')
     
 ```
 
-# Auto Scaling Services
+## Auto Scaling Services
 
 For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html)
 
-```bash
+```js
 
 const OSTStorage = require('@openstfoundation/openst-storage')
     , autoScalingObj  = new OSTStorage.AutoScaling(autoScalingConnectionParams)

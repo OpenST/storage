@@ -49,39 +49,49 @@ GetShardDetails.prototype = {
    *
    */
   perform: async function () {
-
     const oThis = this
     ;
-    try {
-      let r = null;
 
-      r = await oThis.validateParams();
-      logger.debug("=======GetShardDetails.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      const cacheParams = {
-        ddb_object: oThis.ddbObject,
-        entity_type: oThis.entityType,
-        identifiers: oThis.identifiers
-      };
-      r = await new GetShardDetailsMultiCacheKlass(cacheParams).fetch();
-      logger.debug("=======GetShardDetails.GetShardDetailsMultiCache.result=======");
-      logger.debug(r);
-      if (r.isSuccess()) {
-        return responseHelper.successWithData(r.data);
-      } else {
-        return r;
-      }
-    } catch (err) {
-      return responseHelper.error({
-        internal_error_identifier: "s_sm_as_gsd_perform_1",
-        api_error_identifier: "exception",
-        debug_options: {error: err},
-        error_config: coreConstants.ERROR_CONFIG
+    return oThis.asyncPerform()
+      .catch(function(err){
+        return responseHelper.error({
+          internal_error_identifier: "s_sm_as_gsd_perform_1",
+          api_error_identifier: "exception",
+          debug_options: {error: err},
+          error_config: coreConstants.ERROR_CONFIG
+        });
       });
-    }
+  },
 
+  /**
+   * Async Perform
+   *
+   * @return {Promise<*>}
+   */
+  asyncPerform: async function () {
+    const oThis = this
+    ;
+
+    let r = null;
+
+    r = await oThis.validateParams();
+    logger.debug("=======GetShardDetails.validateParams.result=======");
+    logger.debug(r);
+    if (r.isFailure()) return r;
+
+    const cacheParams = {
+      ddb_object: oThis.ddbObject,
+      entity_type: oThis.entityType,
+      identifiers: oThis.identifiers
+    };
+    r = await new GetShardDetailsMultiCacheKlass(cacheParams).fetch();
+    logger.debug("=======GetShardDetails.GetShardDetailsMultiCache.result=======");
+    logger.debug(r);
+    if (r.isSuccess()) {
+      return responseHelper.successWithData(r.data);
+    } else {
+      return r;
+    }
   },
 
   /**
