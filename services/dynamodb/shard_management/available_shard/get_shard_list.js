@@ -51,29 +51,39 @@ GetShardList.prototype = {
    *
    */
   perform: async function () {
-
     const oThis = this
     ;
-    try {
-      let r = null;
 
-      r = await oThis.validateParams();
-      logger.debug("=======GetShardList.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
+    return oThis.asyncPerform()
+      .catch(function(err){
+        return responseHelper.error({
+          internal_error_identifier:"s_sm_as_gsl_perform_1",
+          api_error_identifier: "exception",
+          debug_options: {error: err},
+          error_config: coreConstants.ERROR_CONFIG
+        });
+    });
+  },
 
-      r = await oThis.getShardListFromCache();
+  /**
+   * Async Perform
+   *
+   * @return {Promise<*>}
+   */
+  asyncPerform: async function () {
+    const oThis = this
+    ;
 
-      return r;
-    } catch(err) {
-      return responseHelper.error({
-        internal_error_identifier:"s_sm_as_gsl_perform_1",
-        api_error_identifier: "exception",
-        debug_options: {error: err},
-        error_config: coreConstants.ERROR_CONFIG
-      });
-    }
+    let r = null;
 
+    r = await oThis.validateParams();
+    logger.debug("=======GetShardList.validateParams.result=======");
+    logger.debug(r);
+    if (r.isFailure()) return r;
+
+    r = await oThis.getShardListFromCache();
+
+    return r;
   },
 
   /**

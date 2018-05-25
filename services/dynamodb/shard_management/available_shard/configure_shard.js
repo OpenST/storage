@@ -52,37 +52,46 @@ ConfigureShard.prototype = {
    *
    */
   perform: async function () {
-
     const oThis = this
     ;
-    try {
-      let r = null;
 
-      r = await oThis.validateParams();
-      logger.debug("=======ConfigureShard.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      if ((await oThis.isRedundantUpdate())) {
-        return responseHelper.successWithData({});
-      } else {
-        r = await availableShard.configureShard(oThis.params);
-        logger.debug("=======ConfigureShard.configureShard.result=======");
-        logger.debug(r);
-
-        oThis.clearAnyAssociatedCache();
-      }
-
-      return r;
-    } catch(err) {
+    return oThis.asyncPerform()
+      .catch(function(err){
       return responseHelper.error({
         internal_error_identifier:"s_sm_as_cs_perform_1",
         api_error_identifier: "exception",
         debug_options: {error: err},
         error_config: coreConstants.ERROR_CONFIG
       });
-    }
+    });
+  },
 
+  /**
+   * Async Perform
+   *
+   * @return {Promise<*>}
+   */
+  asyncPerform: async function () {
+    const oThis = this
+    ;
+
+    let r = null;
+
+    r = await oThis.validateParams();
+    logger.debug("=======ConfigureShard.validateParams.result=======");
+    logger.debug(r);
+    if (r.isFailure()) return r;
+
+    if ((await oThis.isRedundantUpdate())) {
+      return responseHelper.successWithData({});
+    } else {
+      r = await availableShard.configureShard(oThis.params);
+      logger.debug("=======ConfigureShard.configureShard.result=======");
+      logger.debug(r);
+
+      oThis.clearAnyAssociatedCache();
+    }
+    return r;
   },
 
   /**

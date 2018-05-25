@@ -42,27 +42,38 @@ Base.prototype = {
   perform: async function () {
     const oThis = this
     ;
-    try {
-      var r = null;
-      r = oThis.validateParams();
-      logger.debug("=======Base.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      r = oThis.executeDdbRequest();
-      logger.debug("=======Base.executeDdbRequest.result=======");
-      logger.debug(r);
-      return r;
-
-    } catch(err) {
+    return oThis.asyncPerform()
+      .catch(function (err) {
       logger.error("services/dynamodb/base.js:perform inside catch ", err);
       return responseHelper.error({
-        internal_error_identifier:"s_dy_b_perform_1",
+        internal_error_identifier: "s_dy_b_perform_1",
         api_error_identifier: "exception",
         debug_options: {error: err.stack},
         error_config: coreConstants.ERROR_CONFIG
       });
-    }
+    });
+  },
+
+  /**
+   * Async Perform
+   *
+   * @return {Promise<*>}
+   */
+  asyncPerform: function() {
+    const oThis = this
+    ;
+
+    let r = null;
+    r = oThis.validateParams();
+    logger.debug("=======Base.validateParams.result=======");
+    logger.debug(r);
+    if (r.isFailure()) return r;
+
+    r = oThis.executeDdbRequest();
+    logger.debug("=======Base.executeDdbRequest.result=======");
+    logger.debug(r);
+    return r;
+
   },
 
   /**
