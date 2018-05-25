@@ -105,7 +105,7 @@ helper.prototype = {
    *
    */
   updateContinuousBackup: async function(dynamodbApiObject, params, isResultSuccess) {
-    const enableContinousBackupResponse = await dynamodbApiObject.updateContinuousBackup(params);
+    const enableContinousBackupResponse = await dynamodbApiObject.updateContinuousBackups(params);
     if(isResultSuccess === true){
       assert.equal(enableContinousBackupResponse.isSuccess(), true);
       assert.equal(enableContinousBackupResponse.data.ContinuousBackupsStatus, 'ENABLED');
@@ -196,7 +196,7 @@ helper.prototype = {
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     // call batch get
-    const batchGetResponse = await dynamodbApiObject.batchGet(params);
+    const batchGetResponse = await dynamodbApiObject.batchGetItem(params);
 
     // validate if the table is created
     assert.equal(batchGetResponse.isSuccess(), isResultSuccess, 'batch get failed');
@@ -231,7 +231,7 @@ helper.prototype = {
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     // call batch get
-    const batchWriteResponse = await dynamodbApiObject.batchWrite(params);
+    const batchWriteResponse = await dynamodbApiObject.batchWriteItem(params);
 
     // validate if the table is created
     assert.equal(batchWriteResponse.isSuccess(), isResultSuccess, 'batch write failed');

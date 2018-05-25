@@ -141,6 +141,15 @@ ShardMigration.prototype = {
       , resourceId = 'table/' + tableName
       , arn = "ARN"
     ;
+
+    //Check whether table already exists
+    let hasTable = await oThis.tableExist(tableName);
+
+    if(hasTable) {
+      logger.info("Migration Already done for", tableName);
+      return responseHelper.successWithData({});
+    }
+
     params.autoScalingConfig = oThis.getAvailableShardsAutoScalingParams(tableName, arn, resourceId);
     const availableShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
 
@@ -169,6 +178,14 @@ ShardMigration.prototype = {
       , resourceId = 'table/' + tableName
       , arn = "ARN"
     ;
+
+    //Check whether table already exists
+    let hasTable = await oThis.tableExist(tableName);
+    if(hasTable) {
+      logger.info("Migration Already done for", tableName);
+      return responseHelper.successWithData({});
+    }
+
     params.autoScalingConfig = await oThis.getManagedShardsAutoScalingParams(tableName, arn, resourceId);
     const managedShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
     logger.debug(managedShardsResponse);
@@ -331,6 +348,26 @@ ShardMigration.prototype = {
         WriteCapacityUnits: 1
       }
     }
+  },
+
+  /**
+   * To check table existence in db
+   *
+   * @param tableName Table Name to be checked
+   */
+  tableExist: async function(tableName) {
+    const oThis = this
+    ;
+
+    let listTablesResponse = await oThis.ddbApiObject.listTables({});
+    if (listTablesResponse.isFailure()) {
+      logger.error("s_dy_sm tableExist api failure");
+      return false;
+    }
+    logger.warn("Tables", listTablesResponse.data.TableNames, " for table", tableName);
+    return listTablesResponse.data.TableNames.find(function (tn) {
+      return tn === tableName;
+    });
   },
 
   /**

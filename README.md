@@ -3,9 +3,9 @@
 OpenST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
 While OpenST Storage is available as-is for anyone to use, we caution that this is early stage software and under heavy ongoing development and improvement. Please report bugs and suggested improvements.
 
-# DynamoDB Services
+## DynamoDB Services
 
-For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
+For all below methods parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)
 
 ```bash
 
@@ -29,19 +29,19 @@ const OSTStorage = require('@openstfoundation/openst-storage')
     ddbServiceObj.describeTable(describeTableParams)
     
     // List DynamoDB Tables
-    ddbServiceObj.describeTable(listTableParams)
+    ddbServiceObj.listTables(listTableParams)
     
     // Point in time recovery for DynamoDB Table
-    ddbServiceObj.updateContinuousBackup(updateConitnousParams)
+    ddbServiceObj.updateContinuousBackups(updateConitnousParams)
     
     // Delete DynamoDB table
     ddbServiceObj.deleteTable(deleteTableParams)
     
     // Batch Get Items
-    ddbServiceObj.batchGet(batchGetParams)
+    ddbServiceObj.batchGetItem(batchGetParams)
     
     // Batch Write Items
-    ddbServiceObj.batchWrite(batchWriteParams)
+    ddbServiceObj.batchWriteItem(batchWriteParams)
     
     // Query Items
     ddbServiceObj.query(queryParams)
@@ -70,7 +70,7 @@ const OSTStorage = require('@openstfoundation/openst-storage')
     
 ```
 
-# Shard Management Services
+## Shard Management Services
 
 ```bash
 const OSTStorage = require('@openstfoundation/openst-storage')
@@ -106,7 +106,7 @@ const OSTStorage = require('@openstfoundation/openst-storage')
     
 ```
 
-# Auto Scaling Services
+## Auto Scaling Services
 
 For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html)
 
