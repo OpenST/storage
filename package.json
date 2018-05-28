@@ -18,7 +18,7 @@
     "DynamoDB"
   ],
   "author": "OpenST Foundation Ltd.",
-  "license": "LGPL-3.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/OpenSTFoundation/openst-storage/issues"
   },
