@@ -25,7 +25,7 @@ const rootPrefix = '../../../..'
  * @params {Object} params - Parameters
  * @param {Object} params.ddb_object - Dynamo db object
  * @param {String} params.entity_type - entity type
- * @param {String} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'All')
+ * @param {String} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'all')
  * @param {JSON} params.table_schema - schema of the table in shard
  *
  * @return {Object}
