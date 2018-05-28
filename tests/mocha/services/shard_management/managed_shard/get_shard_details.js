@@ -41,13 +41,20 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
     }
 
     const response = await shardManagementObject.getManagedShard({entity_type: entity_type, identifiers: [id]});
-
-    logger.info("shardManagementObject Response", JSON.stringify(response));
+    const itemsObject = response.data.response;
+    logger.info("shardManagementObject Response", itemsObject);
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
-      assert.equal(Object.keys(response.data).length, returnCount);
+      assert.equal(Object.keys(itemsObject).length, returnCount);
       if (returnCount === 1){
-        assert.equal(response.data[id].shardName, shardName);
+        const item = itemsObject[id];
+
+        assert.equal(item.shardName, shardName);
+        logger.info("LOG ShardName", item.shardName);
+        logger.info("LOG EntityType", item.entityType);
+        logger.info("LOG identifier ", item.identifier);
+        logger.info("LOG created At", item.createdAt);
+        logger.info("LOG Updated At", item.updatedAt);
       }
     } else {
       assert.isTrue(response.isFailure(), "Failure");

@@ -56,7 +56,7 @@ MochaTestConstants.prototype = {
    *
    */
   AUTO_SCALE_CONFIGURATIONS_REMOTE : {
-    'apiVersion': '2012-08-10',
+    'apiVersion': '2016-02-06',
     'accessKeyId': 'x',
     'secretAccessKey': 'x',
     'region': 'localhost',
