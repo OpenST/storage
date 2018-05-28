@@ -29,7 +29,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
   let entity_type = testConstants.shardEntityType;
 
   it(optionsDesc, async function(){
-    let shardType = availableShardConst.disabled;
+    let shardType = availableShardConst.all;
     if (options.invalidShardType) {
       shardType = "test"
     }
@@ -39,7 +39,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 
     const response = await shardManagementObject.getShardsByType({entity_type: entity_type, shard_type: shardType});
 
-    logger.info("LOG", response.data);
+    logger.info("response LOG", JSON.stringify(response.toHash()));
 
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
