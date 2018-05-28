@@ -175,7 +175,8 @@ AssignShard.prototype = {
     const oThis = this
       , cacheParamsGetShard = {
       ddb_object: oThis.ddbObject,
-      ids: [{identifier: oThis.identifier, entity_type: oThis.entityType}]
+      entity_type: oThis.entityType,
+      identifiers: [oThis.identifier]
     };
     return await new GetShardNameMultiCacheKlass(cacheParamsGetShard).clear();
   }

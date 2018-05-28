@@ -24,7 +24,7 @@ const rootPrefix = '../../../..'
  * @params {Object} params - Parameters
  * @param {Object} params.ddb_object - dynamodb object
  * @param {String} params.entity_type - entity type
- * @param {String} params.identifiers - identifiers are object of keys
+ * @param {Array} params.identifiers - Array of identifiers containing string
  *
  * @return {Object}
  *

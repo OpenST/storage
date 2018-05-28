@@ -5,13 +5,18 @@ const rootPrefix = '../..'
   , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
+  , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
+
 ;
 
 /**
  * @constructor
+ *
  * @augments GetShardDetailsCacheKlass
  *
  * @param {Object} params - cache key generation & expiry related params
+ * @param {Array} params.identifiers - identifiers is an array containing identifier
+ * @param {String} params.entity_type - Entity type of Item
  *
  */
 const GetShardDetailsCacheKlass = module.exports = function (params) {
@@ -19,7 +24,7 @@ const GetShardDetailsCacheKlass = module.exports = function (params) {
   const oThis = this;
   oThis.params = params;
   oThis.identifiers = params.identifiers;
-  oThis.entityType = params.entityType;
+  oThis.entityType = params.entity_type;
 
   baseCache.call(this, oThis.params);
 };
@@ -39,7 +44,7 @@ GetShardDetailsCacheKlass.prototype.setCacheKeys = function () {
 
   oThis.cacheKeys = {};
   for (let i = 0; i < oThis.identifiers.length; i++) {
-    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsd_" + '_et_' + oThis.identifiers[i].entity_type + '_id_' + oThis.identifiers[i]] = oThis.identifiers[i];
+    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsd_" + '_et_' + oThis.entity_type + '_id_' + oThis.identifiers[i]] = oThis.identifiers[i];
   }
 
   return oThis.cacheKeys;
