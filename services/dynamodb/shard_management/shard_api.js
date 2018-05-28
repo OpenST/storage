@@ -103,6 +103,7 @@ ShardServiceApi.prototype = {
    * @param {String} params.entity_type - Entity type of the shard
    *
    * @param {enum} params.shard_type - Shard type :- if
+   *                  all: give all available shards
    *                  enabled: Shard is available for multiple assignment,
    *                  disabled: Shard is dedicated for single Id
    *

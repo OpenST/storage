@@ -75,12 +75,13 @@ const OSTStorage = require('@openstfoundation/openst-storage')
 ```js
 const OSTStorage = require('@openstfoundation/openst-storage')
     , ddbServiceObj  = new OSTStorage.Dynamodb(dynamodbConnectionParams)
+    , autoScalingObj  = new OSTStorage.AutoScaling(autoScalingConnectionParams)
     , shardMgmtObj = ddbServiceObj.shardManagement()
    ;
     
     // Run Shard Migration
     // Created available_shards and managed_shards table
-    shardMgmtObj.runShardMigration(dynamoDbObject, autoScaleObj);
+    shardMgmtObj.runShardMigration(ddbServiceObj, autoScalingObj);
     
     // Add Shard
     // Creates item in available_shards table
@@ -131,7 +132,7 @@ const OSTStorage = require('@openstfoundation/openst-storage')
     // Gets information about the scalable targets in the specified namespace. 
     autoScalingObj.describeScalableTargets(describeScalableTargetsParams); 
    
-   // Describes the scaling policies for the specified service namespace.
+    // Describes the scaling policies for the specified service namespace.
     autoScalingObj.describeScalingPolicies(describeScalingPoliciesParams);   
     
 ```
