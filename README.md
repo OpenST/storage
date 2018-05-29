@@ -9,7 +9,7 @@ For all DynamoDB methods parameters description please refer [AWS DynamoDB Docs]
 
 Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTFoundation/openst-base/blob/master/lib/formatter/response_helper.js) object wrapped in Promise.
 
-####DynamoDB constructor 
+#### DynamoDB constructor 
 &nbsp; params [dynamodbConnectionParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#constructor-property)
      
         const OSTStorage = require('@openstfoundation/openst-storage')
@@ -24,13 +24,13 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 
 
 #### Create table migration 
-&nbsp; Table migration params [autoScaleObject](####AutoScaling constructor) and createTableMigrationParams  <br/>
+&nbsp; Table migration params [autoScaleObject](#autoscaling-constructor) and createTableMigrationParams<br/>
 &nbsp; [params.createTableConfig](#create-table)<br/>
-&nbsp; [params.updateContinuousBackupConfig](#dynamodb-apis) <br/>
-&nbsp; [params.autoScalingConfig.registerScalableTargetWrite](####Register Scalable Target)<br/>
-&nbsp; [params.autoScalingConfig.registerScalableTargetRead](####Register Scalable Target )<br/>
-&nbsp; [params.autoScalingConfig.putScalingPolicyWrite](####Put Scaling Policy )<br/>
-&nbsp; [params.autoScalingConfig.putScalingPolicyRead](####Put Scaling Policy )<br/>
+&nbsp; [params.updateContinuousBackupConfig](#update-continuous-backups) <br/>
+&nbsp; [params.autoScalingConfig.registerScalableTargetWrite](#register-scalable-target)<br/>
+&nbsp; [params.autoScalingConfig.registerScalableTargetRead](#register-scalable-target )<br/>
+&nbsp; [params.autoScalingConfig.putScalingPolicyWrite](#put-scaling-policy)<br/>
+&nbsp; [params.autoScalingConfig.putScalingPolicyRead](#put-scaling-policy)<br/>
 
     // Create Table Migration
     // 1. Creates table
@@ -50,73 +50,73 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
     // Describe DynamoDB Table 
     ddbServiceObj.describeTable(describeTableParams);
 
-####List tables     
+#### List tables     
 &nbsp; params [listTableParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#listTables-property)
 
     // List DynamoDB Tables
     ddbServiceObj.listTables(listTableParams);
 
-####Update Continuous Backups    
+#### Update Continuous Backups    
 &nbsp; params [updateContinuousParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateContinuousBackups-property)
 
     // Point in time recovery for DynamoDB Table
     ddbServiceObj.updateContinuousBackups(updateContinuousParams);
 
-####Delete table 
+#### Delete table 
 &nbsp; params [deleteTableParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#deleteTable-property)
 
     // Delete DynamoDB table
     ddbServiceObj.deleteTable(deleteTableParams);
     
-####Batch Get Item     
+#### Batch Get Item     
 &nbsp; params [batchGetItemParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#batchGetItem-property)
 
     // Batch Get Item
     ddbServiceObj.batchGetItem(batchGetItemParams);
 
-####Batch Write Item
+#### Batch Write Item
 &nbsp; params [batchWriteItemParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#batchWriteItem-property)
 
     // Batch Write Item
     ddbServiceObj.batchWriteItem(batchWriteItemParams);
 
-####Query
+#### Query
 &nbsp; params [queryParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#query-property)
 
     // Query Items
     ddbServiceObj.query(queryParams);
  
-####Scan
+#### Scan
 &nbsp; params [scanParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#scan-property)
 
     // Scan Items
     ddbServiceObj.scan(scanParams);
 
-####Put Item
+#### Put Item
 &nbsp; params [putItemParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#putItem-property)
 
     // Put Items
     ddbServiceObj.putItem(putItemParams);
 
-####Update Item   
+#### Update Item   
 &nbsp; params [updateItemParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateItem-property)
 
     // Update an Item
     ddbServiceObj.updateItem(updateItemParams);
 
-####Delete Item    
+#### Delete Item    
 &nbsp; params [deleteItemParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#deleteItem-property)
 
     // Delete Items
     ddbServiceObj.deleteItem(deleteItemParams);
 
-####Table Exists Using WaitFor
+#### Table Exists Using WaitFor
 &nbsp; params [tableExistsParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#waitFor-property)
 
     // Check if table exists and is in ACTIVE state using wait for method
     ddbServiceObj.tableExistsUsingWaitFor(tableExistsParams);
 
-####Table Does not Exists Using WaitFor    
+#### Table Does not Exists Using WaitFor    
 &nbsp; params [tableNotExistsParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#waitFor-property)
 
     // Check if table doesn't exists using wait for method
@@ -214,9 +214,9 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
     }
 ```
 
-####DynamoDB And AutoScaling constructor
-&nbsp; DynamoDB params [dynamodbConnectionParams](####DynamoDB constructor)<br/>
-&nbsp; AutoScaling params [autoScalingConnectionParams](####AutoScaling constructor)<br/>
+#### DynamoDB And AutoScaling constructor
+&nbsp; DynamoDB params [dynamodbConnectionParams](#dynamodb-constructor)<br/>
+&nbsp; AutoScaling params [autoScalingConnectionParams](#autoscaling-constructor)<br/>
 
     const OSTStorage = require('@openstfoundation/openst-storage')
         , ddbServiceObj  = new OSTStorage.DynamoDB(dynamodbConnectionParams)
@@ -224,14 +224,14 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
         , shardManagementObj = ddbServiceObj.shardManagement()
        ;
        
-####Run shard migration
-&nbsp; Shard migration params [ddbServiceObj and autoScalingObj](####DynamoDB And AutoScaling constructor)   <br/>
+#### Run shard migration
+&nbsp; Shard migration params [ddbServiceObj and autoScalingObj](#dynamodb-and-autoscaling-constructor)<br/>
 
     // Run Shard Migration
     // Created available_shards and managed_shards table
     shardManagementObj.runShardMigration(ddbServiceObj, autoScalingObj);
 
-####Add shard
+#### Add shard
 &nbsp; addShardParams as JSON params<br/>
 &nbsp; params.shard_name(String) - Shard name to be added<br/>
 &nbsp; params.entity_type(String) - Entity type to be assigned to shard<br/>
@@ -240,7 +240,7 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
     // Creates item in available_shards table
     shardManagementObj.addShard(addShardParams);
     
-####Configure shard
+#### Configure shard
 &nbsp; configureShardParams as JSON params<br/>
 &nbsp; params.shard_name(String) - Shard name to be added<br/>
 &nbsp; params.allocation_type(Enum) - Allocation type of Shard :- if<br/>
@@ -251,7 +251,7 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
     // Configure Enable/Disable allocation type
     shardManagementObj.configureShard(configureShardParams);
     
-####Assign shard
+#### Assign shard
 &nbsp; assignShardParams as JSON params<br/>
 &nbsp; params.identifier(String) - Identifier to be assigned to shard
 &nbsp; params.shard_name(String) - Shard name to be assigned<br/>
@@ -263,7 +263,7 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
     // Creates entry in managed_shards table
     shardManagementObj.assignShard(assignShardParams);
     
-####Get Shards By Type
+#### Get Shards By Type
 &nbsp; getShardsByTypeParams as JSON params<br/>
 &nbsp; params.entity_type(String) - Entity type to be assigned to shard<br/>
 &nbsp; params.shard_type(Enum)  - Shard type :- if<br/>
@@ -275,14 +275,14 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
     // Type Values : all/enabled/disabled
     shardManagementObj.getShardsByType(getShardsByTypeParams);
     
-####Has shard
+#### Has shard
 &nbsp; hasShardParams as JSON params<br/>
 &nbsp; params.shard_names(Array{String}) - List of shard names to be queried for existence.
     
     // Does this shard exist in available_shards table
     shardManagementObj.hasShard(hasShardParams);
     
-####Get Managed Shard
+#### Get Managed Shard
 &nbsp; managedShardParams as JSON params <br/>
 &nbsp; params.entity_type(String) - Entity type of the shard to be queried <br/>
 &nbsp; params.identifiers(Array) - List of Identifiers to be queried <br/>
@@ -290,14 +290,14 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
     // Get Managed shards
     shardManagementObj.getManagedShard(managedShardParams);
     
-##Steps for Adding and Configuring New Shard
-1. Call runShardMigration if shard migrations are not done already. [ApiRef](####Run shard migration)  <br/>
+## Steps for Adding and Configuring New Shard
+1. Call runShardMigration if shard migrations are not done already. [ApiRef](#run-shard-migration)<br/>
    This will create available_shards and managed_shards table in DynamoDB.
-2. Create Shard Table. [ApiRef](####Create table)
-3. Call addShard api. This will add a item in available_shards table. Shard will be added in disabled state. [ApiRef](####Add shard)
-4. Call configureShard with allocation_type='enabled' if it's a shared shard. For dedicated shard keep allocation_type='disabled'. [ApiRef](####Configure shard)
-5. Call assignShard to assign shard to a client/identifier. This creates an item in managed_shards table. [ApiRef](####Assign shard)
-6. Call getManagedShard to get shardName for a client/identifier. [ApiRef](####Get Managed Shard)  <br/>
+2. Create Shard Table. [ApiRef](#create-table)
+3. Call addShard api. This will add a item in available_shards table. Shard will be added in disabled state. [ApiRef](#add-shard)
+4. Call configureShard with allocation_type='enabled' if it's a shared shard. For dedicated shard keep allocation_type='disabled'. [ApiRef](#configure-shard)
+5. Call assignShard to assign shard to a client/identifier. This creates an item in managed_shards table. [ApiRef](#assign-shard)
+6. Call getManagedShard to get shardName for a client/identifier. [ApiRef](#get-managed-shard)<br/>
     
 
 ## Auto Scaling Apis
@@ -305,43 +305,43 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html)
 
 
-####AutoScaling constructor
+#### AutoScaling constructor
 &nbsp; params [autoScalingConnectionParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#constructor-property)
 
     const OSTStorage = require('@openstfoundation/openst-storage')
       , autoScalingObj  = new OSTStorage.AutoScaling(autoScalingConnectionParams);
       
-####Register Scalable Target 
+#### Register Scalable Target 
 &nbsp; params [registerScalableTargetParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#registerScalableTarget-property)
 
     // Registers or updates a scalable target. Scalable target is a resource that Application Auto Scaling can scale out or scale in. After you have registered a scalable target, you can use this operation to update the minimum and maximum values for its scalable dimension.
     autoScalingObj.registerScalableTarget(registerScalableTargetParams);
 
-####Put Scaling Policy 
+#### Put Scaling Policy 
 &nbsp; params [putScalingPolicyParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#putScalingPolicy-property)
 
     // Creates or updates a policy for an Application Auto Scaling scalable target
     autoScalingObj.putScalingPolicy(putScalingPolicyParams);
     
-####Deregister Scalable Target 
+#### Deregister Scalable Target 
 &nbsp; params [deregisterScalableTargetParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#deregisterScalableTarget-property)
 
     // Deregistering a scalable target deletes the scaling policies that are associated with it.
     autoScalingObj.deregisterScalableTarget(deregisterScalableTargetParams);
 
-####Delete Scaling Policy 
+#### Delete Scaling Policy 
 &nbsp; params [deleteScalingPolicyParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#deleteScalingPolicy-property)
   
     // Deletes the specified Application Auto Scaling scaling policy
     autoScalingObj.deleteScalingPolicy(deleteScalingPolicyParams);
       
-####Describe Scalable Targets 
+#### Describe Scalable Targets 
 &nbsp; params [describeScalableTargetsParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#describeScalableTargets-property)
 
     // Gets information about the scalable targets in the specified namespace. 
     autoScalingObj.describeScalableTargets(describeScalableTargetsParams); 
    
-####Describe Scaling Policies
+#### Describe Scaling Policies
 &nbsp; params [describeScalingPoliciesParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#describeScalingPolicies-property)
 
     // Describes the scaling policies for the specified service namespace.
