@@ -83,15 +83,15 @@ ConfigureShard.prototype = {
     if (r.isFailure()) return r;
 
     if ((await oThis.isRedundantUpdate())) {
-      return responseHelper.successWithData({});
+      logger.debug("ConfigureShard :: is redundant update");
     } else {
       r = await availableShard.configureShard(oThis.params);
       logger.debug("=======ConfigureShard.configureShard.result=======");
       logger.debug(r);
-
       oThis.clearAnyAssociatedCache();
+      if (r.isFailure()) return r;
     }
-    return r;
+    return responseHelper.successWithData({});
   },
 
   /**
@@ -151,6 +151,11 @@ ConfigureShard.prototype = {
     });
   },
 
+  /**
+   * Check whether update services is trying to change attribute which is already as expected.
+   *
+   * @return {Promise<boolean>}
+   */
   isRedundantUpdate : async function() {
     const oThis = this
       , responseShardInfo = await availableShard.getShardByName(oThis.params)
@@ -167,6 +172,11 @@ ConfigureShard.prototype = {
     return oThis.oldAllocationType === oThis.allocationType;
   },
 
+  /**
+   * Clears any Cache associated with "this" object entity type
+   *
+   * @return {Promise<*>}
+   */
   clearAnyAssociatedCache: async function() {
     const oThis = this
     ;

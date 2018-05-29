@@ -10,6 +10,7 @@ const rootPrefix = "../../../../.."
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
+  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
 ;
 
 
@@ -25,7 +26,8 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, data
     invalidShardName: false,
     undefined_force_assignment: true,
     invalidIdentifier: false,
-    inValidEntityType: true
+    inValidEntityType: true,
+    allocated_shard: false
   };
   let shardName = userBalancesShardName
     , identifier = "0x1234"
@@ -52,6 +54,10 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, data
 
     if (options.inValidEntityType) {
       entityType = "undefined";
+    }
+
+    if (options.allocated_shard) {
+      await shardManagementObject.configureShard({shard_name: shardName, allocation_type: availableShardConst.enabled});
     }
 
     const response = await shardManagementObject.assignShard({identifier: identifier, entity_type: entityType, shard_name: shardName, force_assignment: forceAssignment});
@@ -96,6 +102,11 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
 
   createTestCasesForOptions("Assign shard having undefined force assignment", {
     undefined_force_assignment: true
+  }, false, 's_sm_ms_as_validateParams_5');
+
+  createTestCasesForOptions("Assign shard having undefined force assignment and allocated shard true", {
+    undefined_force_assignment: true,
+    allocated_shard:true
   }, true, {});
 
   afterEach(async function() {
