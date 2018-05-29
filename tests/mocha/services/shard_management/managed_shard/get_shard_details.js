@@ -50,12 +50,16 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
       if (returnCount === 1){
         const item = itemsObject[id];
 
-        assert.equal(item.shardName, shardName);
         logger.info("LOG ShardName", item.shardName);
+        assert.equal(item.shardName, shardName);
         logger.info("LOG EntityType", item.entityType);
+        assert.equal(item.entityType, entity_type);
         logger.info("LOG identifier ", item.identifier);
+        assert.equal(item.identifier, id);
         logger.info("LOG created At", item.createdAt);
+        assert.exists(item.createdAt);
         logger.info("LOG Updated At", item.updatedAt);
+        assert.exists(item.updatedAt);
       }
     } else {
       assert.isTrue(response.isFailure(), "Failure");
@@ -78,7 +82,7 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard_details', f
 
     await shardManagementObject.addShard({shard_name: shardName, entity_type: 'userBalances'});
 
-    await shardManagementObject.assignShard({identifier: identifier, entity_type: "userBalances" ,shard_name: shardName});
+    await shardManagementObject.assignShard({identifier: identifier, entity_type: "userBalances" ,shard_name: shardName, force_assignment: true});
 
   });
 
