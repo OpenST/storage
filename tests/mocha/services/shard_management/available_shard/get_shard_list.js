@@ -43,13 +43,14 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
-      assert.exists(response.data.response);
-      assert.equal(response.data.response.length, 1);
-      logger.info("LOG ShardName", response.data.response[0].shardName);
-      logger.info("LOG EntityType", response.data.response[0].entityType);
-      logger.info("LOG Allocation Type ", response.data.response[0].allocationType);
-      logger.info("LOG created At", response.data.response[0].createdAt);
-      logger.info("LOG Updated At", response.data.response[0].updatedAt);
+      var items = response.data.items;
+      assert.exists(items);
+      assert.equal(items.length, 1);
+      logger.info("LOG ShardName", items[0].shardName);
+      logger.info("LOG EntityType", items[0].entityType);
+      logger.info("LOG Allocation Type ", items[0].allocationType);
+      logger.info("LOG created At", items[0].createdAt);
+      logger.info("LOG Updated At", items[0].updatedAt);
     } else {
       assert.isTrue(response.isFailure(), "Failure");
     }

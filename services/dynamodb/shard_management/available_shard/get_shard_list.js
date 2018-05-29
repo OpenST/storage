@@ -136,7 +136,7 @@ GetShardList.prototype = {
     logger.debug("=======GetShardList.addShard.result=======");
     logger.debug(r);
     if (r.isSuccess()) {
-      return responseHelper.successWithData({response: r.data[String(oThis.entityType + oThis.shardType)]});
+      return responseHelper.successWithData({items: r.data[String(oThis.entityType + oThis.shardType)]});
     } else {
       return responseHelper;
     }

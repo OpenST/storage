@@ -88,7 +88,7 @@ GetShardDetails.prototype = {
     logger.debug("=======GetShardDetails.GetShardDetailsMultiCache.result=======");
     logger.debug(r);
     if (r.isSuccess()) {
-      return responseHelper.successWithData({response: r.data});
+      return responseHelper.successWithData({items: r.data});
     } else {
       return r;
     }

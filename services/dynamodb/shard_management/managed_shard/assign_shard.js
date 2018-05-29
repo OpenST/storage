@@ -169,6 +169,7 @@ AssignShard.prototype = {
 
   /**
    * Clear affected cache
+   *
    * @return {Promise<*>}
    */
   clearAnyAssociatedCache: async function () {
