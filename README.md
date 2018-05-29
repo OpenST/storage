@@ -16,7 +16,7 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
            , ddbServiceObj  = new OSTStorage.DynamoDB(dynamodbConnectionParams);
     
 
-####Create table 
+###Create-table 
 &nbsp; params [createTableParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#createTable-property)
 
         //Create DynamoDB Table
@@ -24,13 +24,13 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 
 
 ####Create table migration 
-&nbsp; Table migration params [autoScaleObject](####AutoScaling constructor) and createTableMigrationParams    
-&nbsp; [params.createTableConfig](####Create table)  
-&nbsp; [params.updateContinuousBackupConfig](####Update Continuous Backups)   
-&nbsp; [params.autoScalingConfig.registerScalableTargetWrite](####Register Scalable Target)  
-&nbsp; [params.autoScalingConfig.registerScalableTargetRead](####Register Scalable Target )  
-&nbsp; [params.autoScalingConfig.putScalingPolicyWrite](####Put Scaling Policy )  
-&nbsp; [params.autoScalingConfig.putScalingPolicyRead](####Put Scaling Policy )  
+&nbsp; Table migration params [autoScaleObject](####AutoScaling constructor) and createTableMigrationParams  <br/>
+&nbsp; [params.createTableConfig](###Create-table)<br/>
+&nbsp; [params.updateContinuousBackupConfig](##DynamoDB Apis) <br/>
+&nbsp; [params.autoScalingConfig.registerScalableTargetWrite](####Register Scalable Target)<br/>
+&nbsp; [params.autoScalingConfig.registerScalableTargetRead](####Register Scalable Target )<br/>
+&nbsp; [params.autoScalingConfig.putScalingPolicyWrite](####Put Scaling Policy )<br/>
+&nbsp; [params.autoScalingConfig.putScalingPolicyRead](####Put Scaling Policy )<br/>
 
     // Create Table Migration
     // 1. Creates table
@@ -215,8 +215,8 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 ```
 
 ####DynamoDB And AutoScaling constructor
-&nbsp; DynamoDB params [dynamodbConnectionParams](####DynamoDB constructor)  
-&nbsp; AutoScaling params [autoScalingConnectionParams](####AutoScaling constructor)  
+&nbsp; DynamoDB params [dynamodbConnectionParams](####DynamoDB constructor)<br/>
+&nbsp; AutoScaling params [autoScalingConnectionParams](####AutoScaling constructor)<br/>
 
     const OSTStorage = require('@openstfoundation/openst-storage')
         , ddbServiceObj  = new OSTStorage.DynamoDB(dynamodbConnectionParams)
@@ -225,79 +225,79 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
        ;
        
 ####Run shard migration
-&nbsp; Shard migration params [ddbServiceObj and autoScalingObj](####DynamoDB And AutoScaling constructor)     
+&nbsp; Shard migration params [ddbServiceObj and autoScalingObj](####DynamoDB And AutoScaling constructor)   <br/>
 
     // Run Shard Migration
     // Created available_shards and managed_shards table
     shardManagementObj.runShardMigration(ddbServiceObj, autoScalingObj);
 
 ####Add shard
-&nbsp; addShardParams as JSON params  
-&nbsp; params.shard_name(String) - Shard name to be added  
-&nbsp; params.entity_type(String) - Entity type to be assigned to shard  
+&nbsp; addShardParams as JSON params<br/>
+&nbsp; params.shard_name(String) - Shard name to be added<br/>
+&nbsp; params.entity_type(String) - Entity type to be assigned to shard<br/>
     
     // Add Shard
     // Creates item in available_shards table
     shardManagementObj.addShard(addShardParams);
     
 ####Configure shard
-&nbsp; configureShardParams as JSON params  
-&nbsp; params.shard_name(String) - Shard name to be added  
-&nbsp; params.allocation_type(Enum) - Allocation type of Shard :- if  
-&nbsp;&nbsp;           enabled: Provided shard is available for multiple assignment,  
-&nbsp;&nbsp;           disabled: Provided shard is dedicated shard for single identifier  
+&nbsp; configureShardParams as JSON params<br/>
+&nbsp; params.shard_name(String) - Shard name to be added<br/>
+&nbsp; params.allocation_type(Enum) - Allocation type of Shard :- if<br/>
+&nbsp;&nbsp;           enabled: Provided shard is available for multiple assignment,<br/>
+&nbsp;&nbsp;           disabled: Provided shard is dedicated shard for single identifier<br/>
 
     // Configure Shard
     // Configure Enable/Disable allocation type
     shardManagementObj.configureShard(configureShardParams);
     
 ####Assign shard
-&nbsp; assignShardParams as JSON params  
+&nbsp; assignShardParams as JSON params<br/>
 &nbsp; params.identifier(String) - Identifier to be assigned to shard
-&nbsp; params.shard_name(String) - (String) Shard name to be assigned  
-&nbsp; params.entity_type(String) - Entity type of the shard  
-&nbsp; params.force_assignment(Boolean) - (Optional default: false) Pass true if shard is dedicated and assignment needs to be done.  
-&nbsp;&nbsp;  Note: It should be used in cased dedicated shard is assigned first time.  
+&nbsp; params.shard_name(String) - Shard name to be assigned<br/>
+&nbsp; params.entity_type(String) - Entity type of the shard<br/>
+&nbsp; params.force_assignment(Boolean) - (Optional default: false) Pass true if shard is dedicated and assignment needs to be done.<br/>
+&nbsp;&nbsp;  Note: It should be used in cased dedicated shard is assigned first time.<br/>
 
     // Assign Shard to an identifier
     // Creates entry in managed_shards table
     shardManagementObj.assignShard(assignShardParams);
     
 ####Get Shards By Type
-&nbsp; getShardsByTypeParams as JSON params  
-&nbsp; params.entity_type(String) - Entity type to be assigned to shard  
-&nbsp; params.shard_type(Enum)  - Shard type :- if    
-&nbsp;&nbsp; all: give all available shards,    
-&nbsp;&nbsp; enabled: Shard is available for multiple assignment,  
-&nbsp;&nbsp; disabled: Shard is dedicated for single Id  
+&nbsp; getShardsByTypeParams as JSON params<br/>
+&nbsp; params.entity_type(String) - Entity type to be assigned to shard<br/>
+&nbsp; params.shard_type(Enum)  - Shard type :- if<br/>
+&nbsp;&nbsp; all: give all available shards,<br/>
+&nbsp;&nbsp; enabled: Shard is available for multiple assignment,<br/>
+&nbsp;&nbsp; disabled: Shard is dedicated for single Id<br/>
     
     // Get Shards By Different Types
     // Type Values : all/enabled/disabled
     shardManagementObj.getShardsByType(getShardsByTypeParams);
     
 ####Has shard
-&nbsp; hasShardParams as JSON params  
+&nbsp; hasShardParams as JSON params<br/>
 &nbsp; params.shard_names(Array{String}) - List of shard names to be queried for existence.
     
     // Does this shard exist in available_shards table
     shardManagementObj.hasShard(hasShardParams);
     
 ####Get Managed Shard
-&nbsp; managedShardParams as JSON params    
-&nbsp; params.entity_type(String) - Entity type of the shard to be queried  
-&nbsp; params.identifiers(Array) - List of Identifiers to be queried  
+&nbsp; managedShardParams as JSON params <br/>
+&nbsp; params.entity_type(String) - Entity type of the shard to be queried <br/>
+&nbsp; params.identifiers(Array) - List of Identifiers to be queried <br/>
  
     // Get Managed shards
     shardManagementObj.getManagedShard(managedShardParams);
     
 ##Steps for Adding and Configuring New Shard
-1. Call runShardMigration if shard migrations are not done already. [ApiRef](####Run shard migration)    
+1. Call runShardMigration if shard migrations are not done already. [ApiRef](####Run shard migration)  <br/>
    This will create available_shards and managed_shards table in DynamoDB.
 2. Create Shard Table. [ApiRef](####Create table)
 3. Call addShard api. This will add a item in available_shards table. Shard will be added in disabled state. [ApiRef](####Add shard)
 4. Call configureShard with allocation_type='enabled' if it's a shared shard. For dedicated shard keep allocation_type='disabled'. [ApiRef](####Configure shard)
 5. Call assignShard to assign shard to a client/identifier. This creates an item in managed_shards table. [ApiRef](####Assign shard)
-6. Call getManagedShard to get shardName for a client/identifier. [ApiRef](####Get Managed Shard)    
+6. Call getManagedShard to get shardName for a client/identifier. [ApiRef](####Get Managed Shard)  <br/>
     
 
 ## Auto Scaling Apis
@@ -341,7 +341,7 @@ For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.ama
     // Gets information about the scalable targets in the specified namespace. 
     autoScalingObj.describeScalableTargets(describeScalableTargetsParams); 
    
-####Describe Scaling Policies 
+####Describe Scaling Policies
 &nbsp; params [describeScalingPoliciesParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#describeScalingPolicies-property)
 
     // Describes the scaling policies for the specified service namespace.
