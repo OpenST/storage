@@ -16,17 +16,17 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
            , ddbServiceObj  = new OSTStorage.DynamoDB(dynamodbConnectionParams);
     
 
-###Create-table 
+#### Create table 
 &nbsp; params [createTableParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#createTable-property)
 
         //Create DynamoDB Table
         ddbServiceObj.createTable(createTableParams);
 
 
-####Create table migration 
+#### Create table migration 
 &nbsp; Table migration params [autoScaleObject](####AutoScaling constructor) and createTableMigrationParams  <br/>
-&nbsp; [params.createTableConfig](###Create-table)<br/>
-&nbsp; [params.updateContinuousBackupConfig](##DynamoDB Apis) <br/>
+&nbsp; [params.createTableConfig](#create-table)<br/>
+&nbsp; [params.updateContinuousBackupConfig](#dynamodb-apis) <br/>
 &nbsp; [params.autoScalingConfig.registerScalableTargetWrite](####Register Scalable Target)<br/>
 &nbsp; [params.autoScalingConfig.registerScalableTargetRead](####Register Scalable Target )<br/>
 &nbsp; [params.autoScalingConfig.putScalingPolicyWrite](####Put Scaling Policy )<br/>
@@ -38,13 +38,13 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
     // 3. Returns describe table response 
     ddbServiceObj.createTableMigration(autoScaleObject, createTableMigrationParams);
     
-####Update table 
+#### Update table 
 &nbsp; params [updateTableParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateTable-property)
 
     // Update DynamoDB Table
     ddbServiceObj.updateTable(updateTableParams);
 
-####Describe table   
+#### Describe table   
 &nbsp; params [describeTableParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#describeTable-property)
 
     // Describe DynamoDB Table 
