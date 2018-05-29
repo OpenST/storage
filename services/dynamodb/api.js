@@ -53,6 +53,7 @@ DynamoDBService.prototype = {
    *  2. enabling continuous back up
    *  3. enabling auto scaling
    *
+   * @params {Object} autoScaleObject - Auto Scaling Object to configure table
    * @params {Object} params - Params as JSON object having further params
    * @params {Object} params.createTableConfig - Create table configurations params as JSON object
    * @params {Object} params.updateContinuousBackupConfig - Update Continuous Backup configurations params as JSON object

@@ -129,6 +129,11 @@ AddShard.prototype = {
     });
   },
 
+  /**
+   * Clears any Cache associated with "this" object Shard Name
+   *
+   * @return {*}
+   */
   clearAnyAssociatedCache: function () {
     const oThis = this
     ;

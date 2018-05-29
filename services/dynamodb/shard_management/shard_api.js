@@ -146,8 +146,8 @@ ShardServiceApi.prototype = {
    *
    * @param {String} params.shard_name - Name of the Shard
    *
-   * @param {Boolean} params.forceAssignment - (Optional default: false) Force Assignment to bypass dedicated shard check.
-   *                                            Note: It should be used in cased dedicated shard is assigned first time.
+   * @param {Boolean} params.force_assignment - (Optional default: false) Force Assignment to bypass dedicated shard check.
+   *                                            Note: It should be used in case dedicated shard is assigned first time.
    *
    * @return {*|promise<result>}
    */
