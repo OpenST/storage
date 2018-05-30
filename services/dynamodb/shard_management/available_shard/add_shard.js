@@ -97,7 +97,6 @@ AddShard.prototype = {
    */
   validateParams: function () {
     const oThis = this
-      , errorCodePrefix = 's_sm_as_as_validateParams_'
     ;
 
     return new Promise(async function (onResolve) {
@@ -106,13 +105,13 @@ AddShard.prototype = {
       ;
 
       if (!oThis.shardName) {
-        errorCode = errorCodePrefix + '1';
+        errorCode = 's_sm_as_as_validateParams_1';
         error_identifier =  "invalid_shard_name"
       } else if (!oThis.entityType) {
-        errorCode = errorCodePrefix + '2';
+        errorCode = 's_sm_as_as_validateParams_2';
         error_identifier =  "invalid_entity_type"
       } else if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {
-        errorCode = errorCodePrefix + '3';
+        errorCode = 's_sm_as_as_validateParams_3';
         error_identifier =  "invalid_entity_type"
       } else {
         return onResolve(responseHelper.successWithData({}));
