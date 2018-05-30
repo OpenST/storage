@@ -7,8 +7,8 @@
 const rootPrefix    = '.'
   , DynamodbApi  = require(rootPrefix + '/services/dynamodb/api')
   , AutoScalingApi  = require(rootPrefix + '/services/auto_scale/api')
-  // # TODO :: later break this into services.
   , TokenBalanceModel = require(rootPrefix + '/lib/models/token_balance')
+  , TransactionLogModel = require(rootPrefix + '/lib/models/transaction_log')
 ;
 
 // Expose all libs here.
@@ -18,6 +18,7 @@ module.exports = {
   Dynamodb : DynamodbApi
   , AutoScaling : AutoScalingApi
   , TokenBalanceModel: TokenBalanceModel
+  , TransactionLogModel: TransactionLogModel
 };
 
 /*

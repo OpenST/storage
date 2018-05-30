@@ -172,7 +172,7 @@ helper.prototype = {
     const listTablesResponse = await dynamodbApiObject.listTables(params);
     if(isResultSuccess === true){
       assert.equal(listTablesResponse.isSuccess(), true);
-      assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogsTableName);
+      assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogTableName);
     } else {
       assert.equal(listTablesResponse.isSuccess(), false);
     }
@@ -203,10 +203,10 @@ helper.prototype = {
 
     if (isResultSuccess) {
       // validate batchGet output count
-      assert.equal(batchGetResponse.data.Responses[testConstants.transactionLogsTableName].length, resultCount, "Result count is not equal");
+      assert.equal(batchGetResponse.data.Responses[testConstants.transactionLogTableName].length, resultCount, "Result count is not equal");
 
       // validate return output is object or not
-      let returnObject = batchGetResponse.data.Responses[testConstants.transactionLogsTableName];
+      let returnObject = batchGetResponse.data.Responses[testConstants.transactionLogTableName];
       if (resultCount) {
         assert.typeOf(returnObject[0], 'object');
       }

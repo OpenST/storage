@@ -18,7 +18,7 @@ describe('Delete Table', function() {
 
     // put item
     const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
+      TableName : testConstants.transactionLogTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -44,7 +44,7 @@ describe('Delete Table', function() {
 
   it('should put item successfully', async function () {
     const insertItemParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       Item: {
         tuid: {S: "shardTableName"},
         cid: {N: "2"},
@@ -57,7 +57,7 @@ describe('Delete Table', function() {
 
   it('should put item with invalid datatype', async function () {
     const insertItemParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       Item: {
         tuid: {S: "shardTableName"},
         cid: {S: "2"},
@@ -70,7 +70,7 @@ describe('Delete Table', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");

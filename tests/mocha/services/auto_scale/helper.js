@@ -178,26 +178,26 @@ helper.prototype = {
   createTestCaseEnvironment: async function(dynamodbApiObject, autoScaleObj) {
     const oThis = this
       , params = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
 
     const checkTableExistsResponse1 = await dynamodbApiObject.checkTableExist(params);
 
     if (checkTableExistsResponse1.data.response === true) {
 
-      logger.log(testConstants.transactionLogsTableName, "Table exists . Deleting it....");
+      logger.log(testConstants.transactionLogTableName, "Table exists . Deleting it....");
       await oThis.deleteTable(dynamodbApiObject, params, true);
 
       logger.info("Waiting for table to get deleted");
       await oThis.waitForTableToGetDeleted(dynamodbApiObject, params);
       logger.info("Table got deleted");
 
-      // logger.log(testConstants.transactionLogsTableName, "Table exists . Deregister it from scalability....");
+      // logger.log(testConstants.transactionLogTableName, "Table exists . Deregister it from scalability....");
       //
       // logger.info("delScalingParams..........");
       // const delScalingParams = {
-      //   PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
-      //   ResourceId: "table/" + testConstants.transactionLogsTableName,
+      //   PolicyName: testConstants.transactionLogTableName + "-scaling-policy",
+      //   ResourceId: "table/" + testConstants.transactionLogTableName,
       //   ScalableDimension: "dynamodb:table:WriteCapacityUnits",
       //   ServiceNamespace: "dynamodb"
       // };
@@ -206,14 +206,14 @@ helper.prototype = {
       //
       // logger.info("deregisterScalableTarget..........");
       // const deRegisterScalableTargetParams = {
-      //   ResourceId: "table/" + testConstants.transactionLogsTableName,
+      //   ResourceId: "table/" + testConstants.transactionLogTableName,
       //   ScalableDimension: "dynamodb:table:WriteCapacityUnits",
       //   ServiceNamespace: "dynamodb"
       // };
       // await oThis.deregisterScalableTarget(autoScaleObj, deRegisterScalableTargetParams);
 
     } else {
-      logger.log(testConstants.transactionLogsTableName, "Table does not exist.");
+      logger.log(testConstants.transactionLogTableName, "Table does not exist.");
     }
 
     logger.info("Creating table");
@@ -233,7 +233,7 @@ helper.prototype = {
   cleanTestCaseEnvironment: async function (dynamodbApiObject, autoScaleObj) {
     const oThis = this
       , params = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
 
     const deleteTableResponse = await oThis.deleteTable(dynamodbApiObject, params, true);
@@ -257,17 +257,17 @@ helper.prototype = {
     const oThis = this
       , params = {}
       , autoScale = {}
-      , resourceId = 'table/' + testConstants.transactionLogsTableName
+      , resourceId = 'table/' + testConstants.transactionLogTableName
       , ARN = "ARN"
       ;
 
-    params.createTableConfig = oThis.getCreateTableParamsWithoutSecondaryIndex(testConstants.transactionLogsTableName);
+    params.createTableConfig = oThis.getCreateTableParamsWithoutSecondaryIndex(testConstants.transactionLogTableName);
 
     params.updateContinuousBackupConfig  = {
       PointInTimeRecoverySpecification: { /* required */
         PointInTimeRecoveryEnabled: true || false /* required */
       },
-      TableName: testConstants.transactionLogsTableName /* required */
+      TableName: testConstants.transactionLogTableName /* required */
     };
 
   // * @params {object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
@@ -299,7 +299,7 @@ helper.prototype = {
       ServiceNamespace: "dynamodb",
       ResourceId: resourceId,
       ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-      PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
+      PolicyName: testConstants.transactionLogTableName + "-scaling-policy",
       PolicyType: "TargetTrackingScaling",
       TargetTrackingScalingPolicyConfiguration: {
         PredefinedMetricSpecification: {
@@ -315,7 +315,7 @@ helper.prototype = {
       ServiceNamespace: "dynamodb",
       ResourceId: resourceId,
       ScalableDimension: "dynamodb:table:ReadCapacityUnits",
-      PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
+      PolicyName: testConstants.transactionLogTableName + "-scaling-policy",
       PolicyType: "TargetTrackingScaling",
       TargetTrackingScalingPolicyConfiguration: {
         PredefinedMetricSpecification: {
@@ -339,7 +339,7 @@ helper.prototype = {
    * @return {{TableName: *|string, KeySchema: *[], AttributeDefinitions: *[], ProvisionedThroughput: {ReadCapacityUnits: number, WriteCapacityUnits: number}, GlobalSecondaryIndexes: *[], SSESpecification: {Enabled: boolean}}}
    */
   getCreateTableParams: function(tableName) {
-    tableName = tableName || testConstants.transactionLogsTableName;
+    tableName = tableName || testConstants.transactionLogTableName;
     return {
       TableName : tableName,
       KeySchema: [
@@ -392,7 +392,7 @@ helper.prototype = {
    * @return {{TableName: *|string, KeySchema: *[], AttributeDefinitions: *[], ProvisionedThroughput: {ReadCapacityUnits: number, WriteCapacityUnits: number}, GlobalSecondaryIndexes: *[], SSESpecification: {Enabled: boolean}}}
    */
   getCreateTableParamsWithoutSecondaryIndex: function(tableName) {
-    tableName = tableName || testConstants.transactionLogsTableName;
+    tableName = tableName || testConstants.transactionLogTableName;
     return {
       TableName : tableName,
       KeySchema: [

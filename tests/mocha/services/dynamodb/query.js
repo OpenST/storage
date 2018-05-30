@@ -18,7 +18,7 @@ describe('Query Table', function() {
 
     // put item
     const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
+      TableName : testConstants.transactionLogTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -41,7 +41,7 @@ describe('Query Table', function() {
     await helper.createTable(dynamodbApiObject, createTableParams, true);
 
     const insertItemParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       Item: {
         tuid: {S: "shardTableName"},
         cid: {N: "2"},
@@ -55,7 +55,7 @@ describe('Query Table', function() {
 
   it('query table for item successfully', async function () {
     const queryParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
         ExpressionAttributeValues: {
           ":v1": {
             S: 'shardTableName'
@@ -73,7 +73,7 @@ describe('Query Table', function() {
 
   it('query table for item with invalid key successfully', async function () {
     const queryParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       ExpressionAttributeValues: {
         ":v1": {
           S: 'shardTable'
@@ -92,7 +92,7 @@ describe('Query Table', function() {
 
   it('query table for item with key only without using sort key unsuccessfully', async function () {
     const queryParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       ExpressionAttributeValues: {
         ":v1": {
           S: 'shardTable'
@@ -127,7 +127,7 @@ describe('Query Table', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");

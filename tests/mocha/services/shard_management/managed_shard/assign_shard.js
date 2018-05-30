@@ -16,7 +16,7 @@ const rootPrefix = "../../../../.."
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
-  , tokenBalancesShardName = testConstants.shardTableName
+  , tokenBalanceShardName = testConstants.shardTableName
 ;
 
 
@@ -29,7 +29,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, data
     inValidEntityType: true,
     allocated_shard: false
   };
-  let shardName = tokenBalancesShardName
+  let shardName = tokenBalanceShardName
     , identifier = "0x1234"
     , entityType = testConstants.shardEntityType
     , forceAssignment = true
@@ -83,7 +83,7 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
 
     await shardManagementObject.runShardMigration(dynamoDbObject);
 
-    await shardManagementObject.addShard({shard_name: tokenBalancesShardName, entity_type: 'userBalances'});
+    await shardManagementObject.addShard({shard_name: tokenBalanceShardName, entity_type: 'userBalances'});
   });
 
   createTestCasesForOptions("Assign shard adding happy case", {}, true, {});

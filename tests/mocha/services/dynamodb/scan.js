@@ -18,7 +18,7 @@ describe('Scan Table', function() {
 
     // put item
     const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
+      TableName : testConstants.transactionLogTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -41,7 +41,7 @@ describe('Scan Table', function() {
     await helper.createTable(dynamodbApiObject, createTableParams, true);
 
     const insertItem1Params = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       Item: {
         tuid: {S: "shardTableName1"},
         cid: {N: "1"},
@@ -52,7 +52,7 @@ describe('Scan Table', function() {
     await helper.putItem(dynamodbApiObject, insertItem1Params, true);
 
     const insertItem2Params = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       Item: {
         tuid: {S: "shardTableName2"},
         cid: {N: "2"},
@@ -66,7 +66,7 @@ describe('Scan Table', function() {
 
   it('scan table for items successfully', async function () {
     const queryParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       ExpressionAttributeValues: {
         ":v1": {
           S: 'shardTableName1'
@@ -85,7 +85,7 @@ describe('Scan Table', function() {
 
   it('scan table for item with invalid key successfully', async function () {
     const queryParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       ExpressionAttributeValues: {
         ":v1": {
           S: 'shardTableNae1'
@@ -104,7 +104,7 @@ describe('Scan Table', function() {
 
   it('scan table for item with key only without using sort key successfully', async function () {
     const queryParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       ExpressionAttributeValues: {
         ":v1": {
           S: 'shardTableName1'
@@ -139,7 +139,7 @@ describe('Scan Table', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");

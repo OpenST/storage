@@ -78,11 +78,11 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard_details', f
 
     await shardManagementObject.runShardMigration(dynamoDbObject);
 
-    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'tokenBalances'});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'tokenBalance'});
 
-    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'tokenBalances'});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'tokenBalance'});
 
-    await shardManagementObject.assignShard({identifier: identifier, entity_type: "tokenBalances" ,shard_name: shardName, force_assignment: true});
+    await shardManagementObject.assignShard({identifier: identifier, entity_type: "tokenBalance" ,shard_name: shardName, force_assignment: true});
 
   });
 

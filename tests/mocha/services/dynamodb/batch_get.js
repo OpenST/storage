@@ -38,7 +38,7 @@ describe('Batch get', function () {
     this.timeout(100000);
     const bachGetParams = {
       RequestItems: {
-        [testConstants.transactionLogsTableName]: {
+        [testConstants.transactionLogTableName]: {
           Keys: [
             {
               "tuid": {
@@ -77,7 +77,7 @@ describe('Batch get', function () {
     this.timeout(100000);
     const bachGetParams = {
       RequestItems: {
-        [testConstants.transactionLogsTableName]: {
+        [testConstants.transactionLogTableName]: {
           Keys: [
             {
               "tuid": {
@@ -115,7 +115,7 @@ describe('Batch get', function () {
     this.timeout(100000);
     const bachGetParams = {
       RequestItems: {
-        [testConstants.transactionLogsTableName]: {
+        [testConstants.transactionLogTableName]: {
           Keys: [
           ]
         }
@@ -129,7 +129,7 @@ describe('Batch get', function () {
     this.timeout(100000);
     const bachGetParams = {
       RequestItems: {
-        [testConstants.transactionLogsTableName]: {
+        [testConstants.transactionLogTableName]: {
           Keys: [
             {
               "tuid": {

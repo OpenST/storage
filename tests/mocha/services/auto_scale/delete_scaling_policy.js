@@ -18,7 +18,7 @@ const autoScaleObj = new ApplicationAutoScalingKlass(testConstants.AUTO_SCALE_CO
   , dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
 ;
 
-let resourceId = 'table/' + testConstants.transactionLogsTableName
+let resourceId = 'table/' + testConstants.transactionLogTableName
   , roleARN = null;
 
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
@@ -29,7 +29,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   it(optionsDesc, async function () {
     this.timeout(100000);
 
-    let policyName = testConstants.transactionLogsTableName + "-scaling-policy";
+    let policyName = testConstants.transactionLogTableName + "-scaling-policy";
     if (options.invalid_policy_name) {
       policyName = "invalidPolicyId"
     } else {
@@ -48,7 +48,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
 
       const scalingPolicy = {
         ServiceNamespace: "dynamodb",
-        ResourceId: "table/" + testConstants.transactionLogsTableName,
+        ResourceId: "table/" + testConstants.transactionLogTableName,
         ScalableDimension: "dynamodb:table:WriteCapacityUnits",
         PolicyName: policyName,
         PolicyType: "TargetTrackingScaling",
@@ -66,8 +66,8 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
     }
 
     const params = {
-      PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
-      ResourceId: "table/" + testConstants.transactionLogsTableName,
+      PolicyName: testConstants.transactionLogTableName + "-scaling-policy",
+      ResourceId: "table/" + testConstants.transactionLogTableName,
       ScalableDimension: "dynamodb:table:WriteCapacityUnits",
       ServiceNamespace: "dynamodb"
     };
