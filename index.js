@@ -8,7 +8,7 @@ const rootPrefix    = '.'
   , DynamodbApi  = require(rootPrefix + '/services/dynamodb/api')
   , AutoScalingApi  = require(rootPrefix + '/services/auto_scale/api')
   , TokenBalanceModel = require(rootPrefix + '/lib/models/token_balance')
-  , TransactionLogModel = require(rootPrefix + '/lib/models/transaction_log')
+  , TransactionLogModel = null//require(rootPrefix + '/lib/models/transaction_log')
 ;
 
 // Expose all libs here.
