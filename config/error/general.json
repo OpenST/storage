@@ -148,5 +148,10 @@
     "http_code": "422",
     "code": "INSUFFICIENT_FUNDS",
     "message": "Balances Went to negative with this update. Please check urgently."
+  },
+  "unhandled_catch_response": {
+    "http_code": "500",
+    "code": "INTERNAL_SERVER_ERROR",
+    "message": "Something went wrong."
   }
 }

@@ -44,7 +44,7 @@ GetShardDetailsCacheKlass.prototype.setCacheKeys = function () {
 
   oThis.cacheKeys = {};
   for (let i = 0; i < oThis.identifiers.length; i++) {
-    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsd_" + '_et_' + oThis.entity_type + '_id_' + oThis.identifiers[i]] = oThis.identifiers[i];
+    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsd_" + '_et_' + oThis.entityType + '_id_' + oThis.identifiers[i]] = oThis.identifiers[i];
   }
 
   return oThis.cacheKeys;
