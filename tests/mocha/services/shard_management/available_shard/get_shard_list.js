@@ -21,7 +21,7 @@ const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_
 
 
 
-const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
+const createTestCasesForOptions = function (optionsDesc, options, toAssert, returnCount) {
   optionsDesc = optionsDesc || "";
   options = options || {
     invalidShardType: false,
@@ -46,17 +46,19 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
       var items = response.data.items;
       assert.exists(items);
-      assert.equal(items.length, 1);
-      logger.info("LOG ShardName", items[0].shardName);
-      assert.equal(items[0].shardName, shardName);
-      logger.info("LOG EntityType", items[0].entityType);
-      assert.equal(items[0].entityType, entity_type);
-      logger.info("LOG Allocation Type ", items[0].allocationType);
-      assert.equal(items[0].allocationType, availableShardConst.disabled);
-      logger.info("LOG created At", items[0].createdAt);
-      assert.exists(items[0].createdAt);
-      logger.info("LOG Updated At", items[0].updatedAt);
-      assert.exists(items[0].updatedAt);
+      assert.equal(items.length, returnCount);
+      if (items.length > 0) {
+        logger.info("LOG ShardName", items[0].shardName);
+        assert.equal(items[0].shardName, shardName);
+        logger.info("LOG EntityType", items[0].entityType);
+        assert.equal(items[0].entityType, entity_type);
+        logger.info("LOG Allocation Type ", items[0].allocationType);
+        assert.equal(items[0].allocationType, availableShardConst.disabled);
+        logger.info("LOG created At", items[0].createdAt);
+        assert.exists(items[0].createdAt);
+        logger.info("LOG Updated At", items[0].updatedAt);
+        assert.exists(items[0].updatedAt);
+      }
     } else {
       assert.isTrue(response.isFailure(), "Failure");
     }
@@ -66,7 +68,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert) {
 
 describe('services/shard_management/available_shard/get_shards', function () {
 
-  before(async function () {
+  beforeEach(async function () {
     await helper.cleanShardMigrationTables(dynamoDbObject);
     await shardManagementObject.runShardMigration(dynamoDbObject);
 
@@ -75,17 +77,17 @@ describe('services/shard_management/available_shard/get_shards', function () {
     await shardManagementObject.addShard({shard_name: shardName, entity_type: entity_type});
   });
 
-  createTestCasesForOptions("Get shard list adding happy case", {}, true);
+  createTestCasesForOptions("Get shard list adding happy case", {}, true, 1);
 
   createTestCasesForOptions("Get shard list having invalid shard type", {
     invalidShardType: true
-  }, false);
+  }, false, 0);
 
   createTestCasesForOptions("Get shard list having invalid entity type", {
     inValidEntityType: true
-  }, false);
+  }, true, 0);
 
-  after(async function () {
+  afterEach(async function () {
     await helper.cleanShardMigrationTables(dynamoDbObject);
   });
 });

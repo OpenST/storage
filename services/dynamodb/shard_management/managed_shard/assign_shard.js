@@ -142,18 +142,15 @@ AssignShard.prototype = {
       if (!oThis.identifier) {
         errorCode = errorCodePrefix + '1';
         error_identifier = "invalid_shard_identifier";
-      } else if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
-        errorCode = errorCodePrefix + '2';
-        error_identifier = "invalid_entity_type";
       } else if (!oThis.ddbObject) {
-        errorCode = errorCodePrefix + '3';
+        errorCode = errorCodePrefix + '2';
         error_identifier = "invalid_ddb_object";
       } else if (!(await oThis.hasShard())) {
-        errorCode = errorCodePrefix + '4';
+        errorCode = errorCodePrefix + '3';
         error_identifier = "invalid_shard_name";
       } else if (!((oThis.forceAssignment) || (await oThis.isSharedShard()))) {
         // Throw error if forceAssignment=false and isSharedShard = false
-        errorCode = errorCodePrefix + '5';
+        errorCode = errorCodePrefix + '4';
         error_identifier = "invalid_force_allocation";
       } else {
         return onResolve(responseHelper.successWithData({}));

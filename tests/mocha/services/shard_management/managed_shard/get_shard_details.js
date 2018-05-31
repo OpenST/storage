@@ -71,7 +71,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
 
 describe('services/dynamodb/shard_management/managed_shard/get_shard_details', function () {
 
-  before(async function () {
+  beforeEach(async function () {
 
     // delete table
     await helper.cleanShardMigrationTables(dynamoDbObject);
@@ -88,15 +88,15 @@ describe('services/dynamodb/shard_management/managed_shard/get_shard_details', f
 
   createTestCasesForOptions("Get shard happy case", {}, true, 1, {});
 
-  createTestCasesForOptions("Get shard details having invalid shard type", {
+  createTestCasesForOptions("Get shard details having invalid entity type", {
     inValidEntityType: true
-  }, false, 1, "s_sm_as_gsd_validateParams_1");
+  }, true, 0, {});
 
   createTestCasesForOptions("Get shard details having invalid Id", {
     inValidId: true
   }, true, 0, {});
 
-  after(async function() {
+  afterEach(async function() {
     // delete table
     await helper.cleanShardMigrationTables(dynamoDbObject);
   });

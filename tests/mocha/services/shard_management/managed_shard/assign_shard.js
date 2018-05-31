@@ -90,7 +90,7 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
 
   createTestCasesForOptions("Assign shard having invalid shard name", {
     invalidShardName: true
-  }, false, 's_sm_ms_as_validateParams_4');
+  }, false, 's_sm_ms_as_validateParams_3');
 
   createTestCasesForOptions("Assign shard having invalid identifier", {
     invalidIdentifier: true
@@ -98,11 +98,11 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
 
   createTestCasesForOptions("Assign shard having invalid entity type", {
     inValidEntityType: true
-  }, false, 's_sm_ms_as_validateParams_2');
+  }, true, {});
 
   createTestCasesForOptions("Assign shard having undefined force assignment", {
     undefined_force_assignment: true
-  }, false, 's_sm_ms_as_validateParams_5');
+  }, false, 's_sm_ms_as_validateParams_4');
 
   createTestCasesForOptions("Assign shard having undefined force assignment and allocated shard true", {
     undefined_force_assignment: true,

@@ -98,16 +98,6 @@ GetShardList.prototype = {
 
     return new Promise(async function (onResolve) {
 
-      if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
-        logger.debug('s_sm_as_gsl_validateParams_1', 'entityType is', oThis.entityType);
-        return onResolve(responseHelper.error({
-          internal_error_identifier: "s_sm_as_gsl_validateParams_1",
-          api_error_identifier: "invalid_entity_type",
-          debug_options: {},
-          error_config: coreConstants.ERROR_CONFIG
-        }));
-      }
-
       if (!oThis.shardType || (availableShardGlobalConstant.getShardTypes()[oThis.shardType] === undefined) ) {
         logger.debug('s_sm_as_gsl_validateParams_2', 'shardType is', oThis.shardType);
         return onResolve(responseHelper.error({
