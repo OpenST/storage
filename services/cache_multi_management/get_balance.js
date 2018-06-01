@@ -3,9 +3,9 @@
 const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
+  , coreConstants = require(rootPrefix + '/config/core_constants')
   , TokenBalanceModel = require(rootPrefix + '/lib/models/token_balance')
-  , logger = require( rootPrefix + "/lib/logger/custom_console_logger")
+  , logger = require( rootPrefix + '/lib/logger/custom_console_logger')
   , BigNumber = require('bignumber.js')
 ;
 
@@ -131,7 +131,7 @@ const GetBalanceCache = {
       let eth_address = ethereumAddresses[i];
 
       // getBalanceResponse.data[eth_address] to me var
-      if (!getBalanceResponse.data[eth_address.toLowerCase()]) {
+      if (!getBalanceResponse.data[eth_address]) {
         resultData[eth_address] = {
           settled_balance: '0',
           unsettled_debits: '0',
