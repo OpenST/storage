@@ -10,6 +10,7 @@ const rootPrefix    = '.'
   , TokenBalanceModel = require(rootPrefix + '/lib/models/token_balance')
   , TokenBalanceCache = require(rootPrefix + '/services/cache_multi_management/get_balance')
   , TransactionLogModel = require(rootPrefix + '/lib/models/transaction_log')
+  , TransactionLogConst = require(rootPrefix + '/lib/global_constant/transaction_log')
 ;
 
 // Expose all libs here.
@@ -21,6 +22,7 @@ module.exports = {
   , TokenBalanceModel: TokenBalanceModel
   , TokenBalanceCache: TokenBalanceCache
   , TransactionLogModel: TransactionLogModel
+  , TransactionLogConst: TransactionLogConst
 };
 
 /*

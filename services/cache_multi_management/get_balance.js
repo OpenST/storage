@@ -3,9 +3,9 @@
 const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
+  , coreConstants = require(rootPrefix + '/config/core_constants')
   , TokenBalanceModel = require(rootPrefix + '/lib/models/token_balance')
-  , logger = require( rootPrefix + "/lib/logger/custom_console_logger")
+  , logger = require( rootPrefix + '/lib/logger/custom_console_logger')
   , BigNumber = require('bignumber.js')
 ;
 
@@ -50,6 +50,7 @@ const GetBalanceCache = {
 
     oThis.cacheKeys = {};
     for (let i = 0; i < oThis.ethereumAddresses.length; i++) {
+
       oThis.cacheKeys[oThis._cacheKeyPrefix() + 'bt_blnce' + '_ca_' +
         oThis.erc20ContractAddress.toLowerCase() + '_ea_' + oThis.ethereumAddresses[i].toLowerCase()] = oThis.ethereumAddresses[i];
     }
@@ -130,8 +131,10 @@ const GetBalanceCache = {
 
       let eth_address = ethereumAddresses[i];
 
+      let dataFromModel = getBalanceResponse.data[eth_address.toLowerCase()];
+
       // getBalanceResponse.data[eth_address] to me var
-      if (!getBalanceResponse.data[eth_address.toLowerCase()]) {
+      if (!dataFromModel) {
         resultData[eth_address] = {
           settled_balance: '0',
           unsettled_debits: '0',
@@ -140,9 +143,9 @@ const GetBalanceCache = {
         continue;
       }
 
-      resultData[eth_address] = getBalanceResponse.data[eth_address];
-      resultData[eth_address].available_balance = new BigNumber(getBalanceResponse.data[eth_address].settled_balance)
-        .minus(new BigNumber(getBalanceResponse.data[eth_address].unsettled_debits)).toString(10);
+      resultData[eth_address] = dataFromModel;
+      resultData[eth_address].available_balance = new BigNumber(dataFromModel.settled_balance)
+        .minus(new BigNumber(dataFromModel.unsettled_debits)).toString(10);
     }
 
     return responseHelper.successWithData(resultData);
