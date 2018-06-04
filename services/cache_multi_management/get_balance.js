@@ -140,22 +140,18 @@ const GetBalanceCache = {
     for (let i = 0; i < ethereumAddresses.length; i++) {
 
       let eth_address = ethereumAddresses[i].toLowerCase();
+      let defaultValues = {
+        settled_balance: '0',
+        unsettled_debits: '0'
+      };
+      let dataFromModel = getBalanceResponse.data[eth_address] || {};
 
-      let dataFromModel = getBalanceResponse.data[eth_address];
-
-      // getBalanceResponse.data[eth_address] to me var
-      if (!dataFromModel) {
-        resultData[eth_address] = {
-          settled_balance: '0',
-          unsettled_debits: '0',
-          available_balance: '0'
-        }; //TODO: handle downcase from model response
-        continue;
-      }
+      dataFromModel.settled_balance = dataFromModel.settled_balance || defaultValues.settled_balance;
+      dataFromModel.unsettled_debits = dataFromModel.unsettled_debits || defaultValues.unsettled_debits;
+      dataFromModel.available_balance = new BigNumber(dataFromModel.settled_balance)
+        .minus(new BigNumber(dataFromModel.unsettled_debits)).toString(10);
 
       resultData[eth_address] = dataFromModel;
-      resultData[eth_address].available_balance = new BigNumber(dataFromModel.settled_balance)
-        .minus(new BigNumber(dataFromModel.unsettled_debits)).toString(10);
     }
 
     return responseHelper.successWithData(resultData);
