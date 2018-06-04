@@ -93,10 +93,20 @@ const GetBalanceCache = {
       })
     }
 
+    if (!oThis.erc20ContractAddress) {
+      return responseHelper.error({
+        internal_error_identifier: "s_cmm_gb_5",
+        api_error_identifier: "invalid_params",
+        params_error_identifiers: ['missing_contract_address'],
+        debug_options: {},
+        error_config: coreConstants.ERROR_CONFIG
+      })
+    }
+
     let getBalanceResponse = await new TokenBalanceModel({
       ddb_service: oThis.ddbServiceObj,
       auto_scaling: oThis.autoScalingObj,
-      erc20_contract_address: oThis.erc20ContractAddress
+      erc20_contract_address: oThis.erc20ContractAddress.toLowerCase()
     })
       .getBalance({
         ethereum_addresses: ethereumAddresses
@@ -129,9 +139,9 @@ const GetBalanceCache = {
 
     for (let i = 0; i < ethereumAddresses.length; i++) {
 
-      let eth_address = ethereumAddresses[i];
+      let eth_address = ethereumAddresses[i].toLowerCase();
 
-      let dataFromModel = getBalanceResponse.data[eth_address.toLowerCase()];
+      let dataFromModel = getBalanceResponse.data[eth_address];
 
       // getBalanceResponse.data[eth_address] to me var
       if (!dataFromModel) {

@@ -153,5 +153,10 @@
     "http_code": "500",
     "code": "INTERNAL_SERVER_ERROR",
     "message": "Something went wrong."
+  },
+  "missing_contract_address": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Invalid Contract address"
   }
 }
