@@ -25,7 +25,6 @@ const rootPrefix  = "../.."
  * @params {Object} autoScalingObject - auto scaling Object
  * @params {Object} params - params
  * @params {Object} params.createTableConfig - create table configurations
- * @params {Object} params.updateContinuousBackupConfig - update Continuous Backup configurations
  * @params {Object} params.autoScalingConfig - scaling params
  * @params {Object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
  * @params {Object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
