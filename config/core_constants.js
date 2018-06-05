@@ -36,7 +36,9 @@ CoreConstants.prototype = {
     api_error_config: apiErrorConfig
   },
 
- DEBUG_ENABLED: process.env.OST_DEBUG_ENABLED || false
+  DEBUG_ENABLED: process.env.OST_DEBUG_ENABLED || false,
+
+  DYNAMODB_TABLE_NAME_PREFIX: process.env.OS_DYNAMODB_TABLE_NAME_PREFIX || '',
 
 };
 
