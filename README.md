@@ -3,6 +3,13 @@
 OpenST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
 While OpenST Storage is available as-is for anyone to use, we caution that this is early stage software and under heavy ongoing development and improvement. Please report bugs and suggested improvements.
 
+## Set ENV Variables
+
+        
+        export OS_CACHING_ENGINE=none # Refer https://github.com/OpenSTFoundation/openst-cache/ for details
+        export OS_DYNAMODB_TABLE_NAME_PREFIX='' # DynamoDB tables prefix
+        export OST_DEBUG_ENABLED=[true/false] # For debug level logging
+
 ## DynamoDB Apis
 
 For all DynamoDB methods parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)  
