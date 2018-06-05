@@ -8,7 +8,7 @@ While OpenST Storage is available as-is for anyone to use, we caution that this 
         
         export OS_CACHING_ENGINE=none # Refer https://github.com/OpenSTFoundation/openst-cache/ for details
         export OS_DYNAMODB_TABLE_NAME_PREFIX='' # DynamoDB tables prefix
-        export OST_DEBUG_ENABLED=[true/false] # For debug level logging
+        export OST_DEBUG_ENABLED=[1/0] # For debug level logging
 
 ## DynamoDB Apis
 
