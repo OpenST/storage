@@ -52,7 +52,7 @@ const GetBalanceCache = {
     for (let i = 0; i < oThis.ethereumAddresses.length; i++) {
 
       oThis.cacheKeys[oThis._cacheKeyPrefix() + 'bt_blnce' + '_ca_' +
-        oThis.erc20ContractAddress.toLowerCase() + '_ea_' + oThis.ethereumAddresses[i].toLowerCase()] = oThis.ethereumAddresses[i];
+        oThis.erc20ContractAddress.toLowerCase() + '_ea_' + oThis.ethereumAddresses[i].toLowerCase()] = oThis.ethereumAddresses[i].toLowerCase();
     }
 
     return oThis.cacheKeys;
