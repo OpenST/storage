@@ -196,7 +196,7 @@ ShardMigration.prototype = {
       return responseHelper.successWithData({});
     }
 
-    params.autoScalingConfig = await oThis.getManagedShardsAutoScalingParams(tableName, arn, resourceId);
+    params.autoScalingConfig = oThis.getManagedShardsAutoScalingParams(tableName, arn, resourceId);
     const managedShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
     logger.debug(managedShardsResponse);
     if (managedShardsResponse.isFailure()) {
