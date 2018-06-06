@@ -1,6 +1,6 @@
 {
   "name": "@openstfoundation/openst-storage",
-  "version": "1.0.0-beta.11",
+  "version": "1.0.0-beta.15",
   "description": "openst storage provided data storage and sharding services",
   "main": "index.js",
   "scripts": {
