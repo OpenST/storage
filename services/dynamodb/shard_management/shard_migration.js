@@ -419,7 +419,7 @@ ShardMigration.prototype = {
           PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
         },
         ScaleOutCooldown: 1, // seconds
-        ScaleInCooldown: 3, // seconds
+        ScaleInCooldown: 5, // seconds
         TargetValue: 50.0
       }
     };
@@ -435,7 +435,7 @@ ShardMigration.prototype = {
           PredefinedMetricType: "DynamoDBReadCapacityUtilization"
         },
         ScaleOutCooldown: 1, // seconds
-        ScaleInCooldown: 3, // seconds
+        ScaleInCooldown: 5, // seconds
         TargetValue: 50.0
       }
     };
