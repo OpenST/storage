@@ -38,16 +38,16 @@ GetShardDetailsCacheKlass.prototype.constructor = GetShardDetailsCacheKlass;
  *
  * @return {Object}
  */
-GetShardDetailsCacheKlass.prototype.setCacheKeys = function () {
+GetShardDetailsCacheKlass.prototype.setCacheKeyToexternalIdMap = function () {
   const oThis = this
   ;
 
-  oThis.cacheKeys = {};
+  oThis.cacheKeyToexternalIdMap = {};
   for (let i = 0; i < oThis.identifiers.length; i++) {
-    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsd_" + '_et_' + oThis.entityType + '_id_' + oThis.identifiers[i]] = oThis.identifiers[i];
+    oThis.cacheKeyToexternalIdMap[oThis._cacheKeyPrefix() + "dy_sm_gsd_" + '_et_' + oThis.entityType + '_id_' + oThis.identifiers[i]] = oThis.identifiers[i];
   }
 
-  return oThis.cacheKeys;
+  return oThis.cacheKeyToexternalIdMap;
 };
 
 
