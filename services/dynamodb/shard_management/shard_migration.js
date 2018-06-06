@@ -300,9 +300,9 @@ ShardMigration.prototype = {
         PredefinedMetricSpecification: {
           PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
         },
-        ScaleOutCooldown: 5, // seconds
+        ScaleOutCooldown: 1, // seconds
         ScaleInCooldown: 5, // seconds
-        TargetValue: 70.0
+        TargetValue: 50.0
       }
     };
 
@@ -316,9 +316,9 @@ ShardMigration.prototype = {
         PredefinedMetricSpecification: {
           PredefinedMetricType: "DynamoDBReadCapacityUtilization"
         },
-        ScaleOutCooldown: 5, // seconds
+        ScaleOutCooldown: 1, // seconds
         ScaleInCooldown: 5, // seconds
-        TargetValue: 70.0
+        TargetValue: 50.0
       }
     };
 
@@ -418,9 +418,9 @@ ShardMigration.prototype = {
         PredefinedMetricSpecification: {
           PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
         },
-        ScaleOutCooldown: 5, // seconds
-        ScaleInCooldown: 5, // seconds
-        TargetValue: 70.0
+        ScaleOutCooldown: 1, // seconds
+        ScaleInCooldown: 3, // seconds
+        TargetValue: 50.0
       }
     };
 
@@ -434,9 +434,9 @@ ShardMigration.prototype = {
         PredefinedMetricSpecification: {
           PredefinedMetricType: "DynamoDBReadCapacityUtilization"
         },
-        ScaleOutCooldown: 5, // seconds
-        ScaleInCooldown: 5, // seconds
-        TargetValue: 70.0
+        ScaleOutCooldown: 1, // seconds
+        ScaleInCooldown: 3, // seconds
+        TargetValue: 50.0
       }
     };
 

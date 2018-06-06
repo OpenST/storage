@@ -192,26 +192,6 @@ helper.prototype = {
       await oThis.waitForTableToGetDeleted(dynamodbApiObject, params);
       logger.info("Table got deleted");
 
-      // logger.log(testConstants.transactionLogTableName, "Table exists . Deregister it from scalability....");
-      //
-      // logger.info("delScalingParams..........");
-      // const delScalingParams = {
-      //   PolicyName: testConstants.transactionLogTableName + "-scaling-policy",
-      //   ResourceId: "table/" + testConstants.transactionLogTableName,
-      //   ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-      //   ServiceNamespace: "dynamodb"
-      // };
-      //
-      // await oThis.deleteScalingPolicy(autoScaleObj, delScalingParams);
-      //
-      // logger.info("deregisterScalableTarget..........");
-      // const deRegisterScalableTargetParams = {
-      //   ResourceId: "table/" + testConstants.transactionLogTableName,
-      //   ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-      //   ServiceNamespace: "dynamodb"
-      // };
-      // await oThis.deregisterScalableTarget(autoScaleObj, deRegisterScalableTargetParams);
-
     } else {
       logger.log(testConstants.transactionLogTableName, "Table does not exist.");
     }
