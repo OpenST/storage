@@ -27,7 +27,7 @@ const TokenBalanceCache = function (params) {
   ;
 
   oThis.erc20ContractAddress = params.erc20_contract_address;
-  oThis.ethereumAddresses = params.ethereum_addresses;
+  oThis.ethereumAddresses = JSON.parse(JSON.stringify(params.ethereum_addresses));
   oThis.ddbServiceObj = params.ddb_service || {};
   oThis.autoScalingObj = params.auto_scaling || {};
 
