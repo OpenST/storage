@@ -31,19 +31,23 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 
 
 #### Create table migration 
-&nbsp; Table migration params [autoScaleObject](#autoscaling-constructor) and createTableMigrationParams<br/>
+&nbsp; Table migration needs [autoScaleObject](#autoscaling-constructor)<br/>
+&nbsp; params createTableMigrationParams
 &nbsp; [params.createTableConfig](#create-table)<br/>
 &nbsp; [params.updateContinuousBackupConfig](#update-continuous-backups) <br/>
 &nbsp; [params.autoScalingConfig.registerScalableTargetWrite](#register-scalable-target)<br/>
 &nbsp; [params.autoScalingConfig.registerScalableTargetRead](#register-scalable-target )<br/>
 &nbsp; [params.autoScalingConfig.putScalingPolicyWrite](#put-scaling-policy)<br/>
 &nbsp; [params.autoScalingConfig.putScalingPolicyRead](#put-scaling-policy)<br/>
+&nbsp; params.autoScalingConfig.globalSecondaryIndex[<GSI_INDEX_NAME>].autoScalingConfig - Auto Scaling config of Global Secondary Indexes same as of auto scale table config<br/>
 
-    // Create Table Migration
-    // 1. Creates table
-    // 2. Enables read/write auto scaling
-    // 3. Returns describe table response 
-    ddbServiceObj.createTableMigration(autoScaleObject, createTableMigrationParams);
+</br>
+
+     // Create Table Migration
+     // 1. Creates table
+     // 2. Enables read/write auto scaling
+     // 3. Returns describe table response 
+     ddbServiceObj.createTableMigration(autoScaleObject, createTableMigrationParams);
     
 #### Update table 
 &nbsp; params [updateTableParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateTable-property)
