@@ -30,7 +30,7 @@ const rootPrefix  = "../.."
  * @params {Object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
  * @params {Object} params.autoScalingConfig.putScalingPolicyWrite- Put scaling policy write configurations
  * @params {Object} params.autoScalingConfig.putScalingPolicyRead - Put scaling policy read configurations
- * @params {Object} params.autoScalingConfig.globalSecondaryIndex - Auto Scaling configuration of Glabal Secondary Indexes
+ * @params {Object} params.autoScalingConfig.globalSecondaryIndex - Auto Scaling configuration of Global Secondary Indexes
  *
  * @constructor
  */
@@ -148,6 +148,7 @@ const CreateTableMigrationPrototype = {
    * @return {Promise} true/false
    *
    */
+  // TODO Refactor to small methods
   executeDdbRequest: function() {
     const oThis = this
       ;
@@ -182,15 +183,19 @@ const CreateTableMigrationPrototype = {
         let registerAutoScalePromiseArray = []
           , putAutoScalePolicyArray = []
         ;
+        // registerAutoScale for table
         registerAutoScalePromiseArray.push(oThis.autoScalingObject.registerScalableTarget(oThis.autoScalingConfig.registerScalableTargetWrite));
         registerAutoScalePromiseArray.push(oThis.autoScalingObject.registerScalableTarget(oThis.autoScalingConfig.registerScalableTargetRead));
 
+        // registerAutoScale for index
         for (let index=0; index < gsiArray.length; index++) {
           let gsi = gsiArray[index]
             , indexName = gsi.IndexName
             , indexArn = gsi.IndexArn
             , gsiParamObject = oThis.autoScalingConfig.globalSecondaryIndex[indexName];
 
+          // Ignore if one of GSI auto scale config is not passed
+          // In that case default read/write of GSI capacity will be used
           if(!gsiParamObject) continue;
 
           gsiParamObject.registerScalableTargetWrite.RoleARN = indexArn;
@@ -210,18 +215,22 @@ const CreateTableMigrationPrototype = {
         logger.info("Register auto scaling read/write target done.");
 
         logger.info("Putting auto scale read/write policy..");
+        // putAutoScalePolicy For Table
         putAutoScalePolicyArray.push(oThis.autoScalingObject.putScalingPolicy(oThis.autoScalingConfig.putScalingPolicyWrite));
         putAutoScalePolicyArray.push(oThis.autoScalingObject.putScalingPolicy(oThis.autoScalingConfig.putScalingPolicyRead));
 
+        // putAutoScalePolicy For index
         for (let index=0; index < gsiArray.length; index++) {
           let gsi = gsiArray[index]
             , indexName = gsi.IndexName
             , gsiParamObject = oThis.autoScalingConfig.globalSecondaryIndex[indexName];
 
+          // Ignore if one of GSI auto scale config is not passed
+          // In that case default read/write of GSI capacity will be used
           if(!gsiParamObject) continue;
 
-          registerAutoScalePromiseArray.push(oThis.autoScalingObject.putScalingPolicy(gsiParamObject.putScalingPolicyWrite));
-          registerAutoScalePromiseArray.push(oThis.autoScalingObject.putScalingPolicy(gsiParamObject.putScalingPolicyRead));
+          putAutoScalePolicyArray.push(oThis.autoScalingObject.putScalingPolicy(gsiParamObject.putScalingPolicyWrite));
+          putAutoScalePolicyArray.push(oThis.autoScalingObject.putScalingPolicy(gsiParamObject.putScalingPolicyRead));
         }
 
         const putAutoScalePolicyPromiseResponse = await Promise.all(putAutoScalePolicyArray);

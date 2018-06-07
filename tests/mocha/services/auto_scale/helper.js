@@ -7,7 +7,7 @@ const rootPrefix = "../../../.."
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , api = require(rootPrefix + "/index").Dynamodb
-  , autoScaleConst = require(rootPrefix + '/lib/global_constant/auto_scale')
+  , autoScaleHelper = require(rootPrefix + '/lib/auto_scale/helper')
 ;
 
 /**
@@ -238,7 +238,7 @@ helper.prototype = {
     const oThis = this
       , params = {}
       , tableName = testConstants.transactionLogTableName
-      , resourceId = autoScaleConst.createResourceId(testConstants.transactionLogTableName)
+      , resourceId = autoScaleHelper.createResourceId(testConstants.transactionLogTableName)
     ;
 
     params.createTableConfig = oThis.getCreateTableParams(testConstants.transactionLogTableName);
@@ -254,30 +254,30 @@ helper.prototype = {
     const autoScalingConfig = {}
       , gsiArray = params.createTableConfig.GlobalSecondaryIndexes || [];
 
-    autoScalingConfig.registerScalableTargetWrite = autoScaleConst.createScalableTargetParams(resourceId, autoScaleConst.writeCapacityScalableDimension,1 ,50);
+    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension,1 ,50);
 
-    autoScalingConfig.registerScalableTargetRead = autoScaleConst.createScalableTargetParams(resourceId, autoScaleConst.readCapacityScalableDimension,1 ,50);
+    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension,1 ,50);
 
-    autoScalingConfig.putScalingPolicyWrite = autoScaleConst.createPolicyParams(tableName, resourceId, autoScaleConst.writeCapacityScalableDimension, autoScaleConst.writeMetricType, 1, 1, 50.0);
+    autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.writeCapacityScalableDimension, autoScaleHelper.writeMetricType, 1, 1, 50.0);
 
-    autoScalingConfig.putScalingPolicyRead = autoScaleConst.createPolicyParams(tableName, resourceId, autoScaleConst.readCapacityScalableDimension, autoScaleConst.readMetricType, 1, 1, 50.0);
+    autoScalingConfig.putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.readCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 1, 50.0);
 
     autoScalingConfig.globalSecondaryIndex = {};
 
     for (let index = 0; index < gsiArray.length; index++) {
       let gsiIndexName = gsiArray[index].IndexName
-        , indexResourceId = autoScaleConst.createIndexResourceId(tableName, gsiIndexName)
+        , indexResourceId = autoScaleHelper.createIndexResourceId(tableName, gsiIndexName)
       ;
 
       autoScalingConfig.globalSecondaryIndex[gsiIndexName] = {};
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetWrite = autoScaleConst.createScalableTargetParams(indexResourceId, autoScaleConst.indexWriteCapacityScalableDimenstion, 1, 20);
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, 1, 20);
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetRead = autoScaleConst.createScalableTargetParams(indexResourceId, autoScaleConst.indexReadCapacityScalableDimension, 1, 20);
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, 1, 20);
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyWrite = autoScaleConst.createPolicyParams(tableName, indexResourceId, autoScaleConst.indexWriteCapacityScalableDimenstion, autoScaleConst.writeMetricType, 1, 1, 70.0);
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, autoScaleHelper.writeMetricType, 1, 1, 70.0);
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyRead = autoScaleConst.createPolicyParams(tableName, indexResourceId, autoScaleConst.indexReadCapacityScalableDimension, autoScaleConst.readMetricType, 1, 1, 70.0);
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 1, 70.0);
 
     }
 
