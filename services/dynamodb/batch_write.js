@@ -64,14 +64,18 @@ const batchWritePrototype = {
       let batchWriteParams = oThis.params
         , waitTime = 0
         , timeFactor = 500
-        , r = null;
+        , r = null
+        , attempNo = 1
+      ;
 
       while(true) {
+
+        logger.info('executeDdbRequest attempNo ', attempNo);
 
         r = await oThis.batchWriteItemAfterWait(batchWriteParams, waitTime);
 
         if (!r.isSuccess()) {
-          logger.error("services/dynamodb/batch_write.js:executeDdbRequest", r.toHash());
+          logger.error("services/dynamodb/batch_write.js:executeDdbRequest, attempNo: ", attempNo, r.toHash());
           return responseHelper.error({
             internal_error_identifier: "s_dy_bw_executeDdbRequest_1",
             api_error_identifier: "exception",
@@ -79,6 +83,7 @@ const batchWritePrototype = {
             error_config: coreConstants.ERROR_CONFIG
           });
         }
+
         let unprocessedItems = r.data['UnprocessedItems'];
 
         // Break the loop if unprocessedItem get empty or retry count exceeds
@@ -86,10 +91,13 @@ const batchWritePrototype = {
           break;
         }
 
+        logger.info('executeDdbRequest attempNo ', attempNo, ' unprocessedItemsCount: ', unprocessedItems.length);
+
         batchWriteParams = {RequestItems: unprocessedItems};
 
         waitTime += timeFactor;
         oThis.unprocessed_item_retry_count -= 1;
+        attempNo += 1;
 
       }
       logger.debug("=======Base.perform.result=======");
