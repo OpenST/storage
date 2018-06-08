@@ -80,7 +80,7 @@ const batchWritePrototype = {
           return responseHelper.error({
             internal_error_identifier: "s_dy_bw_executeDdbRequest_1",
             api_error_identifier: "exception",
-            debug_options: {error: err.message},
+            debug_options: {error: response.toHash()},
             error_config: coreConstants.ERROR_CONFIG
           });
         }
