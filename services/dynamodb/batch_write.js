@@ -89,18 +89,19 @@ const batchWritePrototype = {
         unprocessedItemsLength = 0;
 
 
-        // Break the loop if unprocessedItems get empty or retry count exceeds the given limit
-        if (unprocessedItemsLength === 0 || oThis.unprocessedItemsRetryCount === 0) {
-          break;
-        }
-
         for (let tableName in unprocessedItems) {
           if (unprocessedItems.hasOwnProperty(tableName)) {
             unprocessedItemsLength += unprocessedItems[tableName].length;
             logger.error('batch_write executeDdbRequest TableName :', tableName,
               ' unprocessedItemsCount: ', unprocessedItemsLength,
+              ' items count: ', batchWriteParams.RequestItems[tableName].length,
               ' attemptNo ', attemptNo);
           }
+        }
+
+        // Break the loop if unprocessedItems get empty or retry count exceeds the given limit
+        if (unprocessedItemsLength === 0 || oThis.unprocessedItemsRetryCount === 0) {
+          break;
         }
 
         //Create new batchWriteParams of unprocessedItems
