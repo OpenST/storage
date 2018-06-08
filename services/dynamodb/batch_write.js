@@ -63,7 +63,7 @@ const batchWritePrototype = {
     try {
       let batchWriteParams = oThis.params
         , waitTime = 0
-        , timeFactor = 500
+        , timeFactor = 300
         , r = null
         , attempNo = 1
       ;
@@ -85,15 +85,19 @@ const batchWritePrototype = {
         }
 
         let unprocessedItems = r.data['UnprocessedItems']
-            , unprocessedItemsLength = Object.keys(unprocessedItems).length
+            , unprocessedItemsLength = 0
         ;
 
+        for(let shardName in unprocessedItems) {
+          unprocessedItemsLength += unprocessedItems[shardName].length
+        }
+
         // Break the loop if unprocessedItem get empty or retry count exceeds
-        if (unprocessedItemsLength.length === 0 || oThis.unprocessedItemRetryCount === 0) {
+        if (unprocessedItemsLength === 0 || oThis.unprocessedItemRetryCount === 0) {
           break;
         }
 
-        logger.info('executeDdbRequest attempNo ', attempNo, ' unprocessedItemsCount: ', unprocessedItemsLength.length);
+        logger.info('executeDdbRequest attempNo ', attempNo, ' unprocessedItemsCount: ', unprocessedItemsLength);
 
         batchWriteParams = {RequestItems: unprocessedItems};
 
