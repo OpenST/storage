@@ -158,5 +158,10 @@
     "http_code": "422",
     "code": "UNPROCESSABLE_ENTITY",
     "message": "Invalid Contract address"
+  },
+  "ddb_batch_write_failed": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "DDB Batch Put failed for some or all entries."
   }
 }
