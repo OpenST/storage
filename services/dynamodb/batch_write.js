@@ -94,10 +94,10 @@ const batchWritePrototype = {
           break;
         }
 
-        for (let shardName in unprocessedItems) {
-          if (unprocessedItems.hasOwnProperty(shardName)) {
-            unprocessedItemsLength += unprocessedItems[shardName].length;
-            logger.error('batch_write executeDdbRequest TableName :', shardName,
+        for (let tableName in unprocessedItems) {
+          if (unprocessedItems.hasOwnProperty(tableName)) {
+            unprocessedItemsLength += unprocessedItems[tableName].length;
+            logger.error('batch_write executeDdbRequest TableName :', tableName,
               ' unprocessedItemsCount: ', unprocessedItemsLength,
               ' attemptNo ', attemptNo);
           }
@@ -112,9 +112,9 @@ const batchWritePrototype = {
         oThis.unprocessedItemsRetryCount -= 1;
       }
 
-      for (let shardName in unprocessedItems) {
-        if (unprocessedItems.hasOwnProperty(shardName)) {
-          logger.error('BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :', shardName,
+      for (let tableName in unprocessedItems) {
+        if (unprocessedItems.hasOwnProperty(tableName)) {
+          logger.error('BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :', tableName,
             ' unprocessedItemsCount: ', unprocessedItemsLength,
             ' attempts Failed ', attemptNo);
         }
