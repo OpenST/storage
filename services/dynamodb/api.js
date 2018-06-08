@@ -167,14 +167,14 @@ DynamoDBService.prototype = {
    * Batch write
    *
    * @params {Object} params - Params as per dynamo db batchWriteItem api params
-   * @params {Integer} unprocessedRetryCount - Retry count for unprocessed Items
+   * @params {Integer} unprocessedItemsRetryCount - Retry count for unprocessed Items
    *
    * @return {promise<result>}
    *
    */
-  batchWriteItem: function(params, unprocessedRetryCount) {
+  batchWriteItem: function(params, unprocessedItemsRetryCount) {
     const oThis = this
-      , batchWriteObject = new BatchWriteItemKlass(oThis.ddbObject, params, unprocessedRetryCount)
+      , batchWriteObject = new BatchWriteItemKlass(oThis.ddbObject, params, unprocessedItemsRetryCount)
     ;
     return batchWriteObject.perform();
   },

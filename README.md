@@ -86,10 +86,11 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
     ddbServiceObj.batchGetItem(batchGetItemParams);
 
 #### Batch Write Item
-&nbsp; params [batchWriteItemParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#batchWriteItem-property)
+&nbsp; params [batchWriteItemParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#batchWriteItem-property)<br/>
+&nbsp; params unprocessedItemsRetryCount Retry count for unprocessed Items
 
     // Batch Write Item
-    ddbServiceObj.batchWriteItem(batchWriteItemParams);
+    ddbServiceObj.batchWriteItem(batchWriteItemParams, unprocessedRetryCount);
 
 #### Query
 &nbsp; params [queryParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#query-property)

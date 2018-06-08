@@ -19,14 +19,14 @@ const rootPrefix = "../.."
  * Constructor for batch write item service class
  * @param {Object} ddbObject - DynamoDB Object
  * @param {Object} params - Parameters
- * @param {Integer} unprocessed_item_retry_count - retry count for unprocessed items (optional)
+ * @param {Integer} unprocessed_items_retry_count - retry count for unprocessed items (optional)
  *
  * @constructor
  */
-const BatchWriteItem = function (ddbObject, params, unprocessed_item_retry_count) {
+const BatchWriteItem = function (ddbObject, params, unprocessed_items_retry_count) {
   const oThis = this
   ;
-  oThis.unprocessedItemRetryCount = unprocessed_item_retry_count || 0;
+  oThis.unprocessedItemRetryCount = unprocessed_items_retry_count || 0;
 
   base.call(oThis, ddbObject, 'batchWriteItem', params);
 };
@@ -65,17 +65,19 @@ const batchWritePrototype = {
         , waitTime = 0
         , timeFactor = 300
         , r = null
-        , attempNo = 1
+        , attemptNo = 1
+        , unprocessedItems
+        , unprocessedItemsLength
       ;
 
       while(true) {
 
-        logger.info('executeDdbRequest attempNo ', attempNo);
+        logger.info('executeDdbRequest attempNo ', attemptNo);
 
         r = await oThis.batchWriteItemAfterWait(batchWriteParams, waitTime);
 
         if (!r.isSuccess()) {
-          logger.error("services/dynamodb/batch_write.js:executeDdbRequest, attempNo: ", attempNo, r.toHash());
+          logger.error("services/dynamodb/batch_write.js:executeDdbRequest, attemptNo: ", attemptNo, r.toHash());
           return responseHelper.error({
             internal_error_identifier: "s_dy_bw_executeDdbRequest_1",
             api_error_identifier: "exception",
@@ -84,28 +86,39 @@ const batchWritePrototype = {
           });
         }
 
-        let unprocessedItems = r.data['UnprocessedItems']
-            , unprocessedItemsLength = 0
-        ;
+        unprocessedItems = r.data['UnprocessedItems'];
+        unprocessedItemsLength = 0;
 
-        for(let shardName in unprocessedItems) {
-          unprocessedItemsLength += unprocessedItems[shardName].length
-        }
 
         // Break the loop if unprocessedItem get empty or retry count exceeds
         if (unprocessedItemsLength === 0 || oThis.unprocessedItemRetryCount === 0) {
-          break;
+            break;
         }
 
-        logger.info('executeDdbRequest attempNo ', attempNo, ' unprocessedItemsCount: ', unprocessedItemsLength);
+        for (let shardName in unprocessedItems) {
+          if (unprocessedItems.hasOwnProperty(shardName)) {
+            unprocessedItemsLength += unprocessedItems[shardName].length;
+            logger.error('batch_write executeDdbRequest TableName :', shardName,
+              ' unprocessedItemsCount: ', unprocessedItemsLength,
+              ' attemptNo ', attemptNo);
+          }
+        }
 
         batchWriteParams = {RequestItems: unprocessedItems};
 
         waitTime += timeFactor;
         oThis.unprocessedItemRetryCount -= 1;
-        attempNo += 1;
-
+        attemptNo += 1;
       }
+
+      for (let shardName in unprocessedItems) {
+        if (unprocessedItems.hasOwnProperty(shardName)) {
+          logger.error('BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :', shardName,
+            ' unprocessedItemsCount: ', unprocessedItemsLength,
+            ' attempts Failed ', attemptNo);
+        }
+      }
+
       logger.debug("=======Base.perform.result=======");
       logger.debug(r);
       return r;
