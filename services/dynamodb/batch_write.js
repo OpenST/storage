@@ -84,19 +84,21 @@ const batchWritePrototype = {
           });
         }
 
-        let unprocessedItems = r.data['UnprocessedItems'];
+        let unprocessedItems = r.data['UnprocessedItems']
+            , unprocessedItemsLength = Object.keys(unprocessedItems).length
+        ;
 
         // Break the loop if unprocessedItem get empty or retry count exceeds
-        if (Object.keys(unprocessedItems).length === 0 || oThis.unprocessed_item_retry_count === 0) {
+        if (unprocessedItemsLength.length === 0 || oThis.unprocessedItemRetryCount === 0) {
           break;
         }
 
-        logger.info('executeDdbRequest attempNo ', attempNo, ' unprocessedItemsCount: ', unprocessedItems.length);
+        logger.info('executeDdbRequest attempNo ', attempNo, ' unprocessedItemsCount: ', unprocessedItemsLength.length);
 
         batchWriteParams = {RequestItems: unprocessedItems};
 
         waitTime += timeFactor;
-        oThis.unprocessed_item_retry_count -= 1;
+        oThis.unprocessedItemRetryCount -= 1;
         attempNo += 1;
 
       }
