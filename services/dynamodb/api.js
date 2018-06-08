@@ -14,6 +14,7 @@ const rootPrefix  = "../.."
   , WaitForServiceKlass = require(rootPrefix + "/services/dynamodb/wait_for")
   , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
   , CreateTableMigrationServiceKlass = require(rootPrefix + '/services/dynamodb/create_table_migration')
+  , BatchWriteItemKlass = require(rootPrefix + '/services/dynamodb/batch_write')
 ;
 
 /**
@@ -166,15 +167,16 @@ DynamoDBService.prototype = {
    * Batch write
    *
    * @params {Object} params - Params as per dynamo db batchWriteItem api params
+   * @params {Integer} unprocessedRetryCount - Retry count for unprocessed Items
    *
    * @return {promise<result>}
    *
    */
-  batchWriteItem: function(params) {
+  batchWriteItem: function(params, unprocessedRetryCount) {
     const oThis = this
-      , bathWriteObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchWriteItem', params)
+      , batchWriteObject = new BatchWriteItemKlass(oThis.ddbObject, params, unprocessedRetryCount)
     ;
-    return bathWriteObject.perform();
+    return batchWriteObject.perform();
   },
 
   /**
