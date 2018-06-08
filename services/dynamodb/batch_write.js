@@ -26,7 +26,7 @@ const rootPrefix = "../.."
 const BatchWriteItem = function (ddbObject, params, unprocessed_items_retry_count) {
   const oThis = this
   ;
-  oThis.unprocessedItemRetryCount = unprocessed_items_retry_count || 0;
+  oThis.unprocessedItemsRetryCount = unprocessed_items_retry_count || 0;
 
   base.call(oThis, ddbObject, 'batchWriteItem', params);
 };
@@ -90,7 +90,7 @@ const batchWritePrototype = {
 
 
         // Break the loop if unprocessedItems get empty or retry count exceeds the given limit
-        if (unprocessedItemsLength === 0 || oThis.unprocessedItemRetryCount === 0) {
+        if (unprocessedItemsLength === 0 || oThis.unprocessedItemsRetryCount === 0) {
           break;
         }
 
@@ -109,7 +109,7 @@ const batchWritePrototype = {
         //Increment retry variables
         attemptNo += 1;
         waitTime += timeFactor;
-        oThis.unprocessedItemRetryCount -= 1;
+        oThis.unprocessedItemsRetryCount -= 1;
       }
 
       for (let shardName in unprocessedItems) {
