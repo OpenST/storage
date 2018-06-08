@@ -1,9 +1,9 @@
 "use strict";
 
 /**
- * DynamoDB wait for service
+ * DynamoDB Batch Write with retry count
  *
- * @module services/dynamodb/wait_for
+ * @module services/dynamodb/batch_write
  *
  */
 
@@ -64,20 +64,19 @@ const batchWritePrototype = {
       let batchWriteParams = oThis.params
         , waitTime = 0
         , timeFactor = 300
-        , r = null
+        , response
         , attemptNo = 1
         , unprocessedItems
         , unprocessedItemsLength
       ;
 
-      while(true) {
-
+      while (true) {
         logger.info('executeDdbRequest attempNo ', attemptNo);
 
-        r = await oThis.batchWriteItemAfterWait(batchWriteParams, waitTime);
+        response = await oThis.batchWriteItemAfterWait(batchWriteParams, waitTime);
 
-        if (!r.isSuccess()) {
-          logger.error("services/dynamodb/batch_write.js:executeDdbRequest, attemptNo: ", attemptNo, r.toHash());
+        if (!response.isSuccess()) {
+          logger.error("services/dynamodb/batch_write.js:executeDdbRequest, attemptNo: ", attemptNo, response.toHash());
           return responseHelper.error({
             internal_error_identifier: "s_dy_bw_executeDdbRequest_1",
             api_error_identifier: "exception",
@@ -86,13 +85,13 @@ const batchWritePrototype = {
           });
         }
 
-        unprocessedItems = r.data['UnprocessedItems'];
+        unprocessedItems = response.data['UnprocessedItems'];
         unprocessedItemsLength = 0;
 
 
-        // Break the loop if unprocessedItem get empty or retry count exceeds
+        // Break the loop if unprocessedItems get empty or retry count exceeds the given limit
         if (unprocessedItemsLength === 0 || oThis.unprocessedItemRetryCount === 0) {
-            break;
+          break;
         }
 
         for (let shardName in unprocessedItems) {
@@ -104,11 +103,13 @@ const batchWritePrototype = {
           }
         }
 
+        //Create new batchWriteParams of unprocessedItems
         batchWriteParams = {RequestItems: unprocessedItems};
 
+        //Increment retry variables
+        attemptNo += 1;
         waitTime += timeFactor;
         oThis.unprocessedItemRetryCount -= 1;
-        attemptNo += 1;
       }
 
       for (let shardName in unprocessedItems) {
@@ -120,8 +121,8 @@ const batchWritePrototype = {
       }
 
       logger.debug("=======Base.perform.result=======");
-      logger.debug(r);
-      return r;
+      logger.debug(response);
+      return response;
 
     } catch (err) {
       logger.error("services/dynamodb/batch_write.js:executeDdbRequest inside catch ", err);
@@ -136,8 +137,8 @@ const batchWritePrototype = {
 
   /**
    * Batch write Item with wait time
-   * @param batchWriteParams
-   * @param waitTime
+   * @param {Object} batchWriteParams - Batch write params
+   * @param {Integer} waitTime - wait time in milliseconds
    * @return {Promise<any>}
    */
   batchWriteItemAfterWait: async function (batchWriteParams, waitTime) {
