@@ -162,6 +162,11 @@
   "ddb_batch_write_failed": {
     "http_code": "422",
     "code": "UNPROCESSABLE_ENTITY",
-    "message": "DDB Batch Put failed for some or all entries."
+    "message": "DDB Batch PUT failed for some or all entries."
+  },
+  "ddb_batch_get_failed": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "DDB Batch GET failed for some or all entries."
   }
 }
