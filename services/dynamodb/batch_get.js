@@ -110,7 +110,7 @@ const batchGetPrototype = {
         for (let tableName in unprocessedKeys) {
           if (unprocessedKeys.hasOwnProperty(tableName)) {
             unprocessedKeysLength += unprocessedKeys[tableName]['Keys'].length;
-            logger.error('migrationError batch_get executeDdbRequest TableName :', tableName,
+            logger.error('dynamodb batch_get executeDdbRequest TableName :', tableName,
                 ' unprocessedItemsCount: ', unprocessedKeysLength,
                 ' keys count: ', batchGetParams.RequestItems[tableName]['Keys'].length,
                 ' attemptNo ', attemptNo);
@@ -134,7 +134,7 @@ const batchGetPrototype = {
 
       for (let tableName in unprocessedKeys) {
         if (unprocessedKeys.hasOwnProperty(tableName)) {
-          logger.error('migrationError BATCH_GET ALL_ATTEMPTS_FAILED TableName :', tableName,
+          logger.error('dynamodb BATCH_GET ALL_ATTEMPTS_FAILED TableName :', tableName,
               ' unprocessedItemsCount: ', unprocessedKeysLength,
               ' attempts Failed ', attemptNo);
         }

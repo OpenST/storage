@@ -92,7 +92,7 @@ const batchWritePrototype = {
         for (let tableName in unprocessedItems) {
           if (unprocessedItems.hasOwnProperty(tableName)) {
             unprocessedItemsLength += unprocessedItems[tableName].length;
-            logger.error('batch_write executeDdbRequest TableName :', tableName,
+            logger.error('dynamodb batch_write executeDdbRequest TableName :', tableName,
               ' unprocessedItemsCount: ', unprocessedItemsLength,
               ' items count: ', batchWriteParams.RequestItems[tableName].length,
               ' attemptNo ', attemptNo);
@@ -115,7 +115,7 @@ const batchWritePrototype = {
 
       for (let tableName in unprocessedItems) {
         if (unprocessedItems.hasOwnProperty(tableName)) {
-          logger.error('BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :', tableName,
+          logger.error('dynamodb BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :', tableName,
             ' unprocessedItemsCount: ', unprocessedItemsLength,
             ' attempts Failed ', attemptNo);
         }
