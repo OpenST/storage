@@ -158,8 +158,15 @@ const tokenBalanceCacheSpecificPrototype = {
 
       dataFromModel.settled_balance = dataFromModel.settled_balance || defaultValues.settled_balance;
       dataFromModel.unsettled_debits = dataFromModel.unsettled_debits || defaultValues.unsettled_debits;
+
+      let unsettled_debits_bn = new BigNumber(dataFromModel.unsettled_debits);
+
+      if (unsettled_debits_bn.lt(0)) {
+        unsettled_debits_bn = new BigNumber(0);
+      }
+
       dataFromModel.available_balance = new BigNumber(dataFromModel.settled_balance)
-        .minus(new BigNumber(dataFromModel.unsettled_debits)).toString(10);
+        .minus(unsettled_debits_bn).toString(10);
 
       resultData[eth_address] = dataFromModel;
     }
