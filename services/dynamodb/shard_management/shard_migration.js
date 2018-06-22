@@ -250,13 +250,13 @@ ShardMigration.prototype = {
           ProjectionType: 'ALL'
         },
         ProvisionedThroughput: {
-          ReadCapacityUnits: 1,
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 3,
+          WriteCapacityUnits: 3
         }
       }],
       ProvisionedThroughput: {
-        ReadCapacityUnits: 1,
-        WriteCapacityUnits: 1
+        ReadCapacityUnits: 3,
+        WriteCapacityUnits: 3
       }
     }
 
@@ -274,9 +274,9 @@ ShardMigration.prototype = {
 
     let autoScalingConfig = {};
 
-    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension, 1,50);
+    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension, 3,50);
 
-    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension, 1 ,50);
+    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension, 3 ,50);
 
     autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.writeCapacityScalableDimension, autoScaleHelper.writeMetricType, 1, 10, 50.0);
 
@@ -291,9 +291,9 @@ ShardMigration.prototype = {
 
       autoScalingConfig.globalSecondaryIndex[gsiIndexName] = {};
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, 1, 50);
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, 3, 50);
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, 1, 50);
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, 3, 50);
 
       autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, autoScaleHelper.writeMetricType, 1, 10, 50.0);
 
@@ -332,8 +332,8 @@ ShardMigration.prototype = {
         }
       ],
       ProvisionedThroughput: {
-        ReadCapacityUnits: 1,
-        WriteCapacityUnits: 1
+        ReadCapacityUnits: 3,
+        WriteCapacityUnits: 3
       }
     }
   },
@@ -370,9 +370,9 @@ ShardMigration.prototype = {
 
     let autoScalingConfig = {};
 
-    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension, 1, 50);
+    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension, 3, 50);
 
-    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension, 1, 50);
+    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension, 3, 50);
 
     autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.writeCapacityScalableDimension, autoScaleHelper.writeMetricType, 1, 10, 50.0);
 
