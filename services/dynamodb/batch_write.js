@@ -63,7 +63,8 @@ const batchWritePrototype = {
     try {
       let batchWriteParams = oThis.params
         , waitTime = 0
-        , timeFactor = 300
+        , constantTimeFactor = 90
+        , variableTimeFactor = 10
         , response
         , attemptNo = 1
         , unprocessedItems
@@ -92,7 +93,7 @@ const batchWritePrototype = {
         for (let tableName in unprocessedItems) {
           if (unprocessedItems.hasOwnProperty(tableName)) {
             unprocessedItemsLength += unprocessedItems[tableName].length;
-            logger.error('dynamodb batch_write executeDdbRequest TableName :', tableName,
+            logger.error('dynamodb BATCH_WRITE ATTEMPT_FAILED TableName :', tableName,
               ' unprocessedItemsCount: ', unprocessedItemsLength,
               ' items count: ', batchWriteParams.RequestItems[tableName].length,
               ' attemptNo ', attemptNo);
@@ -107,9 +108,10 @@ const batchWritePrototype = {
         //Create new batchWriteParams of unprocessedItems
         batchWriteParams = {RequestItems: unprocessedItems};
 
-        //Increment retry variables
+        //adjust retry variables
         attemptNo += 1;
-        waitTime += timeFactor;
+        waitTime = constantTimeFactor + variableTimeFactor;
+        variableTimeFactor += variableTimeFactor;
         oThis.unprocessedItemsRetryCount -= 1;
       }
 

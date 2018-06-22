@@ -64,7 +64,8 @@ const batchGetPrototype = {
     try {
       let batchGetParams = oThis.params
           , waitTime = 0
-          , timeFactor = 300
+          , constantTimeFactor = 90
+          , variableTimeFactor = 10
           , localResponse
           , globalResponse
           , attemptNo = 1
@@ -110,7 +111,7 @@ const batchGetPrototype = {
         for (let tableName in unprocessedKeys) {
           if (unprocessedKeys.hasOwnProperty(tableName)) {
             unprocessedKeysLength += unprocessedKeys[tableName]['Keys'].length;
-            logger.error('dynamodb batch_get executeDdbRequest TableName :', tableName,
+            logger.error('dynamodb BATCH_GET ATTEMPT_FAILED TableName :', tableName,
                 ' unprocessedItemsCount: ', unprocessedKeysLength,
                 ' keys count: ', batchGetParams.RequestItems[tableName]['Keys'].length,
                 ' attemptNo ', attemptNo);
@@ -126,9 +127,10 @@ const batchGetPrototype = {
         //Create new batchWriteParams of unprocessedItems
         batchGetParams = {RequestItems: unprocessedKeys};
 
-        //Increment retry variables
+        //adjust retry variables
         attemptNo += 1;
-        waitTime += timeFactor;
+        waitTime = constantTimeFactor + variableTimeFactor;
+        variableTimeFactor += variableTimeFactor;
         oThis.unprocessedKeysRetryCount -= 1;
       }
 
