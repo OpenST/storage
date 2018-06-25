@@ -11,6 +11,7 @@ const rootPrefix    = '.'
   , TokenBalanceCache = require(rootPrefix + '/services/cache_multi_management/token_balance')
   , TransactionLogModel = require(rootPrefix + '/lib/models/transaction_log')
   , TransactionLogConst = require(rootPrefix + '/lib/global_constant/transaction_log')
+  , EntityTypesConst = require(rootPrefix + '/lib/global_constant/entity_types')
 ;
 
 // Expose all libs here.
@@ -23,6 +24,7 @@ module.exports = {
   , TokenBalanceCache: TokenBalanceCache
   , TransactionLogModel: TransactionLogModel
   , TransactionLogConst: TransactionLogConst
+  , StorageEntityTypesConst: EntityTypesConst
 };
 
 /*
