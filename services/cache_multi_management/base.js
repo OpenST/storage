@@ -149,7 +149,7 @@ BaseCache.prototype = {
         }
       }
     } else {
-      logger.error("==>Error while getting from cache: ", JSON.stringify(cacheFetchResponse));
+      logger.error("==>Error while getting from cache: ", cacheFetchResponse);
       for (let i = 0; i < cacheKeys.length; i++) {
         let cacheKey = cacheKeys[i];
         cacheMiss.push(oThis.cacheKeyToexternalIdMap[cacheKey]);

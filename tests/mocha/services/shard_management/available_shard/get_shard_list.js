@@ -40,7 +40,7 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
 
     const response = await shardManagementObject.getShardsByType({entity_type: entity_type, shard_type: shardType});
 
-    logger.info("response LOG", JSON.stringify(response.toHash()));
+    logger.info("response LOG", response.toHash());
 
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
