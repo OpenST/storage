@@ -16,6 +16,7 @@ const rootPrefix  = "../.."
   , CreateTableMigrationServiceKlass = require(rootPrefix + '/services/dynamodb/create_table_migration')
   , BatchGetItemKlass = require(rootPrefix + '/services/dynamodb/batch_get')
   , BatchWriteItemKlass = require(rootPrefix + '/services/dynamodb/batch_write')
+  , UpdateItemKlass = require(rootPrefix + '/services/dynamodb/update_item')
 ;
 
 /**
@@ -230,13 +231,14 @@ DynamoDBService.prototype = {
    * Update item
    *
    * @params {Object} params - Params as per dynamo db updateItem api params
+   * @params {Integer} retryCount - Retry count for ProvisionedThroughputExceededException exception
    *
    * @return {promise<result>}
    *
    */
-  updateItem: function(params) {
+  updateItem: function(params, retryCount) {
     const oThis = this
-      , updateItemObject = new DDBServiceBaseKlass(oThis.ddbObject, 'updateItem', params)
+      , updateItemObject = new UpdateItemKlass(oThis.ddbObject, params, retryCount)
     ;
     return updateItemObject.perform();
   },
