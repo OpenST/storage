@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>OpenST Storage Class: TransactionLogModel</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.lumen.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">OpenST Storage</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="module-config_core_constants.html">config/core_constants</a></li><li><a href="module-lib_auto_scale_base.html">lib/auto_scale/base</a></li><li><a href="module-lib_dynamodb_base.html">lib/dynamodb/base</a></li><li><a href="module-lib_models_dynamodb_managed_shard.html">lib/models/dynamodb/managed_shard</a></li><li><a href="module-models_dynamodb_available_shard.html">models/dynamodb/available_shard</a></li><li><a href="module-services_auto_scale_api.html">services/auto_scale/api</a></li><li><a href="module-services_auto_scale_base.html">services/auto_scale/base</a></li><li><a href="module-services_dynamodb_api.html">services/dynamodb/api</a></li><li><a href="module-services_dynamodb_base.html">services/dynamodb/base</a></li><li><a href="module-services_dynamodb_batch_get.html">services/dynamodb/batch_get</a></li><li><a href="module-services_dynamodb_batch_write.html">services/dynamodb/batch_write</a></li><li><a href="module-services_dynamodb_create_table_migration.html">services/dynamodb/create_table_migration</a></li><li><a href="module-services_dynamodb_shard_management_available_shard_has_shard.html">services/dynamodb/shard_management/available_shard/has_shard</a></li><li><a href="module-services_dynamodb_shard_management_shard_api.html">services/dynamodb/shard_management/shard_api</a></li><li><a href="module-services_dynamodb_table_exists.html">services/dynamodb/table_exists</a></li><li><a href="module-services_dynamodb_wait_for.html">services/dynamodb/wait_for</a></li><li><a href="module-services_shard_management_available_shard_add_shard.html">services/shard_management/available_shard/add_shard</a></li><li><a href="module-services_shard_management_available_shard_configure_shard.html">services/shard_management/available_shard/configure_shard</a></li><li><a href="module-services_shard_management_available_shard_get_shards.html">services/shard_management/available_shard/get_shards</a></li><li><a href="module-services_shard_management_managed_shard_assign_shard.html">services/shard_management/managed_shard/assign_shard</a></li><li><a href="module-services_shard_management_managed_shard_get_shard.html">services/shard_management/managed_shard/get_shard</a></li><li><a href="module-services_shard_management_shard_migration.html">services/shard_management/shard_migration</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="availableShard.html">availableShard</a></li><li><a href="BaseCache.html">BaseCache</a></li><li><a href="BaseModel.html">BaseModel</a></li><li><a href="GetShardDetailsCacheKlass.html">GetShardDetailsCacheKlass</a></li><li><a href="GetShardListCacheKlass.html">GetShardListCacheKlass</a></li><li><a href="HasShardKlass.html">HasShardKlass</a></li><li><a href="managedShard.html">managedShard</a></li><li><a href="module-config_core_constants-CoreConstants.html">config/core_constants~CoreConstants</a></li><li><a href="module-lib_auto_scale_base-Base.html">lib/auto_scale/base~Base</a></li><li><a href="module-lib_dynamodb_base-Base.html">lib/dynamodb/base~Base</a></li><li><a href="module-lib_models_dynamodb_managed_shard-Item.html">lib/models/dynamodb/managed_shard~Item</a></li><li><a href="module-lib_models_dynamodb_managed_shard-ManagedShard.html">lib/models/dynamodb/managed_shard~ManagedShard</a></li><li><a href="module-models_dynamodb_available_shard-AvailableShard.html">models/dynamodb/available_shard~AvailableShard</a></li><li><a href="module-models_dynamodb_available_shard-Item.html">models/dynamodb/available_shard~Item</a></li><li><a href="module-services_auto_scale_api-AutoScaleService.html">services/auto_scale/api~AutoScaleService</a></li><li><a href="module-services_auto_scale_base-Base.html">services/auto_scale/base~Base</a></li><li><a href="module-services_dynamodb_api-DynamoDBService.html">services/dynamodb/api~DynamoDBService</a></li><li><a href="module-services_dynamodb_base-Base.html">services/dynamodb/base~Base</a></li><li><a href="module-services_dynamodb_batch_get-BatchGetItem.html">services/dynamodb/batch_get~BatchGetItem</a></li><li><a href="module-services_dynamodb_batch_write-BatchWriteItem.html">services/dynamodb/batch_write~BatchWriteItem</a></li><li><a href="module-services_dynamodb_batch_write-UpdateItem.html">services/dynamodb/batch_write~UpdateItem</a></li><li><a href="module-services_dynamodb_create_table_migration-CreateTableMigration.html">services/dynamodb/create_table_migration~CreateTableMigration</a></li><li><a href="module-services_dynamodb_shard_management_available_shard_has_shard-HasShard.html">services/dynamodb/shard_management/available_shard/has_shard~HasShard</a></li><li><a href="module-services_dynamodb_shard_management_shard_api-ShardServiceApi.html">services/dynamodb/shard_management/shard_api~ShardServiceApi</a></li><li><a href="module-services_dynamodb_table_exists-TableExist.html">services/dynamodb/table_exists~TableExist</a></li><li><a href="module-services_dynamodb_wait_for-WaitFor.html">services/dynamodb/wait_for~WaitFor</a></li><li><a href="module-services_shard_management_available_shard_add_shard-AddShard.html">services/shard_management/available_shard/add_shard~AddShard</a></li><li><a href="module-services_shard_management_available_shard_configure_shard-ConfigureShard.html">services/shard_management/available_shard/configure_shard~ConfigureShard</a></li><li><a href="module-services_shard_management_available_shard_get_shards-GetShardList.html">services/shard_management/available_shard/get_shards~GetShardList</a></li><li><a href="module-services_shard_management_managed_shard_assign_shard-AssignShard.html">services/shard_management/managed_shard/assign_shard~AssignShard</a></li><li><a href="module-services_shard_management_managed_shard_get_shard-GetShardDetails.html">services/shard_management/managed_shard/get_shard~GetShardDetails</a></li><li><a href="module-services_shard_management_shard_migration-ShardMigration.html">services/shard_management/shard_migration~ShardMigration</a></li><li><a href="TokenBalanceCache.html">TokenBalanceCache</a></li><li><a href="TokenBalanceModel.html">TokenBalanceModel</a></li><li><a href="TransactionLogModel.html">TransactionLogModel</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	<h1 class="page-title">Class: TransactionLogModel</h1>
+<section>
+
+<header>
+    
+        <h2>
+        TransactionLogModel
+        </h2>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+<hr>
+<dt>
+    <h4 class="name" id="TransactionLogModel"><span class="type-signature"></span>new TransactionLogModel()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Transaction Log Model
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+	<style>.copyright, .jsdoc-message, footer { color: #555555;} footer { border-color:#eeeeee;} }</style>
+
+
+	<span class="copyright">
+	OpenST Foundation Ltd.
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>
