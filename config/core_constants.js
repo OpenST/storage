@@ -29,14 +29,18 @@ CoreConstants.prototype = {
    */
   DYNAMODB_API_VERSION: '2012-08-10',
 
-  CACHING_ENGINE: process.env.CACHING_ENGINE || "none",
+  // STORAGE CACHING ENGINE
+  CACHING_ENGINE: process.env.OS_CACHING_ENGINE || "none",
 
   ERROR_CONFIG: {
     param_error_config: paramErrorConfig,
     api_error_config: apiErrorConfig
   },
 
- DEBUG_ENABLED: process.env.OST_DEBUG_ENABLED || false
+  // Generic env variable across NPM packages
+  DEBUG_ENABLED: process.env.OST_DEBUG_ENABLED || 0,
+
+  DYNAMODB_TABLE_NAME_PREFIX: process.env.OS_DYNAMODB_TABLE_NAME_PREFIX || '',
 
 };
 

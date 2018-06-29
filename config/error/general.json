@@ -143,5 +143,30 @@
     "http_code": "422",
     "code": "UNPROCESSABLE_ENTITY",
     "message": "Cache ids are not defined"
+  },
+  "negative_balance": {
+    "http_code": "422",
+    "code": "INSUFFICIENT_FUNDS",
+    "message": "Balances Went to negative with this update. Please check urgently."
+  },
+  "unhandled_catch_response": {
+    "http_code": "500",
+    "code": "INTERNAL_SERVER_ERROR",
+    "message": "Something went wrong."
+  },
+  "missing_contract_address": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Invalid Contract address"
+  },
+  "ddb_batch_write_failed": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "DDB Batch PUT failed for some or all entries."
+  },
+  "ddb_batch_get_failed": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "DDB Batch GET failed for some or all entries."
   }
 }

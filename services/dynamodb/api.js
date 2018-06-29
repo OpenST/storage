@@ -14,6 +14,9 @@ const rootPrefix  = "../.."
   , WaitForServiceKlass = require(rootPrefix + "/services/dynamodb/wait_for")
   , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
   , CreateTableMigrationServiceKlass = require(rootPrefix + '/services/dynamodb/create_table_migration')
+  , BatchGetItemKlass = require(rootPrefix + '/services/dynamodb/batch_get')
+  , BatchWriteItemKlass = require(rootPrefix + '/services/dynamodb/batch_write')
+  , UpdateItemKlass = require(rootPrefix + '/services/dynamodb/update_item')
 ;
 
 /**
@@ -53,6 +56,7 @@ DynamoDBService.prototype = {
    *  2. enabling continuous back up
    *  3. enabling auto scaling
    *
+   * @params {Object} autoScaleObject - Auto Scaling Object to configure table
    * @params {Object} params - Params as JSON object having further params
    * @params {Object} params.createTableConfig - Create table configurations params as JSON object
    * @params {Object} params.updateContinuousBackupConfig - Update Continuous Backup configurations params as JSON object
@@ -150,13 +154,14 @@ DynamoDBService.prototype = {
    * Batch get
    *
    * @params {Object} params - Params as per dynamo db batchGetItem api params
+   * @params {Integer} unprocessedKeysRetryCount - Retry count for unprocessed keys
    *
    * @return {promise<result>}
    *
    */
-  batchGetItem: function(params) {
+  batchGetItem: function(params, unprocessedKeysRetryCount) {
     const oThis = this
-      , bathGetObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchGetItem', params)
+      , bathGetObject = new BatchGetItemKlass(oThis.ddbObject, params, unprocessedKeysRetryCount)
     ;
     return bathGetObject.perform();
   },
@@ -165,15 +170,16 @@ DynamoDBService.prototype = {
    * Batch write
    *
    * @params {Object} params - Params as per dynamo db batchWriteItem api params
+   * @params {Integer} unprocessedItemsRetryCount - Retry count for unprocessed Items
    *
    * @return {promise<result>}
    *
    */
-  batchWriteItem: function(params) {
+  batchWriteItem: function(params, unprocessedItemsRetryCount) {
     const oThis = this
-      , bathWriteObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchWriteItem', params)
+      , batchWriteObject = new BatchWriteItemKlass(oThis.ddbObject, params, unprocessedItemsRetryCount)
     ;
-    return bathWriteObject.perform();
+    return batchWriteObject.perform();
   },
 
   /**
@@ -225,13 +231,14 @@ DynamoDBService.prototype = {
    * Update item
    *
    * @params {Object} params - Params as per dynamo db updateItem api params
+   * @params {Integer} retryCount - Retry count for ProvisionedThroughputExceededException exception
    *
    * @return {promise<result>}
    *
    */
-  updateItem: function(params) {
+  updateItem: function(params, retryCount) {
     const oThis = this
-      , updateItemObject = new DDBServiceBaseKlass(oThis.ddbObject, 'updateItem', params)
+      , updateItemObject = new UpdateItemKlass(oThis.ddbObject, params, retryCount)
     ;
     return updateItemObject.perform();
   },

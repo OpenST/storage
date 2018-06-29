@@ -19,7 +19,7 @@ describe('Delete Table', function() {
   it('should create table successfully', async function () {
     // build create table params
     const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
+      TableName : testConstants.transactionLogTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -48,7 +48,7 @@ describe('Delete Table', function() {
   it('should update table successfully', async function () {
     // build create table params
     const updateTableParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       ProvisionedThroughput: {
         ReadCapacityUnits: 5,
         WriteCapacityUnits: 5
@@ -60,14 +60,14 @@ describe('Delete Table', function() {
   it('should fail when no update config data is passed', async function () {
     // build create table params
     const updateTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.updateTable(dynamodbApiObject, updateTableParams, false);
   });
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");

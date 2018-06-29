@@ -19,7 +19,7 @@ describe('Create Table', function() {
 
   it('should delete table successfully if exists', async function () {
     const params = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
     if (checkTableExistsResponse.data.response === true) {
@@ -30,7 +30,7 @@ describe('Create Table', function() {
   it('should create table successfully', async function () {
     // build create table params
     const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
+      TableName : testConstants.transactionLogTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -125,7 +125,7 @@ describe('Create Table', function() {
   // it('should enable continous backup successfully', async function () {
   //   // build create table params
   //   const enableContinousBackupParams = {
-  //     TableName: testConstants.transactionLogsTableName,
+  //     TableName: testConstants.transactionLogTableName,
   //     PointInTimeRecoverySpecification: {
   //       PointInTimeRecoveryEnabled: true
   //     }
@@ -135,7 +135,7 @@ describe('Create Table', function() {
 
   after(async function() {
     const params = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(dynamodbApiObject, params, true);
 

@@ -136,6 +136,7 @@ HasShard.prototype = {
 
   /**
    * Has Shard call from Cache
+   *
    * @return {Promise<*>}
    */
   hasShardFromCache: async function() {

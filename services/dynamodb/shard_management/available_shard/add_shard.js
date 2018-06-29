@@ -111,9 +111,6 @@ AddShard.prototype = {
       } else if (!oThis.entityType) {
         errorCode = errorCodePrefix + '2';
         error_identifier =  "invalid_entity_type"
-      } else if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {
-        errorCode = errorCodePrefix + '3';
-        error_identifier =  "invalid_entity_type"
       } else {
         return onResolve(responseHelper.successWithData({}));
       }
@@ -129,6 +126,11 @@ AddShard.prototype = {
     });
   },
 
+  /**
+   * Clears any Cache associated with "this" object Shard Name
+   *
+   * @return {*}
+   */
   clearAnyAssociatedCache: function () {
     const oThis = this
     ;

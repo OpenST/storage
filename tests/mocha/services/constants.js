@@ -56,7 +56,7 @@ MochaTestConstants.prototype = {
    *
    */
   AUTO_SCALE_CONFIGURATIONS_REMOTE : {
-    'apiVersion': '2012-08-10',
+    'apiVersion': '2016-02-06',
     'accessKeyId': 'x',
     'secretAccessKey': 'x',
     'region': 'localhost',
@@ -65,9 +65,9 @@ MochaTestConstants.prototype = {
     'endpoint': "http://localhost:8000"
   },
 
-  transactionLogsTableName: 'shard_00001_transaction_logs',
+  transactionLogTableName: 'shard_00001_transaction_logs',
 
-  shardEntityType: 'userBalances',
+  shardEntityType: 'tokenBalance',
 
   shardTableName: 'shard_00001_user_balances',
 

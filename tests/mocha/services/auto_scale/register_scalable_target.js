@@ -18,7 +18,7 @@ const autoScaleObj = new ApplicationAutoScalingKlass(testConstants.AUTO_SCALE_CO
   , dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
 ;
 
-let resourceId = 'table/' + testConstants.transactionLogsTableName
+let resourceId = 'table/' + testConstants.transactionLogTableName
   , roleARN = null;
 
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {

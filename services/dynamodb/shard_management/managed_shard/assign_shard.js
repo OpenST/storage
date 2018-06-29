@@ -30,7 +30,7 @@ const rootPrefix = '../../../..'
  * @param {String} params.identifier - identifier of the shard
  * @param {String} params.entity_type - schema of the table in shard
  * @param {String} params.shard_name - shard name
- * @param {Boolean} params.force_assignment - true/false
+ * @param {Boolean} params.force_assignment - optional true/false
  *
  * @return {Object}
  *
@@ -44,7 +44,7 @@ const AssignShard = function (params) {
   oThis.identifier = params.identifier;
   oThis.entityType = params.entity_type;
   oThis.shardName = params.shard_name;
-  oThis.forceAssignment = params.force_assignment;
+  oThis.forceAssignment = params.force_assignment || false;
 };
 
 AssignShard.prototype = {
@@ -124,7 +124,8 @@ AssignShard.prototype = {
         return response.data[oThis.shardName].has_shard
       };
 
-      oThis.isAllocatedShard = async function () {
+      // Shared shard i.e. enabled for allocation
+      oThis.isSharedShard = async function () {
         const oThis = this
           , responseShardInfo = await availableShard.getShardByName(oThis.params)
           , shardInfo = responseShardInfo.data[oThis.shardName]
@@ -141,17 +142,15 @@ AssignShard.prototype = {
       if (!oThis.identifier) {
         errorCode = errorCodePrefix + '1';
         error_identifier = "invalid_shard_identifier";
-      } else if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
-        errorCode = errorCodePrefix + '2';
-        error_identifier = "invalid_entity_type";
       } else if (!oThis.ddbObject) {
-        errorCode = errorCodePrefix + '3';
+        errorCode = errorCodePrefix + '2';
         error_identifier = "invalid_ddb_object";
       } else if (!(await oThis.hasShard())) {
-        errorCode = errorCodePrefix + '4';
+        errorCode = errorCodePrefix + '3';
         error_identifier = "invalid_shard_name";
-      } else if (!oThis.forceAssignment && (await oThis.isAllocatedShard())) {
-        errorCode = errorCodePrefix + '5';
+      } else if (!((oThis.forceAssignment) || (await oThis.isSharedShard()))) {
+        // Throw error if forceAssignment=false and isSharedShard = false
+        errorCode = errorCodePrefix + '4';
         error_identifier = "invalid_force_allocation";
       } else {
         return onResolve(responseHelper.successWithData({}));
@@ -168,14 +167,16 @@ AssignShard.prototype = {
   },
 
   /**
-   * Clear affected cache
+   * Clear affected cache associated with 'this' entity type and identifier
+   *
    * @return {Promise<*>}
    */
   clearAnyAssociatedCache: async function () {
     const oThis = this
       , cacheParamsGetShard = {
       ddb_object: oThis.ddbObject,
-      ids: [{identifier: oThis.identifier, entity_type: oThis.entityType}]
+      entity_type: oThis.entityType,
+      identifiers: [oThis.identifier]
     };
     return await new GetShardNameMultiCacheKlass(cacheParamsGetShard).clear();
   }

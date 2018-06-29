@@ -25,7 +25,7 @@ const rootPrefix = '../../../..'
  * @params {Object} params - Parameters
  * @param {Object} params.ddb_object - Dynamo db object
  * @param {String} params.entity_type - entity type
- * @param {String} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'All')
+ * @param {String} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'all')
  * @param {JSON} params.table_schema - schema of the table in shard
  *
  * @return {Object}
@@ -98,16 +98,6 @@ GetShardList.prototype = {
 
     return new Promise(async function (onResolve) {
 
-      if (!(managedShardConst.getSupportedEntityTypes()[oThis.entityType])) {
-        logger.debug('s_sm_as_gsl_validateParams_1', 'entityType is', oThis.entityType);
-        return onResolve(responseHelper.error({
-          internal_error_identifier: "s_sm_as_gsl_validateParams_1",
-          api_error_identifier: "invalid_entity_type",
-          debug_options: {},
-          error_config: coreConstants.ERROR_CONFIG
-        }));
-      }
-
       if (!oThis.shardType || (availableShardGlobalConstant.getShardTypes()[oThis.shardType] === undefined) ) {
         logger.debug('s_sm_as_gsl_validateParams_2', 'shardType is', oThis.shardType);
         return onResolve(responseHelper.error({
@@ -136,7 +126,7 @@ GetShardList.prototype = {
     logger.debug("=======GetShardList.addShard.result=======");
     logger.debug(r);
     if (r.isSuccess()) {
-      return responseHelper.successWithData({data: r.data[String(oThis.entityType + oThis.shardType)]});
+      return responseHelper.successWithData({items: r.data[String(oThis.entityType + oThis.shardType)]});
     } else {
       return responseHelper;
     }

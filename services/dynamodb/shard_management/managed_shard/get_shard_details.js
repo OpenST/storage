@@ -24,7 +24,7 @@ const rootPrefix = '../../../..'
  * @params {Object} params - Parameters
  * @param {Object} params.ddb_object - dynamodb object
  * @param {String} params.entity_type - entity type
- * @param {String} params.identifiers - identifiers are object of keys
+ * @param {Array} params.identifiers - Array of identifiers containing string
  *
  * @return {Object}
  *
@@ -88,7 +88,7 @@ GetShardDetails.prototype = {
     logger.debug("=======GetShardDetails.GetShardDetailsMultiCache.result=======");
     logger.debug(r);
     if (r.isSuccess()) {
-      return responseHelper.successWithData(r.data);
+      return responseHelper.successWithData({items: r.data});
     } else {
       return r;
     }
@@ -110,20 +110,15 @@ GetShardDetails.prototype = {
         error_identifier = null
       ;
 
-      if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {
-        errorCode = errorCodePrefix + '1';
-        error_identifier = "invalid_entity_type";
-      }
-
       if (!oThis.identifiers || oThis.identifiers.constructor.name !== 'Array') {
-        errorCode = errorCodePrefix + '2';
+        errorCode = errorCodePrefix + '1';
         error_identifier = "invalid_ids_array";
       }
 
       for (let ind = 0; ind < oThis.identifiers.length; ind++) {
         let id = oThis.identifiers[ind];
         if (!id) {
-          errorCode = errorCodePrefix + '3';
+          errorCode = errorCodePrefix + '2';
           error_identifier = "invalid_shard_identifier";
           break;
         }

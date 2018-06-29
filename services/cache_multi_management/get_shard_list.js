@@ -34,18 +34,18 @@ GetShardListCacheKlass.prototype.constructor = GetShardListCacheKlass;
  *
  * @return {Object}
  */
-GetShardListCacheKlass.prototype.setCacheKeys = function () {
+GetShardListCacheKlass.prototype.setCacheKeyToexternalIdMap = function () {
 
   const oThis = this;
 
-  oThis.cacheKeys = {};
+  oThis.cacheKeyToexternalIdMap = {};
   for (let i = 0; i < oThis.identifiers.length; i++) {
     let key = String(oThis.identifiers[i].entity_type + oThis.identifiers[i].shard_type);
-    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_gsl_" + "et_" + oThis.identifiers[i].entity_type + "st_" + oThis.identifiers[i].shard_type] = key;
+    oThis.cacheKeyToexternalIdMap[oThis._cacheKeyPrefix() + "dy_sm_gsl_" + "et_" + oThis.identifiers[i].entity_type + "st_" + oThis.identifiers[i].shard_type] = key;
     oThis.idToValueMap[key] = oThis.identifiers[i];
   }
 
-  return oThis.cacheKeys;
+  return oThis.cacheKeyToexternalIdMap;
 
 };
 

@@ -18,7 +18,7 @@ describe('Check table exists', function() {
 
     // put item
     const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
+      TableName : testConstants.transactionLogTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -42,7 +42,7 @@ describe('Check table exists', function() {
   });
 
   it('check table exist successfully', async function () {
-    const response = await dynamodbApiObject.checkTableExist({TableName: testConstants.transactionLogsTableName});
+    const response = await dynamodbApiObject.checkTableExist({TableName: testConstants.transactionLogTableName});
     assert.equal(response.isSuccess(), true, 'check table exist failed');
   });
 
@@ -53,7 +53,7 @@ describe('Check table exists', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");
