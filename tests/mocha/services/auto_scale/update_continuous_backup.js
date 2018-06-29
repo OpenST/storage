@@ -23,7 +23,7 @@ describe('Create Table', function() {
   it('should delete table successfully if exists', async function () {
     this.timeout(100000);
     const params = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
     if (checkTableExistsResponse.data.response === true) {
@@ -39,7 +39,7 @@ describe('Create Table', function() {
   it('should enable update continuous backup successfully', async function () {
     // build update continuous params
     const enableContinousBackupParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       PointInTimeRecoverySpecification: {
         PointInTimeRecoveryEnabled: true
       }

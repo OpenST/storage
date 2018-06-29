@@ -21,7 +21,7 @@ describe('Delete Table', function() {
   it('should create table successfully', async function () {
     // build create table params
     const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
+      TableName : testConstants.transactionLogTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -69,7 +69,7 @@ describe('Delete Table', function() {
   it('should delete table successfully', async function () {
     // build delete table params
     const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
 
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
@@ -78,7 +78,7 @@ describe('Delete Table', function() {
   it('should fail when table name is not passed', async function () {
     // build delete table params
     const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
 
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, false);

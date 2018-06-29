@@ -25,12 +25,12 @@ const rootPrefix  = "../.."
  * @params {Object} autoScalingObject - auto scaling Object
  * @params {Object} params - params
  * @params {Object} params.createTableConfig - create table configurations
- * @params {Object} params.updateContinuousBackupConfig - update Continuous Backup configurations
  * @params {Object} params.autoScalingConfig - scaling params
  * @params {Object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
  * @params {Object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
  * @params {Object} params.autoScalingConfig.putScalingPolicyWrite- Put scaling policy write configurations
  * @params {Object} params.autoScalingConfig.putScalingPolicyRead - Put scaling policy read configurations
+ * @params {Object} params.autoScalingConfig.globalSecondaryIndex - Auto Scaling configuration of Global Secondary Indexes
  *
  * @constructor
  */
@@ -148,6 +148,7 @@ const CreateTableMigrationPrototype = {
    * @return {Promise} true/false
    *
    */
+  // TODO Refactor to small methods
   executeDdbRequest: function() {
     const oThis = this
       ;
@@ -160,49 +161,86 @@ const CreateTableMigrationPrototype = {
       }
 
       const roleARN = createTableResponse.data.TableDescription.TableArn
+        , gsiArray = createTableResponse.data.TableDescription.GlobalSecondaryIndexes || []
         , tableName = oThis.createTableConfig.TableName
         , waitForTableExistsParams = {TableName: tableName}
       ;
       logger.debug("Table arn :", roleARN);
 
-      oThis.autoScalingConfig.registerScalableTargetWrite.RoleARN = roleARN;
-      oThis.autoScalingConfig.registerScalableTargetRead.RoleARN = roleARN;
-
       logger.info("Waiting for table creation..");
-      const waitFortableExistsResponse = await oThis.ddbObject.call('waitFor','tableExists', waitForTableExistsParams);
-      if(waitFortableExistsResponse.isFailure()){
-        return onResolve(waitFortableExistsResponse);
+      const waitForTableExistsResponse = await oThis.ddbObject.call('waitFor','tableExists', waitForTableExistsParams);
+      if(waitForTableExistsResponse.isFailure()){
+        return onResolve(waitForTableExistsResponse);
       }
       logger.info(tableName + " Table created..");
 
       if (oThis.shouldAutoScale) {
+
+        oThis.autoScalingConfig.registerScalableTargetWrite.RoleARN = roleARN;
+        oThis.autoScalingConfig.registerScalableTargetRead.RoleARN = roleARN;
+
         logger.info("Register auto scaling read/write target started..");
         let registerAutoScalePromiseArray = []
           , putAutoScalePolicyArray = []
         ;
+        // registerAutoScale for table
         registerAutoScalePromiseArray.push(oThis.autoScalingObject.registerScalableTarget(oThis.autoScalingConfig.registerScalableTargetWrite));
         registerAutoScalePromiseArray.push(oThis.autoScalingObject.registerScalableTarget(oThis.autoScalingConfig.registerScalableTargetRead));
 
-        const registerAutoScalePromiseResponse = await Promise.all(registerAutoScalePromiseArray);
-        if (registerAutoScalePromiseResponse[0].isFailure()) {
-          return onResolve(registerAutoScalePromiseResponse[0]);
+        // registerAutoScale for index
+        for (let index=0; index < gsiArray.length; index++) {
+          let gsi = gsiArray[index]
+            , indexName = gsi.IndexName
+            , indexArn = gsi.IndexArn
+            , gsiParamObject = oThis.autoScalingConfig.globalSecondaryIndex[indexName];
+
+          // Ignore if one of GSI auto scale config is not passed
+          // In that case default read/write of GSI capacity will be used
+          if(!gsiParamObject) continue;
+
+          gsiParamObject.registerScalableTargetWrite.RoleARN = indexArn;
+          gsiParamObject.registerScalableTargetRead.RoleARN = indexArn;
+
+          registerAutoScalePromiseArray.push(oThis.autoScalingObject.registerScalableTarget(gsiParamObject.registerScalableTargetWrite));
+          registerAutoScalePromiseArray.push(oThis.autoScalingObject.registerScalableTarget(gsiParamObject.registerScalableTargetRead));
         }
-        if (registerAutoScalePromiseResponse[1].isFailure()) {
-          return onResolve(registerAutoScalePromiseResponse[1]);
+
+        const registerAutoScalePromiseResponse = await Promise.all(registerAutoScalePromiseArray);
+
+        for (let index=0; index < registerAutoScalePromiseResponse.length; index++) {
+          if (registerAutoScalePromiseResponse[index].isFailure()) {
+            return onResolve(registerAutoScalePromiseResponse[index]);
+          }
         }
         logger.info("Register auto scaling read/write target done.");
 
         logger.info("Putting auto scale read/write policy..");
+        // putAutoScalePolicy For Table
         putAutoScalePolicyArray.push(oThis.autoScalingObject.putScalingPolicy(oThis.autoScalingConfig.putScalingPolicyWrite));
         putAutoScalePolicyArray.push(oThis.autoScalingObject.putScalingPolicy(oThis.autoScalingConfig.putScalingPolicyRead));
 
+        // putAutoScalePolicy For index
+        for (let index=0; index < gsiArray.length; index++) {
+          let gsi = gsiArray[index]
+            , indexName = gsi.IndexName
+            , gsiParamObject = oThis.autoScalingConfig.globalSecondaryIndex[indexName];
+
+          // Ignore if one of GSI auto scale config is not passed
+          // In that case default read/write of GSI capacity will be used
+          if(!gsiParamObject) continue;
+
+          putAutoScalePolicyArray.push(oThis.autoScalingObject.putScalingPolicy(gsiParamObject.putScalingPolicyWrite));
+          putAutoScalePolicyArray.push(oThis.autoScalingObject.putScalingPolicy(gsiParamObject.putScalingPolicyRead));
+        }
+
         const putAutoScalePolicyPromiseResponse = await Promise.all(putAutoScalePolicyArray);
-        if (putAutoScalePolicyPromiseResponse[0].isFailure()) {
-          return onResolve(putAutoScalePolicyPromiseResponse[0]);
+
+        for (let index=0; index < putAutoScalePolicyPromiseResponse.length; index++) {
+          if (putAutoScalePolicyPromiseResponse[index].isFailure()) {
+            return onResolve(putAutoScalePolicyPromiseResponse[index]);
+          }
         }
-        if (putAutoScalePolicyPromiseResponse[1].isFailure()) {
-          return onResolve(putAutoScalePolicyPromiseResponse[1]);
-        }
+
         logger.info("Putting auto scale read/write policy done.");
       }
 

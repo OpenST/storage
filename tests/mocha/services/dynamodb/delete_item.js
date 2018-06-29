@@ -18,7 +18,7 @@ describe('Delete Item', function() {
 
     // put item
     const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
+      TableName : testConstants.transactionLogTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -44,7 +44,7 @@ describe('Delete Item', function() {
   it('should delete item successfully', async function () {
 
     const insertItemParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       Item: {
         tuid: {S: "shardTableName"},
         cid: {N: "2"},
@@ -55,7 +55,7 @@ describe('Delete Item', function() {
     await helper.putItem(dynamodbApiObject, insertItemParams, true);
 
     const deleteItemParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       Key: {
         "tuid": {
           S: "shardTableName"
@@ -71,7 +71,7 @@ describe('Delete Item', function() {
   it('should delete item successfully with unknown key', async function () {
 
     const insertItemParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       Item: {
         tuid: {S: "shardTableName"},
         cid: {N: "2"},
@@ -82,7 +82,7 @@ describe('Delete Item', function() {
     await helper.putItem(dynamodbApiObject, insertItemParams, true);
 
     const deleteItemParams = {
-      TableName: testConstants.transactionLogsTableName,
+      TableName: testConstants.transactionLogTableName,
       Key: {
         "tuid": {
           S: "shardTable"
@@ -115,7 +115,7 @@ describe('Delete Item', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");

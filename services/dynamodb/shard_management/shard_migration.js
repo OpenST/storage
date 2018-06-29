@@ -14,6 +14,7 @@ const rootPrefix = '../../..'
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+  , autoScaleHelper = require(rootPrefix + '/lib/auto_scale/helper')
 ;
 
 /**
@@ -47,24 +48,34 @@ ShardMigration.prototype = {
     const oThis = this
     ;
 
-    try {
-      let r = null;
-      r = oThis.validateParams();
-      logger.debug("ShardMigration.executeShardMigration.validateParams", r);
-      if (r.isFailure()) return r;
-
-      r = await oThis.executeShardMigration();
-      logger.debug("ShardMigration.executeShardMigration.executeShardMigration", r);
-      return r;
-    } catch (err) {
-      return responseHelper.error({
-        internal_error_identifier:"s_sm_sm_perform_1",
-        api_error_identifier: "exception",
-        debug_options: {error: err},
-        error_config: coreConstants.ERROR_CONFIG
+    return oThis.asyncPerform()
+      .catch(function (err) {
+        return responseHelper.error({
+          internal_error_identifier: "s_sm_sm_perform_1",
+          api_error_identifier: "exception",
+          debug_options: {error: err},
+          error_config: coreConstants.ERROR_CONFIG
+        });
       });
-    }
+  },
 
+  /**
+   * Async Perform
+   *
+   * @return {Promise<*>}
+   */
+  asyncPerform: async function () {
+    const oThis = this
+    ;
+
+    let r = null;
+    r = oThis.validateParams();
+    logger.debug("ShardMigration.executeShardMigration.validateParams", r);
+    if (r.isFailure()) return r;
+
+    r = await oThis.executeShardMigration();
+    logger.debug("ShardMigration.executeShardMigration.executeShardMigration", r);
+    return r;
   },
 
   /**
@@ -111,7 +122,7 @@ ShardMigration.prototype = {
 
       } catch (err) {
         r = responseHelper.error({
-          internal_error_identifier:"s_am_r_runRegister_1",
+          internal_error_identifier: "s_am_r_runRegister_1",
           api_error_identifier: "exception",
           debug_options: {error: err},
           error_config: coreConstants.ERROR_CONFIG
@@ -138,10 +149,18 @@ ShardMigration.prototype = {
     let params = {};
     params.createTableConfig = oThis.getAvailableShardsCreateTableParams();
     const tableName = params.createTableConfig.TableName
-      , resourceId = 'table/' + tableName
-      , arn = "ARN"
+      , globalSecondaryIndexesArray = params.createTableConfig.GlobalSecondaryIndexes
     ;
-    params.autoScalingConfig = oThis.getAvailableShardsAutoScalingParams(tableName, arn, resourceId);
+
+    //Check whether table already exists
+    let hasTable = await oThis.tableExist(tableName);
+
+    if (hasTable) {
+      logger.info("Migration Already done for", tableName);
+      return responseHelper.successWithData({});
+    }
+
+    params.autoScalingConfig = oThis.getAvailableShardsAutoScalingParams(tableName, globalSecondaryIndexesArray);
     const availableShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
 
     logger.debug(availableShardsResponse);
@@ -169,7 +188,15 @@ ShardMigration.prototype = {
       , resourceId = 'table/' + tableName
       , arn = "ARN"
     ;
-    params.autoScalingConfig = await oThis.getManagedShardsAutoScalingParams(tableName, arn, resourceId);
+
+    //Check whether table already exists
+    let hasTable = await oThis.tableExist(tableName);
+    if (hasTable) {
+      logger.info("Migration Already done for", tableName);
+      return responseHelper.successWithData({});
+    }
+
+    params.autoScalingConfig = oThis.getManagedShardsAutoScalingParams(tableName, arn, resourceId);
     const managedShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
     logger.debug(managedShardsResponse);
     if (managedShardsResponse.isFailure()) {
@@ -184,10 +211,10 @@ ShardMigration.prototype = {
    *
    * @return {Object}
    */
-  getAvailableShardsCreateTableParams: function() {
+  getAvailableShardsCreateTableParams: function () {
     return {
-        TableName: availableShardConst.getTableName(),
-          AttributeDefinitions: [
+      TableName: availableShardConst.getTableName(),
+      AttributeDefinitions: [
         {
           AttributeName: availableShardConst.SHARD_NAME,
           AttributeType: "S"
@@ -201,13 +228,13 @@ ShardMigration.prototype = {
           AttributeType: "N"
         }
       ],
-        KeySchema: [
+      KeySchema: [
         {
           AttributeName: availableShardConst.SHARD_NAME,
           KeyType: "HASH"
         }
       ],
-        GlobalSecondaryIndexes: [{
+      GlobalSecondaryIndexes: [{
         IndexName: availableShardConst.getIndexNameByEntityAllocationType(),
         KeySchema: [
           {
@@ -220,16 +247,16 @@ ShardMigration.prototype = {
           }
         ],
         Projection: {
-          ProjectionType: 'KEYS_ONLY'
+          ProjectionType: 'ALL'
         },
         ProvisionedThroughput: {
-          ReadCapacityUnits: 1,
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 3,
+          WriteCapacityUnits: 3
         }
       }],
-        ProvisionedThroughput: {
-        ReadCapacityUnits: 1,
-          WriteCapacityUnits: 1
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 3,
+        WriteCapacityUnits: 3
       }
     }
 
@@ -240,61 +267,39 @@ ShardMigration.prototype = {
    *
    * @return {Object}
    */
-  getAvailableShardsAutoScalingParams: function(tableName, roleArn, resourceId){
+  getAvailableShardsAutoScalingParams: function (tableName, gsiArray) {
+    const oThis = this
+      , resourceId = autoScaleHelper.createResourceId(tableName)
+    ;
+
     let autoScalingConfig = {};
 
-    autoScalingConfig.registerScalableTargetWrite = {
-      ResourceId: resourceId, /* required */
-      ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
-      ServiceNamespace: 'dynamodb' , /* required */
-      MaxCapacity: 50,
-      MinCapacity: 1,
-      RoleARN: roleArn
+    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension, 3,50);
 
-    };
+    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension, 3 ,50);
 
-    autoScalingConfig.registerScalableTargetRead = {
-      ResourceId: resourceId, /* required */
-      ScalableDimension: 'dynamodb:table:ReadCapacityUnits',
-      ServiceNamespace: 'dynamodb' , /* required */
-      MaxCapacity: 50,
-      MinCapacity: 1,
-      RoleARN: roleArn
+    autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.writeCapacityScalableDimension, autoScaleHelper.writeMetricType, 1, 10, 50.0);
 
-    };
+    autoScalingConfig.putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.readCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 10, 50.0);
 
-    autoScalingConfig.putScalingPolicyWrite  = {
-      ServiceNamespace: "dynamodb",
-      ResourceId: resourceId,
-      ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-      PolicyName: tableName + "-scaling-policy",
-      PolicyType: "TargetTrackingScaling",
-      TargetTrackingScalingPolicyConfiguration: {
-        PredefinedMetricSpecification: {
-          PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
-        },
-        ScaleOutCooldown: 5, // seconds
-        ScaleInCooldown: 5, // seconds
-        TargetValue: 70.0
-      }
-    };
+    autoScalingConfig.globalSecondaryIndex = {};
 
-    autoScalingConfig.putScalingPolicyRead  = {
-      ServiceNamespace: "dynamodb",
-      ResourceId: resourceId,
-      ScalableDimension: "dynamodb:table:ReadCapacityUnits",
-      PolicyName: tableName + "-scaling-policy",
-      PolicyType: "TargetTrackingScaling",
-      TargetTrackingScalingPolicyConfiguration: {
-        PredefinedMetricSpecification: {
-          PredefinedMetricType: "DynamoDBReadCapacityUtilization"
-        },
-        ScaleOutCooldown: 5, // seconds
-        ScaleInCooldown: 5, // seconds
-        TargetValue: 70.0
-      }
-    };
+    for (let index = 0; index < gsiArray.length; index++) {
+      let gsiIndexName = gsiArray[index].IndexName
+        , indexResourceId = autoScaleHelper.createIndexResourceId(tableName, gsiIndexName)
+      ;
 
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName] = {};
+
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, 3, 50);
+
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, 3, 50);
+
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, autoScaleHelper.writeMetricType, 1, 10, 50.0);
+
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 10, 50.0);
+
+    }
     return autoScalingConfig;
   },
 
@@ -303,7 +308,7 @@ ShardMigration.prototype = {
    *
    * @return {Object}
    */
-  getManagedShardsCreateTableParams: function() {
+  getManagedShardsCreateTableParams: function () {
     return {
       TableName: managedShardConst.getTableName(),
       AttributeDefinitions: [
@@ -327,10 +332,30 @@ ShardMigration.prototype = {
         }
       ],
       ProvisionedThroughput: {
-        ReadCapacityUnits: 1,
-        WriteCapacityUnits: 1
+        ReadCapacityUnits: 3,
+        WriteCapacityUnits: 3
       }
     }
+  },
+
+  /**
+   * To check table existence in db
+   *
+   * @param tableName Table Name to be checked
+   */
+  tableExist: async function (tableName) {
+    const oThis = this
+    ;
+
+    let listTablesResponse = await oThis.ddbApiObject.listTables({});
+    if (listTablesResponse.isFailure()) {
+      logger.error("s_dy_sm tableExist api failure");
+      return false;
+    }
+    logger.warn("Tables", listTablesResponse.data.TableNames, " for table", tableName);
+    return listTablesResponse.data.TableNames.find(function (tn) {
+      return tn === tableName;
+    });
   },
 
   /**
@@ -338,64 +363,25 @@ ShardMigration.prototype = {
    *
    * @return {Object}
    */
-  getManagedShardsAutoScalingParams: function(tableName, roleArn, resourceId){
+  getManagedShardsAutoScalingParams: function (tableName) {
+    const oThis = this
+      , resourceId = autoScaleHelper.createResourceId(tableName)
+    ;
+
     let autoScalingConfig = {};
 
-    autoScalingConfig.registerScalableTargetWrite = {
-      ResourceId: resourceId, /* required */
-      ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
-      ServiceNamespace: 'dynamodb' , /* required */
-      MaxCapacity: 50,
-      MinCapacity: 1,
-      RoleARN: roleArn
+    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension, 3, 50);
 
-    };
+    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension, 3, 50);
 
-    autoScalingConfig.registerScalableTargetRead = {
-      ResourceId: resourceId, /* required */
-      ScalableDimension: 'dynamodb:table:ReadCapacityUnits',
-      ServiceNamespace: 'dynamodb' , /* required */
-      MaxCapacity: 50,
-      MinCapacity: 1,
-      RoleARN: roleArn
+    autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.writeCapacityScalableDimension, autoScaleHelper.writeMetricType, 1, 10, 50.0);
 
-    };
+    autoScalingConfig.putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.readCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 10, 50.0);
 
-    autoScalingConfig.putScalingPolicyWrite  = {
-      ServiceNamespace: "dynamodb",
-      ResourceId: resourceId,
-      ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-      PolicyName: tableName + "-scaling-policy",
-      PolicyType: "TargetTrackingScaling",
-      TargetTrackingScalingPolicyConfiguration: {
-        PredefinedMetricSpecification: {
-          PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
-        },
-        ScaleOutCooldown: 5, // seconds
-        ScaleInCooldown: 5, // seconds
-        TargetValue: 70.0
-      }
-    };
-
-    autoScalingConfig.putScalingPolicyRead  = {
-      ServiceNamespace: "dynamodb",
-      ResourceId: resourceId,
-      ScalableDimension: "dynamodb:table:ReadCapacityUnits",
-      PolicyName: tableName + "-scaling-policy",
-      PolicyType: "TargetTrackingScaling",
-      TargetTrackingScalingPolicyConfiguration: {
-        PredefinedMetricSpecification: {
-          PredefinedMetricType: "DynamoDBReadCapacityUtilization"
-        },
-        ScaleOutCooldown: 5, // seconds
-        ScaleInCooldown: 5, // seconds
-        TargetValue: 70.0
-      }
-    };
+    autoScalingConfig.globalSecondaryIndex = {};
 
     return autoScalingConfig;
   }
-
 };
 
 module.exports = ShardMigration;

@@ -10,12 +10,13 @@ const rootPrefix = "../../../../.."
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
+  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
 ;
 
 
 const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
   , shardManagementObject = dynamoDbObject.shardManagement()
-  , userBalancesShardName = testConstants.shardTableName
+  , tokenBalanceShardName = testConstants.shardTableName
 ;
 
 
@@ -25,9 +26,10 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, data
     invalidShardName: false,
     undefined_force_assignment: true,
     invalidIdentifier: false,
-    inValidEntityType: true
+    inValidEntityType: true,
+    allocated_shard: false
   };
-  let shardName = userBalancesShardName
+  let shardName = tokenBalanceShardName
     , identifier = "0x1234"
     , entityType = testConstants.shardEntityType
     , forceAssignment = true
@@ -54,6 +56,10 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, data
       entityType = "undefined";
     }
 
+    if (options.allocated_shard) {
+      await shardManagementObject.configureShard({shard_name: shardName, allocation_type: availableShardConst.enabled});
+    }
+
     const response = await shardManagementObject.assignShard({identifier: identifier, entity_type: entityType, shard_name: shardName, force_assignment: forceAssignment});
 
     logger.log("LOG", response);
@@ -77,14 +83,14 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
 
     await shardManagementObject.runShardMigration(dynamoDbObject);
 
-    await shardManagementObject.addShard({shard_name: userBalancesShardName, entity_type: 'userBalances'});
+    await shardManagementObject.addShard({shard_name: tokenBalanceShardName, entity_type: 'userBalances'});
   });
 
   createTestCasesForOptions("Assign shard adding happy case", {}, true, {});
 
   createTestCasesForOptions("Assign shard having invalid shard name", {
     invalidShardName: true
-  }, false, 's_sm_ms_as_validateParams_4');
+  }, false, 's_sm_ms_as_validateParams_3');
 
   createTestCasesForOptions("Assign shard having invalid identifier", {
     invalidIdentifier: true
@@ -92,10 +98,15 @@ describe('services/dynamodb/shard_management/managed_shard/assign_shard', functi
 
   createTestCasesForOptions("Assign shard having invalid entity type", {
     inValidEntityType: true
-  }, false, 's_sm_ms_as_validateParams_2');
+  }, true, {});
 
   createTestCasesForOptions("Assign shard having undefined force assignment", {
     undefined_force_assignment: true
+  }, false, 's_sm_ms_as_validateParams_4');
+
+  createTestCasesForOptions("Assign shard having undefined force assignment and allocated shard true", {
+    undefined_force_assignment: true,
+    allocated_shard:true
   }, true, {});
 
   afterEach(async function() {

@@ -37,6 +37,10 @@ ShardServiceApi.prototype = {
   /**
    * To run Shard Migration
    *
+   * @param {Object} ddbApiObject - DynamoDb Api Object
+   *
+   * @param {Object} autoScaleApiObj Auto Scaling Api Object
+   *
    * @return {*|promise<result>}
    */
   runShardMigration: function(ddbApiObject, autoScaleApiObj) {
@@ -51,7 +55,14 @@ ShardServiceApi.prototype = {
   /**
    *  To add Shard
    *
-   * @param {Object} params - Parameters
+   * @param {Object} params - Params as JSON object
+   *
+   * @param {String} params.shard_name - Name of the shard
+   *
+   * @param {String} params.entity_type - Entity Type of shard
+   *
+   * Note: Allocation Type will be disabled (It will be dedicated shard).
+   *  To enable configure shard api call need to be made
    *
    * @return {*|promise<result>}
    */
@@ -66,7 +77,13 @@ ShardServiceApi.prototype = {
   /**
    * To configure shard
    *
-   * @param {Object} params - Parameters
+   * @param {Object} params - Params as JSON object
+   *
+   * @param {String} params.shard_name - Name of the shard
+   *
+   * @param {enum} params.allocation_type - Allocation type :- if
+   *                enabled: Provided shard is available for multiple assignment,
+   *                disabled: Provided shard is dedicated shard for single Id
    *
    * @return {*|promise<result>}
    */
@@ -79,9 +96,16 @@ ShardServiceApi.prototype = {
   },
 
   /**
-   * get Shard list by type
+   * Get Shard list by entity type
    *
-   * @param {Object} params - Parameters
+   * @param {Object} params - Params as JSON object
+   *
+   * @param {String} params.entity_type - Entity type of the shard
+   *
+   * @param {enum} params.shard_type - Shard type :- if
+   *                  all: give all available shards
+   *                  enabled: Shard is available for multiple assignment,
+   *                  disabled: Shard is dedicated for single Id
    *
    * @return {*|promise<result>}
    */
@@ -94,9 +118,36 @@ ShardServiceApi.prototype = {
   },
 
   /**
-   * To assign shard
+   * To check whether shard name already exist or not.
    *
-   * @param {Object} params - Parameters
+   * @param {Object} params - Params as JSON object
+   *
+   * @param {Array} params.shard_names - List of shard names to be queried for existence.
+   *
+   * @return {*|promise<result>}
+   */
+  hasShard: function (params) {
+    const oThis = this
+      , hasShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
+    ;
+
+    return new HasShardKlass(hasShardParams).perform();
+  },
+
+
+  /**
+   * Assign provided Shard name to given Identifier
+   *
+   * @param {Object} params - Params as JSON object
+   *
+   * @param {String} params.identifier - Identifier of shard to be assigned.
+   *
+   * @param {String} params.entity_type - Entity type of the shard.
+   *
+   * @param {String} params.shard_name - Name of the Shard
+   *
+   * @param {Boolean} params.force_assignment - (Optional default: false) Force Assignment to bypass dedicated shard check.
+   *                                            Note: It should be used in case dedicated shard is assigned first time.
    *
    * @return {*|promise<result>}
    */
@@ -108,23 +159,17 @@ ShardServiceApi.prototype = {
     return new AssignShardKlass(assignShardParams).perform();
   },
 
-  /**
-   * has shard
-   *
-   * @param {Object} params - Parameters
-   */
-  hasShard: function (params) {
-    const oThis = this
-      , hasShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
-    ;
-
-    return new HasShardKlass(hasShardParams).perform();
-  },
 
   /**
-   * get Managed shard
+   * It provides Shard details
    *
-   * @param {Object} params - Parameters
+   * @param {Object} params - Params as JSON object
+   *
+   * @param {String} params.entity_type - Entity type of the shard to be queried.
+   *
+   * @param {Array} params.identifiers - List of Identifiers to be queried.
+   *
+   * @return {*|promise<result>}
    */
   getManagedShard: function (params) {
     const oThis = this

@@ -32,16 +32,16 @@ HasShardKlass.prototype.constructor = HasShardKlass;
  *
  * @return {Object}
  */
-HasShardKlass.prototype.setCacheKeys = function () {
+HasShardKlass.prototype.setCacheKeyToexternalIdMap = function () {
 
   const oThis = this;
 
-  oThis.cacheKeys = {};
+  oThis.cacheKeyToexternalIdMap = {};
   for (let i = 0; i < oThis.shardNames.length; i++) {
-    oThis.cacheKeys[oThis._cacheKeyPrefix() + "dy_sm_hs_" + oThis.shardNames[i]] = oThis.shardNames[i];
+    oThis.cacheKeyToexternalIdMap[oThis._cacheKeyPrefix() + "dy_sm_hs_" + oThis.shardNames[i]] = oThis.shardNames[i];
   }
 
-  return oThis.cacheKeys;
+  return oThis.cacheKeyToexternalIdMap;
 
 };
 

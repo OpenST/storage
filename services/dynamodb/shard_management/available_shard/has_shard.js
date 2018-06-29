@@ -48,28 +48,38 @@ HasShard.prototype = {
    *
    */
   perform: async function () {
-
     const oThis = this
     ;
-    try {
-      let r = null;
 
-      r = await oThis.validateParams();
-      logger.debug("=======HasShard.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      r = await oThis.hasShardFromCache();
-      return r;
-    } catch(err) {
-      return responseHelper.error({
-        internal_error_identifier:"s_sm_as_hs_perform_1",
-        api_error_identifier: "exception",
-        debug_options: {error: err},
-        error_config: coreConstants.ERROR_CONFIG
+    return oThis.asyncPerform()
+      .catch(function(err){
+        return responseHelper.error({
+          internal_error_identifier:"s_sm_as_hs_perform_1",
+          api_error_identifier: "exception",
+          debug_options: {error: err},
+          error_config: coreConstants.ERROR_CONFIG
+        });
       });
-    }
+  },
 
+  /**
+   * Async Perform
+   *
+   * @return {Promise<*>}
+   */
+  asyncPerform: async function () {
+    const oThis = this
+    ;
+
+    let r = null;
+
+    r = await oThis.validateParams();
+    logger.debug("=======HasShard.validateParams.result=======");
+    logger.debug(r);
+    if (r.isFailure()) return r;
+
+    r = await oThis.hasShardFromCache();
+    return r;
   },
 
   /**
@@ -126,6 +136,7 @@ HasShard.prototype = {
 
   /**
    * Has Shard call from Cache
+   *
    * @return {Promise<*>}
    */
   hasShardFromCache: async function() {

@@ -41,13 +41,25 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
     }
 
     const response = await shardManagementObject.getManagedShard({entity_type: entity_type, identifiers: [id]});
-
-    logger.info("shardManagementObject Response", JSON.stringify(response));
+    logger.info("shardManagementObject Response", response.toHash());
+    const itemsObject = response.data.items;
+    logger.info("shardManagementObject Response", itemsObject);
     if (toAssert) {
       assert.isTrue(response.isSuccess(), "Success");
-      assert.equal(Object.keys(response.data).length, returnCount);
+      assert.equal(Object.keys(itemsObject).length, returnCount);
       if (returnCount === 1){
-        assert.equal(response.data[id].shardName, shardName);
+        const item = itemsObject[id];
+
+        logger.info("LOG ShardName", item.shardName);
+        assert.equal(item.shardName, shardName);
+        logger.info("LOG EntityType", item.entityType);
+        assert.equal(item.entityType, entity_type);
+        logger.info("LOG identifier ", item.identifier);
+        assert.equal(item.identifier, id);
+        logger.info("LOG created At", item.createdAt);
+        assert.exists(item.createdAt);
+        logger.info("LOG Updated At", item.updatedAt);
+        assert.exists(item.updatedAt);
       }
     } else {
       assert.isTrue(response.isFailure(), "Failure");
@@ -59,32 +71,32 @@ const createTestCasesForOptions = function (optionsDesc, options, toAssert, retu
 
 describe('services/dynamodb/shard_management/managed_shard/get_shard_details', function () {
 
-  before(async function () {
+  beforeEach(async function () {
 
     // delete table
     await helper.cleanShardMigrationTables(dynamoDbObject);
 
     await shardManagementObject.runShardMigration(dynamoDbObject);
 
-    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'userBalances'});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'tokenBalance'});
 
-    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'userBalances'});
+    await shardManagementObject.addShard({shard_name: shardName, entity_type: 'tokenBalance'});
 
-    await shardManagementObject.assignShard({identifier: identifier, entity_type: "userBalances" ,shard_name: shardName});
+    await shardManagementObject.assignShard({identifier: identifier, entity_type: "tokenBalance" ,shard_name: shardName, force_assignment: true});
 
   });
 
   createTestCasesForOptions("Get shard happy case", {}, true, 1, {});
 
-  createTestCasesForOptions("Get shard details having invalid shard type", {
+  createTestCasesForOptions("Get shard details having invalid entity type", {
     inValidEntityType: true
-  }, false, 1, "s_sm_as_gsd_validateParams_1");
+  }, true, 0, {});
 
   createTestCasesForOptions("Get shard details having invalid Id", {
     inValidId: true
   }, true, 0, {});
 
-  after(async function() {
+  afterEach(async function() {
     // delete table
     await helper.cleanShardMigrationTables(dynamoDbObject);
   });

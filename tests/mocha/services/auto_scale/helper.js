@@ -7,6 +7,7 @@ const rootPrefix = "../../../.."
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
   , api = require(rootPrefix + "/index").Dynamodb
+  , autoScaleHelper = require(rootPrefix + '/lib/auto_scale/helper')
 ;
 
 /**
@@ -178,42 +179,22 @@ helper.prototype = {
   createTestCaseEnvironment: async function(dynamodbApiObject, autoScaleObj) {
     const oThis = this
       , params = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
 
     const checkTableExistsResponse1 = await dynamodbApiObject.checkTableExist(params);
 
     if (checkTableExistsResponse1.data.response === true) {
 
-      logger.log(testConstants.transactionLogsTableName, "Table exists . Deleting it....");
+      logger.log(testConstants.transactionLogTableName, "Table exists . Deleting it....");
       await oThis.deleteTable(dynamodbApiObject, params, true);
 
       logger.info("Waiting for table to get deleted");
       await oThis.waitForTableToGetDeleted(dynamodbApiObject, params);
       logger.info("Table got deleted");
 
-      // logger.log(testConstants.transactionLogsTableName, "Table exists . Deregister it from scalability....");
-      //
-      // logger.info("delScalingParams..........");
-      // const delScalingParams = {
-      //   PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
-      //   ResourceId: "table/" + testConstants.transactionLogsTableName,
-      //   ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-      //   ServiceNamespace: "dynamodb"
-      // };
-      //
-      // await oThis.deleteScalingPolicy(autoScaleObj, delScalingParams);
-      //
-      // logger.info("deregisterScalableTarget..........");
-      // const deRegisterScalableTargetParams = {
-      //   ResourceId: "table/" + testConstants.transactionLogsTableName,
-      //   ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-      //   ServiceNamespace: "dynamodb"
-      // };
-      // await oThis.deregisterScalableTarget(autoScaleObj, deRegisterScalableTargetParams);
-
     } else {
-      logger.log(testConstants.transactionLogsTableName, "Table does not exist.");
+      logger.log(testConstants.transactionLogTableName, "Table does not exist.");
     }
 
     logger.info("Creating table");
@@ -233,7 +214,7 @@ helper.prototype = {
   cleanTestCaseEnvironment: async function (dynamodbApiObject, autoScaleObj) {
     const oThis = this
       , params = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
 
     const deleteTableResponse = await oThis.deleteTable(dynamodbApiObject, params, true);
@@ -256,78 +237,51 @@ helper.prototype = {
   createTableMigration : async function(dynamodbApiObject, autoScaleObj) {
     const oThis = this
       , params = {}
-      , autoScale = {}
-      , resourceId = 'table/' + testConstants.transactionLogsTableName
-      , ARN = "ARN"
-      ;
+      , tableName = testConstants.transactionLogTableName
+      , resourceId = autoScaleHelper.createResourceId(testConstants.transactionLogTableName)
+    ;
 
-    params.createTableConfig = oThis.getCreateTableParamsWithoutSecondaryIndex(testConstants.transactionLogsTableName);
+    params.createTableConfig = oThis.getCreateTableParams(testConstants.transactionLogTableName);
 
     params.updateContinuousBackupConfig  = {
       PointInTimeRecoverySpecification: { /* required */
         PointInTimeRecoveryEnabled: true || false /* required */
       },
-      TableName: testConstants.transactionLogsTableName /* required */
+      TableName: testConstants.transactionLogTableName /* required */
     };
 
-  // * @params {object} params.autoScalingConfig.registerScalableTargetWrite - register Scalable Target write configurations
-  //   * @params {object} params.autoScalingConfig.registerScalableTargetRead - register Scalable Target read configurations
-  //   * @params {object} params.autoScalingConfig.putScalingPolicyWrite- Put scaling policy write configurations
-  //   * @params {object} params.autoScalingConfig.putScalingPolicyRead - Put scaling policy read configurations
 
-    autoScale.registerScalableTargetWrite = {
-      ResourceId: resourceId, /* required */
-      ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
-      ServiceNamespace: 'dynamodb' , /* required */
-      MaxCapacity: 15,
-      MinCapacity: 1,
-      RoleARN: ARN
+    const autoScalingConfig = {}
+      , gsiArray = params.createTableConfig.GlobalSecondaryIndexes || [];
 
-    };
+    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension,1 ,50);
 
-    autoScale.registerScalableTargetRead = {
-      ResourceId: resourceId, /* required */
-      ScalableDimension: 'dynamodb:table:ReadCapacityUnits',
-      ServiceNamespace: 'dynamodb' , /* required */
-      MaxCapacity: 15,
-      MinCapacity: 1,
-      RoleARN: ARN
+    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension,1 ,50);
 
-    };
+    autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.writeCapacityScalableDimension, autoScaleHelper.writeMetricType, 1, 1, 50.0);
 
-    autoScale.putScalingPolicyWrite  = {
-      ServiceNamespace: "dynamodb",
-      ResourceId: resourceId,
-      ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-      PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
-      PolicyType: "TargetTrackingScaling",
-      TargetTrackingScalingPolicyConfiguration: {
-        PredefinedMetricSpecification: {
-          PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
-        },
-        ScaleOutCooldown: 60,
-        ScaleInCooldown: 60,
-        TargetValue: 70.0
-      }
-    };
+    autoScalingConfig.putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.readCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 1, 50.0);
 
-    autoScale.putScalingPolicyRead  = {
-      ServiceNamespace: "dynamodb",
-      ResourceId: resourceId,
-      ScalableDimension: "dynamodb:table:ReadCapacityUnits",
-      PolicyName: testConstants.transactionLogsTableName + "-scaling-policy",
-      PolicyType: "TargetTrackingScaling",
-      TargetTrackingScalingPolicyConfiguration: {
-        PredefinedMetricSpecification: {
-          PredefinedMetricType: "DynamoDBReadCapacityUtilization"
-        },
-        ScaleOutCooldown: 60,
-        ScaleInCooldown: 60,
-        TargetValue: 70.0
-      }
-    };
+    autoScalingConfig.globalSecondaryIndex = {};
 
-    params.autoScalingConfig = autoScale;
+    for (let index = 0; index < gsiArray.length; index++) {
+      let gsiIndexName = gsiArray[index].IndexName
+        , indexResourceId = autoScaleHelper.createIndexResourceId(tableName, gsiIndexName)
+      ;
+
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName] = {};
+
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, 1, 20);
+
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, 1, 20);
+
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, autoScaleHelper.writeMetricType, 1, 1, 70.0);
+
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 1, 70.0);
+
+    }
+
+    params.autoScalingConfig = autoScalingConfig;
     return dynamodbApiObject.createTableMigration(autoScaleObj, params);
 
   },
@@ -339,7 +293,7 @@ helper.prototype = {
    * @return {{TableName: *|string, KeySchema: *[], AttributeDefinitions: *[], ProvisionedThroughput: {ReadCapacityUnits: number, WriteCapacityUnits: number}, GlobalSecondaryIndexes: *[], SSESpecification: {Enabled: boolean}}}
    */
   getCreateTableParams: function(tableName) {
-    tableName = tableName || testConstants.transactionLogsTableName;
+    tableName = tableName || testConstants.transactionLogTableName;
     return {
       TableName : tableName,
       KeySchema: [
@@ -392,7 +346,7 @@ helper.prototype = {
    * @return {{TableName: *|string, KeySchema: *[], AttributeDefinitions: *[], ProvisionedThroughput: {ReadCapacityUnits: number, WriteCapacityUnits: number}, GlobalSecondaryIndexes: *[], SSESpecification: {Enabled: boolean}}}
    */
   getCreateTableParamsWithoutSecondaryIndex: function(tableName) {
-    tableName = tableName || testConstants.transactionLogsTableName;
+    tableName = tableName || testConstants.transactionLogTableName;
     return {
       TableName : tableName,
       KeySchema: [

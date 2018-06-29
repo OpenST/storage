@@ -43,18 +43,9 @@ Base.prototype = {
   perform: async function () {
     const oThis = this
     ;
-    try {
-      let r = null;
-      r = oThis.validateParams();
-      logger.debug("=======AutoScale.Base.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
 
-      r = oThis.executeAutoScaleRequest();
-      logger.debug("=======AutoScale.Base.executeAutoScaleRequest.result=======");
-      logger.debug(r);
-      return r;
-    } catch (err) {
+    return oThis.asyncPerform()
+      .catch(function(err){
       logger.error("services/auto_scale/base.js:perform inside catch ", err);
       return responseHelper.error({
         internal_error_identifier: "s_as_b_perform_1",
@@ -62,9 +53,30 @@ Base.prototype = {
         debug_options: {message: err.message},
         error_config: coreConstants.ERROR_CONFIG
       });
-
-    }
+    });
   },
+
+  /**
+   * Async Perform
+   *
+   * @return {Promise<*>}
+   */
+  asyncPerform: async function () {
+    const oThis = this
+    ;
+
+    let r = null;
+    r = oThis.validateParams();
+    logger.debug("=======AutoScale.Base.validateParams.result=======");
+    logger.debug(r);
+    if (r.isFailure()) return r;
+
+    r = oThis.executeAutoScaleRequest();
+    logger.debug("=======AutoScale.Base.executeAutoScaleRequest.result=======");
+    logger.debug(r);
+    return r;
+  },
+
 
   /**
    * Validation of params
