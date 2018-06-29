@@ -5,6 +5,7 @@ branches:
   only:
   - master
   - develop
+  - review-changes-2805
 notifications:
   email:
     recipients:
@@ -13,7 +14,7 @@ notifications:
     on_failure: always
 env:
   global:
-    - OST_CACHING_ENGINE=memcached
+    - OS_CACHING_ENGINE=memcached
     - OST_MEMCACHE_SERVERS=127.0.0.1:11211
 node_js:
   - "8"

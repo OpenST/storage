@@ -22,21 +22,21 @@ describe('Create Table', function() {
 
     const oThis = this
       , params = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
 
     const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
 
     if (checkTableExistsResponse.data.response === true) {
 
-      logger.log(testConstants.transactionLogsTableName, "Table exists . Deleting it....");
+      logger.log(testConstants.transactionLogTableName, "Table exists . Deleting it....");
       await helper.deleteTable(dynamodbApiObject, params, true);
 
       logger.info("Waiting for table to get deleted");
       await helper.waitForTableToGetDeleted(dynamodbApiObject, params);
       logger.info("Table got deleted");
     } else {
-      logger.log(testConstants.transactionLogsTableName, "Table does not exist.");
+      logger.log(testConstants.transactionLogTableName, "Table does not exist.");
     }
   });
 
@@ -51,7 +51,7 @@ describe('Create Table', function() {
   after(async function() {
     this.timeout(100000);
     const params = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(dynamodbApiObject, params, true);
 

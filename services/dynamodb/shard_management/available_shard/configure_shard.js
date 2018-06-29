@@ -52,37 +52,46 @@ ConfigureShard.prototype = {
    *
    */
   perform: async function () {
-
     const oThis = this
     ;
-    try {
-      let r = null;
 
-      r = await oThis.validateParams();
-      logger.debug("=======ConfigureShard.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      if ((await oThis.isRedundantUpdate())) {
-        return responseHelper.successWithData({});
-      } else {
-        r = await availableShard.configureShard(oThis.params);
-        logger.debug("=======ConfigureShard.configureShard.result=======");
-        logger.debug(r);
-
-        oThis.clearAnyAssociatedCache();
-      }
-
-      return r;
-    } catch(err) {
+    return oThis.asyncPerform()
+      .catch(function(err){
       return responseHelper.error({
         internal_error_identifier:"s_sm_as_cs_perform_1",
         api_error_identifier: "exception",
         debug_options: {error: err},
         error_config: coreConstants.ERROR_CONFIG
       });
-    }
+    });
+  },
 
+  /**
+   * Async Perform
+   *
+   * @return {Promise<*>}
+   */
+  asyncPerform: async function () {
+    const oThis = this
+    ;
+
+    let r = null;
+
+    r = await oThis.validateParams();
+    logger.debug("=======ConfigureShard.validateParams.result=======");
+    logger.debug(r);
+    if (r.isFailure()) return r;
+
+    if ((await oThis.isRedundantUpdate())) {
+      logger.debug("ConfigureShard :: is redundant update");
+    } else {
+      r = await availableShard.configureShard(oThis.params);
+      logger.debug("=======ConfigureShard.configureShard.result=======");
+      logger.debug(r);
+      oThis.clearAnyAssociatedCache();
+      if (r.isFailure()) return r;
+    }
+    return responseHelper.successWithData({});
   },
 
   /**
@@ -142,6 +151,11 @@ ConfigureShard.prototype = {
     });
   },
 
+  /**
+   * Check whether update services is trying to change attribute which is already as expected.
+   *
+   * @return {Promise<boolean>}
+   */
   isRedundantUpdate : async function() {
     const oThis = this
       , responseShardInfo = await availableShard.getShardByName(oThis.params)
@@ -158,6 +172,11 @@ ConfigureShard.prototype = {
     return oThis.oldAllocationType === oThis.allocationType;
   },
 
+  /**
+   * Clears any Cache associated with "this" object entity type
+   *
+   * @return {Promise<*>}
+   */
   clearAnyAssociatedCache: async function() {
     const oThis = this
     ;

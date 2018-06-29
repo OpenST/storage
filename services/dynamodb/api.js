@@ -14,6 +14,9 @@ const rootPrefix  = "../.."
   , WaitForServiceKlass = require(rootPrefix + "/services/dynamodb/wait_for")
   , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
   , CreateTableMigrationServiceKlass = require(rootPrefix + '/services/dynamodb/create_table_migration')
+  , BatchGetItemKlass = require(rootPrefix + '/services/dynamodb/batch_get')
+  , BatchWriteItemKlass = require(rootPrefix + '/services/dynamodb/batch_write')
+  , UpdateItemKlass = require(rootPrefix + '/services/dynamodb/update_item')
 ;
 
 /**
@@ -53,8 +56,15 @@ DynamoDBService.prototype = {
    *  2. enabling continuous back up
    *  3. enabling auto scaling
    *
-   * @params {Object} params - Parameters
-   *
+   * @params {Object} autoScaleObject - Auto Scaling Object to configure table
+   * @params {Object} params - Params as JSON object having further params
+   * @params {Object} params.createTableConfig - Create table configurations params as JSON object
+   * @params {Object} params.updateContinuousBackupConfig - Update Continuous Backup configurations params as JSON object
+   * @params {Object} params.autoScalingConfig - Auto scaling params as JSON Object having further params as JSON object
+   * @params {Object} params.autoScalingConfig.registerScalableTargetWrite - Register Scalable Target write configurations params as JSON object
+   * @params {Object} params.autoScalingConfig.registerScalableTargetRead - Register Scalable Target read configurations params as JSON object
+   * @params {Object} params.autoScalingConfig.putScalingPolicyWrite- Put scaling policy write configurations params as JSON object
+   * @params {Object} params.autoScalingConfig.putScalingPolicyRead - Put scaling policy read configurations params as JSON object
    * @return {promise<result>}
    *
    */
@@ -68,7 +78,7 @@ DynamoDBService.prototype = {
   /**
    * Update table
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db updateTable api params
    *
    * @return {promise<result>}
    *
@@ -83,7 +93,7 @@ DynamoDBService.prototype = {
   /**
    * Describe table
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db describeTable api params
    *
    * @return {promise<result>}
    *
@@ -98,7 +108,7 @@ DynamoDBService.prototype = {
   /**
    * List table
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db listTables api params
    *
    * @return {promise<result>}
    *
@@ -113,12 +123,12 @@ DynamoDBService.prototype = {
   /**
    * Enables or disables point in time recovery for the specified table
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db updateContinuousBackup api params
    *
    * @return {promise<result>}
    *
    */
-  updateContinuousBackup: function(params) {
+  updateContinuousBackups: function(params) {
     const oThis = this
       , updateContinuousBackupObject = new DDBServiceBaseKlass(oThis.ddbObject, 'updateContinuousBackups', params)
     ;
@@ -128,7 +138,7 @@ DynamoDBService.prototype = {
   /**
    * Delete table
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db deleteTable api params
    *
    * @return {promise<result>}
    *
@@ -143,14 +153,15 @@ DynamoDBService.prototype = {
   /**
    * Batch get
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db batchGetItem api params
+   * @params {Integer} unprocessedKeysRetryCount - Retry count for unprocessed keys
    *
    * @return {promise<result>}
    *
    */
-  batchGet: function(params) {
+  batchGetItem: function(params, unprocessedKeysRetryCount) {
     const oThis = this
-      , bathGetObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchGetItem', params)
+      , bathGetObject = new BatchGetItemKlass(oThis.ddbObject, params, unprocessedKeysRetryCount)
     ;
     return bathGetObject.perform();
   },
@@ -158,22 +169,23 @@ DynamoDBService.prototype = {
   /**
    * Batch write
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db batchWriteItem api params
+   * @params {Integer} unprocessedItemsRetryCount - Retry count for unprocessed Items
    *
    * @return {promise<result>}
    *
    */
-  batchWrite: function(params) {
+  batchWriteItem: function(params, unprocessedItemsRetryCount) {
     const oThis = this
-      , bathWriteObject = new DDBServiceBaseKlass(oThis.ddbObject, 'batchWriteItem', params)
+      , batchWriteObject = new BatchWriteItemKlass(oThis.ddbObject, params, unprocessedItemsRetryCount)
     ;
-    return bathWriteObject.perform();
+    return batchWriteObject.perform();
   },
 
   /**
-   * Query
+   * Query dynamodb
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db query api params
    *
    * @return {promise<result>}
    *
@@ -188,7 +200,7 @@ DynamoDBService.prototype = {
   /**
    * Scan
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db scan api params
    *
    * @return {promise<result>}
    *
@@ -203,7 +215,7 @@ DynamoDBService.prototype = {
   /**
    * Put item
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db putItem api params
    *
    * @return {promise<result>}
    *
@@ -218,14 +230,15 @@ DynamoDBService.prototype = {
   /**
    * Update item
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db updateItem api params
+   * @params {Integer} retryCount - Retry count for ProvisionedThroughputExceededException exception
    *
    * @return {promise<result>}
    *
    */
-  updateItem: function(params) {
+  updateItem: function(params, retryCount) {
     const oThis = this
-      , updateItemObject = new DDBServiceBaseKlass(oThis.ddbObject, 'updateItem', params)
+      , updateItemObject = new UpdateItemKlass(oThis.ddbObject, params, retryCount)
     ;
     return updateItemObject.perform();
   },
@@ -233,7 +246,7 @@ DynamoDBService.prototype = {
   /**
    * Delete item
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db deleteItem api params
    *
    * @return {promise<result>}
    *
@@ -246,9 +259,9 @@ DynamoDBService.prototype = {
   },
 
   /**
-   * Table exists
+   * Check Table exists
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db tableExists api params
    *
    * @return {promise<result>}
    *
@@ -261,9 +274,9 @@ DynamoDBService.prototype = {
   },
 
   /**
-   * Table not exists
+   * Check Table not exists
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db tableNotExists api params
    *
    * @return {promise<result>}
    *
@@ -278,7 +291,7 @@ DynamoDBService.prototype = {
   /**
    * Check if Table exists using describe table
    *
-   * @params {Object} params - Parameters
+   * @params {Object} params - Params as per dynamo db tableExists api params
    *
    * @return {promise<result>}
    *
@@ -291,7 +304,16 @@ DynamoDBService.prototype = {
   },
 
   /**
+   * It returns Shard service object
+   *
    * To run shard service apis
+   * runShardMigration()
+   * addShard()
+   * configureShard()
+   * assignShard()
+   * hasShard()
+   * getShardsByType()
+   * getManagedShard()
    */
   shardManagement: function() {
     const oThis = this

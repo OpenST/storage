@@ -105,7 +105,7 @@ helper.prototype = {
    *
    */
   updateContinuousBackup: async function(dynamodbApiObject, params, isResultSuccess) {
-    const enableContinousBackupResponse = await dynamodbApiObject.updateContinuousBackup(params);
+    const enableContinousBackupResponse = await dynamodbApiObject.updateContinuousBackups(params);
     if(isResultSuccess === true){
       assert.equal(enableContinousBackupResponse.isSuccess(), true);
       assert.equal(enableContinousBackupResponse.data.ContinuousBackupsStatus, 'ENABLED');
@@ -172,7 +172,7 @@ helper.prototype = {
     const listTablesResponse = await dynamodbApiObject.listTables(params);
     if(isResultSuccess === true){
       assert.equal(listTablesResponse.isSuccess(), true);
-      assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogsTableName);
+      assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogTableName);
     } else {
       assert.equal(listTablesResponse.isSuccess(), false);
     }
@@ -196,17 +196,17 @@ helper.prototype = {
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     // call batch get
-    const batchGetResponse = await dynamodbApiObject.batchGet(params);
+    const batchGetResponse = await dynamodbApiObject.batchGetItem(params);
 
     // validate if the table is created
     assert.equal(batchGetResponse.isSuccess(), isResultSuccess, 'batch get failed');
 
     if (isResultSuccess) {
       // validate batchGet output count
-      assert.equal(batchGetResponse.data.Responses[testConstants.transactionLogsTableName].length, resultCount, "Result count is not equal");
+      assert.equal(batchGetResponse.data.Responses[testConstants.transactionLogTableName].length, resultCount, "Result count is not equal");
 
       // validate return output is object or not
-      let returnObject = batchGetResponse.data.Responses[testConstants.transactionLogsTableName];
+      let returnObject = batchGetResponse.data.Responses[testConstants.transactionLogTableName];
       if (resultCount) {
         assert.typeOf(returnObject[0], 'object');
       }
@@ -231,7 +231,7 @@ helper.prototype = {
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     // call batch get
-    const batchWriteResponse = await dynamodbApiObject.batchWrite(params);
+    const batchWriteResponse = await dynamodbApiObject.batchWriteItem(params);
 
     // validate if the table is created
     assert.equal(batchWriteResponse.isSuccess(), isResultSuccess, 'batch write failed');

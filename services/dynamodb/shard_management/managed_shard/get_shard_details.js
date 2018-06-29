@@ -24,7 +24,7 @@ const rootPrefix = '../../../..'
  * @params {Object} params - Parameters
  * @param {Object} params.ddb_object - dynamodb object
  * @param {String} params.entity_type - entity type
- * @param {String} params.identifiers - identifiers are object of keys
+ * @param {Array} params.identifiers - Array of identifiers containing string
  *
  * @return {Object}
  *
@@ -49,39 +49,49 @@ GetShardDetails.prototype = {
    *
    */
   perform: async function () {
-
     const oThis = this
     ;
-    try {
-      let r = null;
 
-      r = await oThis.validateParams();
-      logger.debug("=======GetShardDetails.validateParams.result=======");
-      logger.debug(r);
-      if (r.isFailure()) return r;
-
-      const cacheParams = {
-        ddb_object: oThis.ddbObject,
-        entity_type: oThis.entityType,
-        identifiers: oThis.identifiers
-      };
-      r = await new GetShardDetailsMultiCacheKlass(cacheParams).fetch();
-      logger.debug("=======GetShardDetails.GetShardDetailsMultiCache.result=======");
-      logger.debug(r);
-      if (r.isSuccess()) {
-        return responseHelper.successWithData(r.data);
-      } else {
-        return r;
-      }
-    } catch (err) {
-      return responseHelper.error({
-        internal_error_identifier: "s_sm_as_gsd_perform_1",
-        api_error_identifier: "exception",
-        debug_options: {error: err},
-        error_config: coreConstants.ERROR_CONFIG
+    return oThis.asyncPerform()
+      .catch(function(err){
+        return responseHelper.error({
+          internal_error_identifier: "s_sm_as_gsd_perform_1",
+          api_error_identifier: "exception",
+          debug_options: {error: err},
+          error_config: coreConstants.ERROR_CONFIG
+        });
       });
-    }
+  },
 
+  /**
+   * Async Perform
+   *
+   * @return {Promise<*>}
+   */
+  asyncPerform: async function () {
+    const oThis = this
+    ;
+
+    let r = null;
+
+    r = await oThis.validateParams();
+    logger.debug("=======GetShardDetails.validateParams.result=======");
+    logger.debug(r);
+    if (r.isFailure()) return r;
+
+    const cacheParams = {
+      ddb_object: oThis.ddbObject,
+      entity_type: oThis.entityType,
+      identifiers: oThis.identifiers
+    };
+    r = await new GetShardDetailsMultiCacheKlass(cacheParams).fetch();
+    logger.debug("=======GetShardDetails.GetShardDetailsMultiCache.result=======");
+    logger.debug(r);
+    if (r.isSuccess()) {
+      return responseHelper.successWithData({items: r.data});
+    } else {
+      return r;
+    }
   },
 
   /**
@@ -100,20 +110,15 @@ GetShardDetails.prototype = {
         error_identifier = null
       ;
 
-      if (!managedShardConst.getSupportedEntityTypes()[oThis.entityType]) {
-        errorCode = errorCodePrefix + '1';
-        error_identifier = "invalid_entity_type";
-      }
-
       if (!oThis.identifiers || oThis.identifiers.constructor.name !== 'Array') {
-        errorCode = errorCodePrefix + '2';
+        errorCode = errorCodePrefix + '1';
         error_identifier = "invalid_ids_array";
       }
 
       for (let ind = 0; ind < oThis.identifiers.length; ind++) {
         let id = oThis.identifiers[ind];
         if (!id) {
-          errorCode = errorCodePrefix + '3';
+          errorCode = errorCodePrefix + '2';
           error_identifier = "invalid_shard_identifier";
           break;
         }

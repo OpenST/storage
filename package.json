@@ -1,6 +1,6 @@
 {
   "name": "@openstfoundation/openst-storage",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "description": "openst storage provided data storage and sharding services",
   "main": "index.js",
   "scripts": {
@@ -18,15 +18,16 @@
     "DynamoDB"
   ],
   "author": "OpenST Foundation Ltd.",
-  "license": "LGPL-3.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/OpenSTFoundation/openst-storage/issues"
   },
   "homepage": "https://openst.org",
   "dependencies": {
-    "@openstfoundation/openst-base": "0.9.0",
-    "@openstfoundation/openst-cache": "1.0.3",
-    "aws-sdk": "2.245.1"
+    "@openstfoundation/openst-base": "0.9.1",
+    "@openstfoundation/openst-cache": "1.0.4",
+    "bignumber.js": "4.1.0",
+    "aws-sdk": "2.263.1"
   },
   "devDependencies": {
     "chai": "4.1.2",

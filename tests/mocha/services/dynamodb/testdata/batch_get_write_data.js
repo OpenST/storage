@@ -23,7 +23,7 @@ var cid = 0;
 var tuid = `tuid_${cid}`;
 var thash = `thash${cid}`;
 
-const tableName = testConstants.transactionLogsTableName;
+const tableName = testConstants.transactionLogTableName;
 
 TestData.prototype = {
 

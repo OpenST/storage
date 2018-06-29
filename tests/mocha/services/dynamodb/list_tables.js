@@ -21,7 +21,7 @@ describe('List Tables', function() {
   it('should create table successfully', async function () {
     // build create table params
     const createTableParams = {
-      TableName : testConstants.transactionLogsTableName,
+      TableName : testConstants.transactionLogTableName,
       KeySchema: [
         {
           AttributeName: "tuid",
@@ -75,14 +75,14 @@ describe('List Tables', function() {
   it('should fail when table name is passed in parameter', async function () {
     // build create table params
     const listTablesParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
     await helper.listTables(dynamodbApiObject, listTablesParams, false);
   });
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogsTableName
+      TableName: testConstants.transactionLogTableName
     };
 
     await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);

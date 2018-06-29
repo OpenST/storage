@@ -7,6 +7,11 @@
 const rootPrefix    = '.'
   , DynamodbApi  = require(rootPrefix + '/services/dynamodb/api')
   , AutoScalingApi  = require(rootPrefix + '/services/auto_scale/api')
+  , TokenBalanceModel = require(rootPrefix + '/lib/models/token_balance')
+  , TokenBalanceCache = require(rootPrefix + '/services/cache_multi_management/token_balance')
+  , TransactionLogModel = require(rootPrefix + '/lib/models/transaction_log')
+  , TransactionLogConst = require(rootPrefix + '/lib/global_constant/transaction_log')
+  , EntityTypesConst = require(rootPrefix + '/lib/global_constant/entity_types')
 ;
 
 // Expose all libs here.
@@ -15,6 +20,11 @@ const rootPrefix    = '.'
 module.exports = {
   Dynamodb : DynamodbApi
   , AutoScaling : AutoScalingApi
+  , TokenBalanceModel: TokenBalanceModel
+  , TokenBalanceCache: TokenBalanceCache
+  , TransactionLogModel: TransactionLogModel
+  , TransactionLogConst: TransactionLogConst
+  , StorageEntityTypesConst: EntityTypesConst
 };
 
 /*
