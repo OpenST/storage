@@ -2,14 +2,15 @@
 
 const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
-  , availableShard = require(rootPrefix + '/lib/models/dynamodb/available_shard')
+  , availableShard = require(rootPrefix + '/lib/models/dynamodb/shard_management/available_shard')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
 ;
 
 /**
  * @constructor
- * @augments HasShardKlass
+ *
+ * @augments baseCache
  *
  * @param {Object} params - cache key generation & expiry related params
  *

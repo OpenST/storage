@@ -9,11 +9,11 @@
  */
 
 const rootPrefix = '../../../..'
-  ,managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
+  , managedShard = require(rootPrefix + '/lib/models/dynamodb/shard_management/managed_shard')
   , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , GetShardNameMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_details')
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
-  , availableShard = require(rootPrefix + '/lib/models/dynamodb/available_shard')
+  , availableShard = require(rootPrefix + '/lib/models/dynamodb/shard_management/available_shard')
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")

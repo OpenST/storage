@@ -4,7 +4,7 @@ const rootPrefix = '../..'
   , BaseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + '/config/core_constants')
-  , TokenBalanceModel = require(rootPrefix + '/lib/models/token_balance')
+  , TokenBalanceModel = require(rootPrefix + '/lib/models/dynamodb/token_balance')
   , logger = require( rootPrefix + '/lib/logger/custom_console_logger')
   , BigNumber = require('bignumber.js')
 ;
