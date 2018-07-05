@@ -9,8 +9,7 @@ const rootPrefix    = '.'
   , AutoScalingApi  = require(rootPrefix + '/services/auto_scale/api')
   , TokenBalanceModel = require(rootPrefix + '/lib/models/dynamodb/token_balance')
   , TokenBalanceCache = require(rootPrefix + '/services/cache_multi_management/token_balance')
-  , TransactionLogModel = require(rootPrefix + '/lib/models/transaction_log')
-  , TransactionLogConst = require(rootPrefix + '/lib/global_constant/transaction_log')
+  , ShardedBaseModel = require(rootPrefix + '/lib/models/dynamodb/base')
   , EntityTypesConst = require(rootPrefix + '/lib/global_constant/entity_types')
 ;
 
@@ -22,8 +21,7 @@ module.exports = {
   , AutoScaling : AutoScalingApi
   , TokenBalanceModel: TokenBalanceModel
   , TokenBalanceCache: TokenBalanceCache
-  , TransactionLogModel: TransactionLogModel
-  , TransactionLogConst: TransactionLogConst
+  , ShardedBaseModel: ShardedBaseModel
   , StorageEntityTypesConst: EntityTypesConst
 };
 

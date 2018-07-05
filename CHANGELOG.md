@@ -1,3 +1,7 @@
+## OpenST-Storage v1.0.1-beta.1
+- Exposed models/dynamodb/base. It is the base class for all models which use sharded tables.
+- Restructured model directory.
+
 ## OpenST-Storage v1.0.0
 - OpenST Storage contains storage and sharding related services.
 - Wrapper services over Dynamo DB AWS SDK.
