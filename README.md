@@ -269,7 +269,7 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 &nbsp; params.shard_name(String) - Shard name to be assigned<br/>
 &nbsp; params.entity_type(String) - Entity type of the shard<br/>
 &nbsp; params.force_assignment(Boolean) - (Optional default: false) Pass true if shard is dedicated and assignment needs to be done.<br/>
-&nbsp;&nbsp;  Note: It should be used in cased dedicated shard is assigned first time.<br/>
+&nbsp;&nbsp;  Note: It should be used in case dedicated shard is assigned first time.<br/>
 
     // Assign Shard to an identifier
     // Creates entry in managed_shards table
