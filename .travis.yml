@@ -6,6 +6,7 @@ branches:
   - master
   - develop
   - review-changes-2805
+  - dhananjay/version_change
 notifications:
   email:
     recipients:
