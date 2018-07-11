@@ -2,7 +2,7 @@
 
 const rootPrefix = '../..'
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
-  , managedShard = require(rootPrefix + '/lib/models/dynamodb/managed_shard')
+  , managedShard = require(rootPrefix + '/lib/models/dynamodb/shard_management/managed_shard')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
@@ -12,7 +12,7 @@ const rootPrefix = '../..'
 /**
  * @constructor
  *
- * @augments GetShardDetailsCacheKlass
+ * @augments baseCache
  *
  * @param {Object} params - cache key generation & expiry related params
  * @param {Array} params.identifiers - identifiers is an array containing identifier

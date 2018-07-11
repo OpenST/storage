@@ -11,7 +11,7 @@
 const rootPrefix = '../../../..'
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
-  , availableShard = require( rootPrefix + '/lib/models/dynamodb/available_shard')
+  , availableShard = require( rootPrefix + '/lib/models/dynamodb/shard_management/available_shard')
   , GetShardListMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_list')
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
