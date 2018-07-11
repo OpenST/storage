@@ -79,13 +79,13 @@ BaseCache.prototype = {
    *
    * @return {Promise<Result>}
    */
-  clear: function () {
+  clear: async function () {
     const oThis = this
     ;
 
     for (let i = 0; i < Object.keys(oThis.cacheKeyToexternalIdMap).length; i++) {
       let cacheKey = Object.keys(oThis.cacheKeyToexternalIdMap)[i];
-      cacheImplementer.del(cacheKey);
+      await cacheImplementer.del(cacheKey);
     }
   },
 
