@@ -1,6 +1,7 @@
-## OpenST-Storage v1.0.1-beta.1
+## OpenST-Storage v1.0.1-beta.4
 - Exposed models/dynamodb/base. It is the base class for all models which use sharded tables.
 - Restructured model directory.
+- Updated versions for dependencies to resolve package vulnerabilities.
 
 ## OpenST-Storage v1.0.0
 - OpenST Storage contains storage and sharding related services.
