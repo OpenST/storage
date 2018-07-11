@@ -79,14 +79,17 @@ BaseCache.prototype = {
    *
    * @return {Promise<Result>}
    */
-  clear: async function () {
+  clear: function () {
     const oThis = this
+      , promiseArray = []
     ;
 
     for (let i = 0; i < Object.keys(oThis.cacheKeyToexternalIdMap).length; i++) {
       let cacheKey = Object.keys(oThis.cacheKeyToexternalIdMap)[i];
-      await cacheImplementer.del(cacheKey);
+      promiseArray.push(cacheImplementer.del(cacheKey));
     }
+
+    return Promise.all(promiseArray);
   },
 
   // methods which sub class would have to implement
