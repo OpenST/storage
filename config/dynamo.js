@@ -43,19 +43,19 @@ dynamoConfig.prototype = {
   /**
    * Get provider
    *
-   * @param connectionStrategies: connectionParams of client
+   * @param configStrategies: connectionParams of client
    * @param serviceType: type of service, either raw or dax
    * @returns DynamoDB connection object
    *
    */
-  getProvider: async function (connectionStrategies, serviceType) {
+  getProvider: async function (configStrategies, serviceType) {
     const oThis = this;
-    if (connectionStrategies.OS_DAX_ENABLED && serviceType === oThis.dax) {
-      let connectionParams = oThis.getConfig(connectionStrategies, oThis.dax);
+    if (configStrategies.OS_DAX_ENABLED && serviceType === oThis.dax) {
+      let connectionParams = oThis.getDaxConfig(configStrategies);
       return await oThis.createDaxObject(connectionParams);
     }
     else {
-      let connectionParams = oThis.getConfig(connectionStrategies, oThis.raw);
+      let connectionParams = oThis.getRawConfig(configStrategies);
       return await oThis.createRawObject(connectionParams);
     }
   },
@@ -64,43 +64,37 @@ dynamoConfig.prototype = {
     return await new AWS.DynamoDB(connectionParams);
   },
 
-  createDaxObject: function (connectionParams) {
-    return new AWSDaxClient(connectionParams);
+  createDaxObject: async function (connectionParams) {
+    return await new AWSDaxClient(connectionParams);
   },
 
-  getConfig: function (connectionStrategies, serviceType) {
-    const oThis = this;
+  getDaxConfig: function(configStrategies) {
     let connectionParams;
-    if (serviceType === oThis.raw) {
+    connectionParams = {
+      apiVersion: configStrategies.OS_DAX_API_VERSION,
+      accessKeyId: configStrategies.OS_DAX_ACCESS_KEY_ID,
+      secretAccessKey: configStrategies.OS_DAX_SECRET_ACCESS_KEY,
+      sslEnabled: configStrategies.OS_DYNAMODB_SSL_ENABLED,
+      endpoint: configStrategies.OS_DAX_ENDPOINT,
+      region: configStrategies.OS_DAX_REGION,
+      logger: configStrategies.OS_DYNAMODB_LOGGING_ENABLED
+    };
+    return connectionParams;
+  },
+
+  getRawConfig: function (configStrategies) {
+    let connectionParams;
       connectionParams = {
-        apiVersion: connectionStrategies.OS_DYNAMODB_API_VERSION,
-        accessKeyId: connectionStrategies.OS_DYNAMODB_ACCESS_KEY_ID,
-        secretAccessKey: connectionStrategies.OS_DYNAMODB_SECRET_ACCESS_KEY,
-        region: connectionStrategies.OS_DYNAMODB_REGION,
-        endpoint: connectionStrategies.OS_DYNAMODB_ENDPOINT,
-        sslEnabled: connectionStrategies.OS_DYNAMODB_SSL_ENABLED
-      }
-    }
-    else if(serviceType === oThis.dax) {
-      connectionParams = {
-        apiVersion: connectionStrategies.OS_DAX_API_VERSION,
-        accessKeyId: connectionStrategies.OS_DAX_ACCESS_KEY_ID,
-        secretAccessKey: connectionStrategies.OS_DAX_SECRET_ACCESS_KEY,
-        sslEnabled: connectionStrategies.OS_DYNAMODB_SSL_ENABLED
+        apiVersion: configStrategies.OS_DYNAMODB_API_VERSION,
+        accessKeyId: configStrategies.OS_DYNAMODB_ACCESS_KEY_ID,
+        secretAccessKey: configStrategies.OS_DYNAMODB_SECRET_ACCESS_KEY,
+        region: configStrategies.OS_DYNAMODB_REGION,
+        endpoint: configStrategies.OS_DYNAMODB_ENDPOINT,
+        sslEnabled: configStrategies.OS_DYNAMODB_SSL_ENABLED,
+        logger: configStrategies.OS_DYNAMODB_LOGGING_ENABLED
       };
-      if (connectionStrategies.OS_DAX_ENABLED) {
-        connectionParams.endpoint = connectionStrategies.OS_DAX_ENDPOINT;
-        connectionParams.region = connectionStrategies.OS_DAX_REGION
-      }
-      else {
-        connectionParams.endpoint = connectionStrategies.OS_DYNAMODB_ENDPOINT;
-        connectionParams.region = connectionStrategies.OS_DYNAMODB_REGION
-      }
-    }
-    connectionParams.logger = connectionStrategies.OS_DYNAMODB_LOGGING_ENABLED;
     return connectionParams;
   }
-
 };
 
 module.exports = new dynamoConfig();
