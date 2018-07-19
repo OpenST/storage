@@ -14,7 +14,7 @@ describe('Delete Table', function() {
   before(async function() {
 
     // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
+    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
 
   });
 

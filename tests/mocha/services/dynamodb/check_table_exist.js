@@ -14,7 +14,7 @@ describe('Check table exists', function() {
 
   before(async function() {
     // create dynamoDbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
+    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
 
     // put item
     const createTableParams = {
