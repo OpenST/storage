@@ -16,7 +16,7 @@ describe('Create Table', function() {
   before(async function() {
 
     // create dynamodbApiObject
-    dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE);
+    dynamodbApiObject = new DdbApiKlass(testConstants.CONFIG_STRATEGIES);
     helper.validateDynamodbApiObject(dynamodbApiObject);
   });
 
