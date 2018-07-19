@@ -150,7 +150,7 @@ const batchWritePrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ddbObject.call(oThis.methodName, batchWriteParams);
+        let r = await oThis.ddbObject.queryDdb(oThis.methodName, batchWriteParams, 'dax');
         resolve(r);
       }, waitTime);
     });

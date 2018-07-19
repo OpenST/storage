@@ -170,7 +170,7 @@ const batchGetPrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ddbObject.call(oThis.methodName, batchGetKeys);
+        let r = await oThis.ddbObject.queryDdb(oThis.methodName, batchGetKeys, 'dax');
         resolve(r);
       }, waitTime);
     });

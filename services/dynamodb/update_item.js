@@ -110,7 +110,7 @@ const updateItemPrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ddbObject.call(oThis.methodName, updateItemParams);
+        let r = await oThis.ddbObject.queryDdb(oThis.methodName, updateItemParams, 'dax');
         resolve(r);
       }, waitTime);
     });
