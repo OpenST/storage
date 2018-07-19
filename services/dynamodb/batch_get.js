@@ -19,12 +19,14 @@ const rootPrefix = "../.."
  * @param {Object} ddbObject - DynamoDB Object
  * @param {Object} params - Parameters
  * @param {Integer} unprocessed_keys_retry_count - retry count for unprocessed keys (optional)
+ * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
-const BatchGetItem = function (ddbObject, params, unprocessed_keys_retry_count) {
+const BatchGetItem = function (ddbObject, params, unprocessed_keys_retry_count, serviceType) {
   const oThis = this
   ;
+  oThis.serviceType = serviceType;
   oThis.unprocessedKeysRetryCount = unprocessed_keys_retry_count || 0;
 
   base.call(oThis, ddbObject, 'batchGetItem', params);
@@ -170,7 +172,7 @@ const batchGetPrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ddbObject.queryDdb(oThis.methodName, batchGetKeys, 'dax');
+        let r = await oThis.ddbObject.queryDdb(oThis.methodName, batchGetKeys, oThis.serviceType);
         resolve(r);
       }, waitTime);
     });

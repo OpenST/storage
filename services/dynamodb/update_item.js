@@ -21,14 +21,15 @@ const rootPrefix = "../.."
  * @param {Object} ddbObject - DynamoDB Object
  * @param {Object} params - Parameters
  * @param {Integer} retryCount - Retry count for ProvisionedThroughputExceededException exception (optional)
+ * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
-const UpdateItem = function (ddbObject, params, retryCount) {
+const UpdateItem = function (ddbObject, params, retryCount, serviceType) {
 
   const oThis = this
   ;
-
+  oThis.serviceType = serviceType;
   if (retryCount) {
     oThis.attemptToPerformCount = retryCount + 1;
   } else {
@@ -110,7 +111,7 @@ const updateItemPrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ddbObject.queryDdb(oThis.methodName, updateItemParams, 'dax');
+        let r = await oThis.ddbObject.queryDdb(oThis.methodName, updateItemParams, oThis.serviceType);
         resolve(r);
       }, waitTime);
     });
