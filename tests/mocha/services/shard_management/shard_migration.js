@@ -14,7 +14,7 @@ const rootPrefix = "../../../.."
   , helper = require(rootPrefix + "/tests/mocha/services/shard_management/helper")
 ;
 
-const dynamoDbObject = new DynamoDbKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
+const dynamoDbObject = new DynamoDbKlass(testConstants.CONFIG_STRATEGIES)
   , shardManagementObject = dynamoDbObject.shardManagement()
 ;
 
