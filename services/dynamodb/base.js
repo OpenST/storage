@@ -125,7 +125,7 @@ Base.prototype = {
   executeDdbRequest: async function () {
     const oThis = this
     ;
-    //Added last parameter is service type(dax or dynamoDB)
+    // Last parameter is service type (dax or dynamoDB)
     return await oThis.ddbObject.queryDdb(oThis.methodName, oThis.params, oThis.serviceType);
   },
 
