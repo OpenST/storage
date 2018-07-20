@@ -71,59 +71,43 @@ dynamoConfig.prototype = {
 
   getDaxConfig: function(configStrategies) {
 
-    if(configStrategies.OS_DAX_SSL_ENABLED == 1)
-    {
-      configStrategies.OS_DAX_SSL_ENABLED = true;
-    }
-    else
-    {
-      configStrategies.OS_DAX_SSL_ENABLED = false;
-    }
-
-    if(configStrategies.OS_DYNAMODB_LOGGING_ENABLED == 1)
-    {
-      configStrategies.OS_DYNAMODB_LOGGING_ENABLED = console;
-    }
-
     let connectionParams;
     connectionParams = {
       apiVersion: configStrategies.OS_DAX_API_VERSION,
       accessKeyId: configStrategies.OS_DAX_ACCESS_KEY_ID,
       secretAccessKey: configStrategies.OS_DAX_SECRET_ACCESS_KEY,
-      sslEnabled: configStrategies.OS_DAX_SSL_ENABLED,
-      endpoint: configStrategies.OS_DAX_ENDPOINT,
       region: configStrategies.OS_DAX_REGION,
-      logger: configStrategies.OS_DYNAMODB_LOGGING_ENABLED
+      endpoint: configStrategies.OS_DAX_ENDPOINT,
     };
+
+    connectionParams['sslEnabled'] = (configStrategies.OS_DAX_SSL_ENABLED == 1);
+
+    if(configStrategies.OS_DYNAMODB_LOGGING_ENABLED == 1)
+    {
+      connectionParams['logger'] = console;
+    }
+
     return connectionParams;
   },
 
   getRawConfig: function (configStrategies) {
 
-    if(configStrategies.OS_DYNAMODB_SSL_ENABLED == 1)
-    {
-      configStrategies.OS_DYNAMODB_SSL_ENABLED = true;
-    }
-    else
-    {
-      configStrategies.OS_DYNAMODB_SSL_ENABLED = false;
-    }
+    let connectionParams;
+    connectionParams = {
+      apiVersion: configStrategies.OS_DYNAMODB_API_VERSION,
+      accessKeyId: configStrategies.OS_DYNAMODB_ACCESS_KEY_ID,
+      secretAccessKey: configStrategies.OS_DYNAMODB_SECRET_ACCESS_KEY,
+      region: configStrategies.OS_DYNAMODB_REGION,
+      endpoint: configStrategies.OS_DYNAMODB_ENDPOINT,
+    };
+
+    connectionParams['sslEnabled'] = (configStrategies.OS_DYNAMODB_SSL_ENABLED == 1);
 
     if(configStrategies.OS_DYNAMODB_LOGGING_ENABLED == 1)
     {
-      configStrategies.OS_DYNAMODB_LOGGING_ENABLED = console;
+      connectionParams['logger'] = console;
     }
 
-    let connectionParams;
-      connectionParams = {
-        apiVersion: configStrategies.OS_DYNAMODB_API_VERSION,
-        accessKeyId: configStrategies.OS_DYNAMODB_ACCESS_KEY_ID,
-        secretAccessKey: configStrategies.OS_DYNAMODB_SECRET_ACCESS_KEY,
-        region: configStrategies.OS_DYNAMODB_REGION,
-        endpoint: configStrategies.OS_DYNAMODB_ENDPOINT,
-        sslEnabled: configStrategies.OS_DYNAMODB_SSL_ENABLED,
-        logger: configStrategies.OS_DYNAMODB_LOGGING_ENABLED
-      };
     return connectionParams;
   }
 };
