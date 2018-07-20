@@ -50,7 +50,7 @@ dynamoConfig.prototype = {
    */
   getProvider: async function (configStrategies, serviceType) {
     const oThis = this;
-    if (configStrategies.OS_DAX_ENABLED && serviceType === oThis.dax) {
+    if (configStrategies.OS_DAX_ENABLED == 1 && serviceType === oThis.dax) {
       let connectionParams = oThis.getDaxConfig(configStrategies);
       return await oThis.createDaxObject(connectionParams);
     }
@@ -68,13 +68,29 @@ dynamoConfig.prototype = {
     return await new AWSDaxClient(connectionParams);
   },
 
+
   getDaxConfig: function(configStrategies) {
+
+    if(configStrategies.OS_DAX_SSL_ENABLED == 1)
+    {
+      configStrategies.OS_DAX_SSL_ENABLED = true;
+    }
+    else
+    {
+      configStrategies.OS_DAX_SSL_ENABLED = false;
+    }
+
+    if(configStrategies.OS_DYNAMODB_LOGGING_ENABLED == 1)
+    {
+      configStrategies.OS_DYNAMODB_LOGGING_ENABLED = console;
+    }
+
     let connectionParams;
     connectionParams = {
       apiVersion: configStrategies.OS_DAX_API_VERSION,
       accessKeyId: configStrategies.OS_DAX_ACCESS_KEY_ID,
       secretAccessKey: configStrategies.OS_DAX_SECRET_ACCESS_KEY,
-      sslEnabled: configStrategies.OS_DYNAMODB_SSL_ENABLED,
+      sslEnabled: configStrategies.OS_DAX_SSL_ENABLED,
       endpoint: configStrategies.OS_DAX_ENDPOINT,
       region: configStrategies.OS_DAX_REGION,
       logger: configStrategies.OS_DYNAMODB_LOGGING_ENABLED
@@ -83,6 +99,21 @@ dynamoConfig.prototype = {
   },
 
   getRawConfig: function (configStrategies) {
+
+    if(configStrategies.OS_DYNAMODB_SSL_ENABLED == 1)
+    {
+      configStrategies.OS_DYNAMODB_SSL_ENABLED = true;
+    }
+    else
+    {
+      configStrategies.OS_DYNAMODB_SSL_ENABLED = false;
+    }
+
+    if(configStrategies.OS_DYNAMODB_LOGGING_ENABLED == 1)
+    {
+      configStrategies.OS_DYNAMODB_LOGGING_ENABLED = console;
+    }
+
     let connectionParams;
       connectionParams = {
         apiVersion: configStrategies.OS_DYNAMODB_API_VERSION,
