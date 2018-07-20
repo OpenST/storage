@@ -12,11 +12,13 @@
  */
 
 const rootPrefix  = "../.."
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
 ;
+
+require(rootPrefix + "/config/core_constants");
 
 /**
  * Constructor for TableExist service class
@@ -34,7 +36,7 @@ const rootPrefix  = "../.."
  *
  * @constructor
  */
-const CreateTableMigration = function(ddbObject, autoScalingObject ,params) {
+const CreateTableMigration = function(autoScalingObject ,params, serviceType) {
   const oThis = this
   ;
   oThis.autoScalingObject = autoScalingObject;
@@ -45,8 +47,9 @@ const CreateTableMigration = function(ddbObject, autoScalingObject ,params) {
   //logger.debug("\nautoScalingMethods");
   //console.log(Object.getOwnPropertyNames(autoScalingObject));
   oThis.shouldAutoScale = !!oThis.autoScalingObject;
+  oThis.serviceType = serviceType;
 
-  DDBServiceBaseKlass.call(oThis, ddbObject, 'createTableMigration', params);
+  DDBServiceBaseKlass.call(oThis, 'createTableMigration', params);
 };
 
 CreateTableMigration.prototype = Object.create(DDBServiceBaseKlass.prototype);
@@ -61,6 +64,7 @@ const CreateTableMigrationPrototype = {
    */
   validateParams: function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
       , baseValidationResponse = DDBServiceBaseKlass.prototype.validateParams.call(oThis)
     ;
     if (baseValidationResponse.isFailure()) return baseValidationResponse;
@@ -151,11 +155,12 @@ const CreateTableMigrationPrototype = {
   // TODO Refactor to small methods
   executeDdbRequest: function() {
     const oThis = this
+      , ddbObject = oThis.ic().getLibDynamoDBBase()
       ;
     return new Promise(async function (onResolve) {
 
       logger.info("Creating table..");
-      const createTableResponse = await oThis.ddbObject.queryDdb('createTable', oThis.createTableConfig,'raw');
+      const createTableResponse = await ddbObject.queryDdb('createTable', oThis.createTableConfig, oThis.serviceType);
       if(createTableResponse.isFailure()){
         return onResolve(createTableResponse);
       }
@@ -168,7 +173,7 @@ const CreateTableMigrationPrototype = {
       logger.debug("Table arn :", roleARN);
 
       logger.info("Waiting for table creation..");
-      const waitForTableExistsResponse = await oThis.ddbObject.queryDdb('waitFor','tableExists', waitForTableExistsParams,'raw');
+      const waitForTableExistsResponse = await ddbObject.queryDdb('waitFor','tableExists', waitForTableExistsParams, oThis.serviceType);
       if(waitForTableExistsResponse.isFailure()){
         return onResolve(waitForTableExistsResponse);
       }
@@ -244,15 +249,8 @@ const CreateTableMigrationPrototype = {
         logger.info("Putting auto scale read/write policy done.");
       }
 
-      // logger.info("Enable continuous backup started..");
-      // const continuousBackupResponse = await oThis.ddbObject.queryDdb('updateContinuousBackups', oThis.updateContinuousBackupConfig, 'raw');
-      // if(continuousBackupResponse.isFailure()){
-      //   return onResolve(continuousBackupResponse);
-      // }
-      // logger.info("Enable continuous backup done.");
-
       const describeTableParams = {TableName: tableName}
-        , describeTableResponse = await oThis.ddbObject.queryDdb('describeTable', describeTableParams,'raw')
+        , describeTableResponse = await ddbObject.queryDdb('describeTable', describeTableParams, oThis.serviceType)
        ;
 
       onResolve(describeTableResponse)
@@ -263,4 +261,7 @@ const CreateTableMigrationPrototype = {
 
 Object.assign(CreateTableMigration.prototype, CreateTableMigrationPrototype);
 CreateTableMigration.prototype.constructor = CreateTableMigration;
+
+InstanceComposer.registerShadowableClass(CreateTableMigration, 'getDDBServiceCreateTableMigration');
+
 module.exports = CreateTableMigration;

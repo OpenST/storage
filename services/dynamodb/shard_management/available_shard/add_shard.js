@@ -9,13 +9,18 @@
  */
 
 const rootPrefix = '../../../..'
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
+
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , availableShard = require( rootPrefix + '/lib/models/dynamodb/shard_management/available_shard')
+
   , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
-  , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
   , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
 ;
+
+require(rootPrefix + "/config/core_constants");
+require( rootPrefix + '/lib/models/dynamodb/shard_management/available_shard');
 
 /**
  * Constructor to create object of Add Shard
@@ -51,6 +56,7 @@ AddShard.prototype = {
    */
   perform: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return oThis.asyncPerform()
@@ -71,6 +77,7 @@ AddShard.prototype = {
    */
   asyncPerform: async function () {
     const oThis = this
+      , availableShard = oThis.ic().getDDBServiceAvailableShard()
     ;
 
     let r = null;
@@ -98,6 +105,7 @@ AddShard.prototype = {
   validateParams: function () {
     const oThis = this
       , errorCodePrefix = 's_sm_as_as_validateParams_'
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return new Promise(async function (onResolve) {
@@ -142,5 +150,7 @@ AddShard.prototype = {
   }
 
 };
+
+InstanceComposer.registerShadowableClass(AddShard, 'getDDBServiceAddShard');
 
 module.exports = AddShard;

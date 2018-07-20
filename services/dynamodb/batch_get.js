@@ -8,28 +8,30 @@
  */
 
 const rootPrefix = "../.."
-    , base = require(rootPrefix + "/services/dynamodb/base")
-    , responseHelper = require(rootPrefix + '/lib/formatter/response')
-    , coreConstants = require(rootPrefix + "/config/core_constants")
-    , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
+  , base = require(rootPrefix + "/services/dynamodb/base")
+  , responseHelper = require(rootPrefix + '/lib/formatter/response')
+  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
 ;
+
+require(rootPrefix+'/lib/dynamodb/base');
+require(rootPrefix + "/config/core_constants");
 
 /**
  * Constructor for batch write item service class
- * @param {Object} ddbObject - DynamoDB Object
  * @param {Object} params - Parameters
  * @param {Integer} unprocessed_keys_retry_count - retry count for unprocessed keys (optional)
  * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
-const BatchGetItem = function (ddbObject, params, unprocessed_keys_retry_count, serviceType) {
+const BatchGetItem = function (params, unprocessed_keys_retry_count, serviceType) {
   const oThis = this
   ;
   oThis.serviceType = serviceType;
   oThis.unprocessedKeysRetryCount = unprocessed_keys_retry_count || 0;
 
-  base.call(oThis, ddbObject, 'batchGetItem', params);
+  base.call(oThis, 'batchGetItem', params, oThis.serviceType);
 };
 
 BatchGetItem.prototype = Object.create(base.prototype);
@@ -61,6 +63,7 @@ const batchGetPrototype = {
    */
   executeDdbRequest: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     try {
@@ -172,7 +175,7 @@ const batchGetPrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ddbObject.queryDdb(oThis.methodName, batchGetKeys, oThis.serviceType);
+        let r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, batchGetKeys, oThis.serviceType);
         resolve(r);
       }, waitTime);
     });
@@ -181,4 +184,7 @@ const batchGetPrototype = {
 
 Object.assign(BatchGetItem.prototype, batchGetPrototype);
 BatchGetItem.prototype.constructor = batchGetPrototype;
+
+InstanceComposer.registerShadowableClass(BatchGetItem, 'getDDBServiceBatchGetItem');
+
 module.exports = BatchGetItem;

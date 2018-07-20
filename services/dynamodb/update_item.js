@@ -8,24 +8,24 @@
  */
 
 const rootPrefix = "../.."
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , base = require(rootPrefix + "/services/dynamodb/base")
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
 ;
 
+require(rootPrefix + "/config/core_constants");
 
 /**
  * Constructor for updateItem service class
  *
- * @param {Object} ddbObject - DynamoDB Object
  * @param {Object} params - Parameters
  * @param {Integer} retryCount - Retry count for ProvisionedThroughputExceededException exception (optional)
  * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
-const UpdateItem = function (ddbObject, params, retryCount, serviceType) {
+const UpdateItem = function (params, retryCount, serviceType) {
 
   const oThis = this
   ;
@@ -36,7 +36,7 @@ const UpdateItem = function (ddbObject, params, retryCount, serviceType) {
     oThis.attemptToPerformCount = 1;
   }
 
-  base.call(oThis, ddbObject, 'updateItem', params);
+  base.call(oThis, 'updateItem', params);
 
 };
 
@@ -52,6 +52,7 @@ const updateItemPrototype = {
    */
   executeDdbRequest: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     try {
@@ -111,7 +112,7 @@ const updateItemPrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ddbObject.queryDdb(oThis.methodName, updateItemParams, oThis.serviceType);
+        let r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, updateItemParams, oThis.serviceType);
         resolve(r);
       }, waitTime);
     });
@@ -121,4 +122,7 @@ const updateItemPrototype = {
 
 Object.assign(UpdateItem.prototype, updateItemPrototype);
 UpdateItem.prototype.constructor = updateItemPrototype;
+
+InstanceComposer.registerShadowableClass(UpdateItem, 'getDDBServiceUpdateItem');
+
 module.exports = UpdateItem;

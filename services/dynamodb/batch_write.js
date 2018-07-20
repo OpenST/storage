@@ -8,29 +8,29 @@
  */
 
 const rootPrefix = "../.."
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , base = require(rootPrefix + "/services/dynamodb/base")
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
 ;
 
+require(rootPrefix + "/config/core_constants");
 
 /**
  * Constructor for batch write item service class
- * @param {Object} ddbObject - DynamoDB Object
  * @param {Object} params - Parameters
  * @param {Integer} unprocessed_items_retry_count - retry count for unprocessed items (optional)
  * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
-const BatchWriteItem = function (ddbObject, params, unprocessed_items_retry_count, serviceType) {
+const BatchWriteItem = function (params, unprocessed_items_retry_count, serviceType) {
   const oThis = this
   ;
   oThis.serviceType = serviceType;
   oThis.unprocessedItemsRetryCount = unprocessed_items_retry_count || 0;
 
-  base.call(oThis, ddbObject, 'batchWriteItem', params);
+  base.call(oThis, 'batchWriteItem', params, oThis.serviceType);
 };
 
 BatchWriteItem.prototype = Object.create(base.prototype);
@@ -60,6 +60,7 @@ const batchWritePrototype = {
    */
   executeDdbRequest: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     try {
@@ -152,7 +153,7 @@ const batchWritePrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ddbObject.queryDdb(oThis.methodName, batchWriteParams, oThis.serviceType);
+        let r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, batchWriteParams, oThis.serviceType);
         resolve(r);
       }, waitTime);
     });
@@ -161,4 +162,7 @@ const batchWritePrototype = {
 
 Object.assign(BatchWriteItem.prototype, batchWritePrototype);
 BatchWriteItem.prototype.constructor = batchWritePrototype;
+
+InstanceComposer.registerShadowableClass(BatchWriteItem, 'getDDBServiceBatchWriteItem');
+
 module.exports = BatchWriteItem;

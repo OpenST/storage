@@ -8,7 +8,9 @@
  */
 
 const rootPrefix  = "../../.."
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , ShardMigrationKlass  = require(rootPrefix + '/services/dynamodb/shard_management/shard_migration')
+
   , AddShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/add_shard')
   , ConfigureShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/configure_shard')
   , AssignShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/assign_shard')
@@ -16,6 +18,9 @@ const rootPrefix  = "../../.."
   , GetShardListKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/get_shard_list')
   , HasShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/has_shard')
 ;
+
+require(rootPrefix + '/services/dynamodb/shard_management/shard_migration');
+require(rootPrefix + '/services/dynamodb/shard_management/available_shard/add_shard');
 
 /**
  * Constructor for Shard Service api class
@@ -45,8 +50,8 @@ ShardServiceApi.prototype = {
    */
   runShardMigration: function(ddbApiObject, autoScaleApiObj) {
     const oThis = this
+      , ShardMigrationKlass = oThis.ic().getDDBServiceShardMigration()
     ;
-
     return new ShardMigrationKlass({ddb_api_object: ddbApiObject,
           auto_scaling_api_object: autoScaleApiObj
         }).perform();

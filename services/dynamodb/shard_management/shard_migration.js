@@ -9,14 +9,16 @@
  */
 
 const rootPrefix = '../../..'
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
-  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , autoScaleHelper = require(rootPrefix + '/lib/auto_scale/helper')
 ;
 
+require(rootPrefix + "/config/core_constants");
+require(rootPrefix + "/lib/global_constant/managed_shard");
+require(rootPrefix + "/lib/global_constant/available_shard");
+require(rootPrefix + '/lib/auto_scale/helper')
 /**
  * Constructor to create object of shard migration
  *
@@ -46,8 +48,8 @@ ShardMigration.prototype = {
    */
   perform: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
-
     return oThis.asyncPerform()
       .catch(function (err) {
         return responseHelper.error({
@@ -86,6 +88,7 @@ ShardMigration.prototype = {
    */
   validateParams: function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     if (!oThis.ddbApiObject) {
@@ -108,6 +111,7 @@ ShardMigration.prototype = {
    */
   executeShardMigration: function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return new Promise(async function (onResolve) {
@@ -212,6 +216,10 @@ ShardMigration.prototype = {
    * @return {Object}
    */
   getAvailableShardsCreateTableParams: function () {
+    const oThis = this
+      , availableShardConst = oThis.ic().getLibAvailableShard()
+    ;
+
     return {
       TableName: availableShardConst.getTableName(),
       AttributeDefinitions: [
@@ -309,6 +317,10 @@ ShardMigration.prototype = {
    * @return {Object}
    */
   getManagedShardsCreateTableParams: function () {
+    const oThis = this
+      , managedShardConst = oThis.ic().getLibManagedShard()
+    ;
+
     return {
       TableName: managedShardConst.getTableName(),
       AttributeDefinitions: [
@@ -383,5 +395,7 @@ ShardMigration.prototype = {
     return autoScalingConfig;
   }
 };
+
+InstanceComposer.registerShadowableClass(ShardMigration, 'getDDBServiceShardMigration');
 
 module.exports = ShardMigration;

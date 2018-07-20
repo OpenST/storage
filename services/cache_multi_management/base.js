@@ -5,11 +5,16 @@ const openStCache = require('@openstfoundation/openst-cache');
 
 
 const rootPrefix = '../..'
-  , coreConstants = require(rootPrefix + '/config/core_constants')
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , utils = require(rootPrefix + '/lib/utils')
 ;
+
+require(rootPrefix + '/config/core_constants');
+
+const oThis = this
+  , coreConstants = oThis.ic().getCoreConstants();
 
 const cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, true)
 ;
@@ -199,4 +204,5 @@ BaseCache.prototype = {
 
 };
 
+InstanceComposer.registerShadowableClass(BaseCache, 'getDDBCacheBaseCache',true);
 module.exports = BaseCache;

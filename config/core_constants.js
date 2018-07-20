@@ -10,6 +10,7 @@
 const rootPrefix = '..'
   , paramErrorConfig = require(rootPrefix + '/config/error/param')
   , apiErrorConfig = require(rootPrefix + '/config/error/general')
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
 ;
 
 /**
@@ -17,7 +18,18 @@ const rootPrefix = '..'
  *
  * @constructor
  */
-const CoreConstants = function() {};
+const CoreConstants = function (configStrategy, instanceComposer) {
+  const oThis = this
+  ;
+
+  // STORAGE CACHING ENGINE
+  oThis.CACHING_ENGINE = configStrategy.OS_CACHING_ENGINE || "none";
+
+  // Generic env variable across NPM packages
+  oThis.DEBUG_ENABLED = configStrategy.OST_DEBUG_ENABLED || 0;
+
+  oThis.DYNAMODB_TABLE_NAME_PREFIX = configStrategy.OS_DYNAMODB_TABLE_NAME_PREFIX || '';
+};
 
 CoreConstants.prototype = {
 
@@ -27,21 +39,21 @@ CoreConstants.prototype = {
    * @constant {string}
    *
    */
-  DYNAMODB_API_VERSION: '2012-08-10',
+  CACHING_ENGINE: null,
 
-  // STORAGE CACHING ENGINE
-  CACHING_ENGINE: process.env.OS_CACHING_ENGINE || "none",
+  // Generic env variable across NPM packages
+  DEBUG_ENABLED: null,
+
+  DYNAMODB_TABLE_NAME_PREFIX: null,
+
+  DYNAMODB_API_VERSION: '2012-08-10',
 
   ERROR_CONFIG: {
     param_error_config: paramErrorConfig,
     api_error_config: apiErrorConfig
-  },
-
-  // Generic env variable across NPM packages
-  DEBUG_ENABLED: process.env.OST_DEBUG_ENABLED || 0,
-
-  DYNAMODB_TABLE_NAME_PREFIX: process.env.OS_DYNAMODB_TABLE_NAME_PREFIX || '',
-
+  }
 };
 
-module.exports = new CoreConstants();
+InstanceComposer.register(CoreConstants, 'getCoreConstants', true);
+
+module.exports = CoreConstants;

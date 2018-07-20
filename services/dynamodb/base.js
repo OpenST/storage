@@ -8,10 +8,13 @@
  */
 
 const rootPrefix  = "../.."
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
 ;
+
+require(rootPrefix+'/lib/dynamodb/base');
+require(rootPrefix + "/config/core_constants");
 
 /**
  * Constructor for base service class
@@ -22,12 +25,11 @@ const rootPrefix  = "../.."
  *
  * @constructor
  */
-const Base = function(ddbObject, methodName, params, serviceType) {
+const Base = function(methodName, params, serviceType) {
   const oThis = this
   ;
 
   oThis.params = params;
-  oThis.ddbObject = ddbObject;
   oThis.methodName = methodName;
   oThis.serviceType = serviceType;
 };
@@ -42,6 +44,7 @@ Base.prototype = {
    */
   perform: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
     return oThis.asyncPerform()
       .catch(function (err) {
@@ -84,21 +87,14 @@ Base.prototype = {
    *
    */
   validateParams: function () {
-    const oThis = this;
+    const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
+    ;
 
     if (!oThis.methodName) {
       return responseHelper.error({
         internal_error_identifier:"l_dy_b_validateParams_1",
         api_error_identifier: "invalid_method_name",
-        debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
-      });
-    }
-
-    if (!oThis.ddbObject){
-      return responseHelper.error({
-        internal_error_identifier:"l_dy_b_validateParams_2",
-        api_error_identifier: "invalid_ddb_object",
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });
@@ -126,9 +122,11 @@ Base.prototype = {
     const oThis = this
     ;
     // Last parameter is service type (dax or dynamoDB)
-    return await oThis.ddbObject.queryDdb(oThis.methodName, oThis.params, oThis.serviceType);
+    return await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, oThis.params, oThis.serviceType);
   },
 
 };
+
+InstanceComposer.registerShadowableClass(Base, 'getDDBServiceBaseKlass');
 
 module.exports = Base;

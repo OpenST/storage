@@ -8,12 +8,13 @@
  */
 
 const rootPrefix  = "../.."
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , base = require(rootPrefix + "/services/dynamodb/base")
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
 ;
 
+require(rootPrefix + "/config/core_constants");
 
 /**
  * Constructor for wait for service class
@@ -23,11 +24,11 @@ const rootPrefix  = "../.."
  *
  * @constructor
  */
-const WaitFor = function(ddbObject, waitForMethod, params ) {
+const WaitFor = function(waitForMethod, params ) {
   const oThis = this
   ;
   oThis.waitForMethod = waitForMethod;
-  base.call(oThis, ddbObject, 'waitFor', params);
+  base.call(oThis, 'waitFor', params);
 
 };
 
@@ -43,6 +44,7 @@ const waitForPrototype = {
   validateParams: function () {
 
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
       ,validationResponse = base.prototype.validateParams.call(oThis)
     ;
     if (validationResponse.isFailure()) return validationResponse;
@@ -65,11 +67,12 @@ const waitForPrototype = {
    */
   executeDdbRequest: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     try {
 
-      const r = await oThis.ddbObject.queryDdb(oThis.methodName, oThis.waitForMethod, oThis.params, 'raw');
+      const r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, oThis.waitForMethod, oThis.params, 'raw');
       logger.debug("=======Base.perform.result=======");
       logger.debug(r);
       return r;
@@ -89,4 +92,7 @@ const waitForPrototype = {
 
 Object.assign(WaitFor.prototype, waitForPrototype);
 WaitFor.prototype.constructor = waitForPrototype;
+
+InstanceComposer.registerShadowableClass(WaitFor, 'getDDBServiceWaitFor');
+
 module.exports = WaitFor;

@@ -8,26 +8,26 @@
  */
 
 const rootPrefix  = "../.."
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , DDBServiceBaseKlass = require(rootPrefix + "/services/dynamodb/base")
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
 ;
+
+require(rootPrefix + "/config/core_constants");
 
 /**
  * Constructor for TableExist service class
  *
- * @params {Object} ddbObject - DynamoDB Object
  * @params {Object} params - TableExist configurations
  * @params {String} TableName - name of table
  *
  * @constructor
  */
-const TableExist = function(ddbObject, params) {
+const TableExist = function(params) {
   const oThis = this
   ;
 
-  DDBServiceBaseKlass.call(oThis, ddbObject, 'describeTable', params);
+  DDBServiceBaseKlass.call(oThis, 'describeTable', params);
 };
 
 TableExist.prototype = Object.create(DDBServiceBaseKlass.prototype);
@@ -42,6 +42,7 @@ const TableExistPrototype = {
    */
   validateParams: function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
       , baseValidationResponse = DDBServiceBaseKlass.prototype.validateParams.call(oThis)
     ;
     if (baseValidationResponse.isFailure()) return baseValidationResponse;
@@ -68,7 +69,7 @@ const TableExistPrototype = {
     const oThis = this
     ;
     return new Promise(async function (onResolve) {
-      const describeTableResponse = await oThis.ddbObject.queryDdb('describeTable', oThis.params, 'raw');
+      const describeTableResponse = await oThis.ic().getLibDynamoDBBase().queryDdb('describeTable', oThis.params, 'raw');
       if (describeTableResponse.isFailure()) {
         return onResolve(responseHelper.successWithData({response: false, status: "DELETED"}));
       }
@@ -81,4 +82,7 @@ const TableExistPrototype = {
 
 Object.assign(TableExist.prototype, TableExistPrototype);
 TableExist.prototype.constructor = TableExist;
+
+InstanceComposer.registerShadowableClass(Base, 'getDDBServiceTableExist');
+
 module.exports = TableExist;
