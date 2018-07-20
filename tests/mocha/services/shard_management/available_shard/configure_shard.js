@@ -15,7 +15,7 @@ const rootPrefix = "../../../../.."
 ;
 
 
-const dynamoDbObject = new DynamoDbObject(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
+const dynamoDbObject = new DynamoDbObject(testConstants.CONFIG_STRATEGIES)
   , shardManagementObject = dynamoDbObject.shardManagement()
   ;
 

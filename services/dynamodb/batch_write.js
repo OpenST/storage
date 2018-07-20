@@ -20,12 +20,14 @@ const rootPrefix = "../.."
  * @param {Object} ddbObject - DynamoDB Object
  * @param {Object} params - Parameters
  * @param {Integer} unprocessed_items_retry_count - retry count for unprocessed items (optional)
+ * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
-const BatchWriteItem = function (ddbObject, params, unprocessed_items_retry_count) {
+const BatchWriteItem = function (ddbObject, params, unprocessed_items_retry_count, serviceType) {
   const oThis = this
   ;
+  oThis.serviceType = serviceType;
   oThis.unprocessedItemsRetryCount = unprocessed_items_retry_count || 0;
 
   base.call(oThis, ddbObject, 'batchWriteItem', params);
@@ -150,7 +152,7 @@ const batchWritePrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ddbObject.call(oThis.methodName, batchWriteParams);
+        let r = await oThis.ddbObject.queryDdb(oThis.methodName, batchWriteParams, oThis.serviceType);
         resolve(r);
       }, waitTime);
     });

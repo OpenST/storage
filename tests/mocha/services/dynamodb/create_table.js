@@ -14,7 +14,7 @@ describe('Create Table', function() {
   before(async function() {
 
     // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
+    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
   });
 
   it('should delete table successfully if exists', async function () {

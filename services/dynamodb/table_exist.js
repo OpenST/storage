@@ -68,7 +68,7 @@ const TableExistPrototype = {
     const oThis = this
     ;
     return new Promise(async function (onResolve) {
-      const describeTableResponse = await oThis.ddbObject.call('describeTable', oThis.params);
+      const describeTableResponse = await oThis.ddbObject.queryDdb('describeTable', oThis.params, 'raw');
       if (describeTableResponse.isFailure()) {
         return onResolve(responseHelper.successWithData({response: false, status: "DELETED"}));
       }

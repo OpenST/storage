@@ -69,7 +69,7 @@ const waitForPrototype = {
 
     try {
 
-      const r = await oThis.ddbObject.call(oThis.methodName, oThis.waitForMethod, oThis.params);
+      const r = await oThis.ddbObject.queryDdb(oThis.methodName, oThis.waitForMethod, oThis.params, 'raw');
       logger.debug("=======Base.perform.result=======");
       logger.debug(r);
       return r;

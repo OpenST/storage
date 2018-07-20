@@ -14,7 +14,7 @@ describe('Update Item in Table', function() {
 
   before(async function() {
     // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
+    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
 
     // put item
     const createTableParams = {

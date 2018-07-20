@@ -14,7 +14,7 @@ describe('Describe Dynamodb Table', function() {
   before(async function() {
     // create dynamodbApiObject
     // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
+    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
   });
 
   it('should create table successfully', async function () {

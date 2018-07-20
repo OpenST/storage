@@ -22,13 +22,14 @@ const rootPrefix  = "../.."
  *
  * @constructor
  */
-const Base = function(ddbObject, methodName, params) {
+const Base = function(ddbObject, methodName, params, serviceType) {
   const oThis = this
   ;
 
   oThis.params = params;
   oThis.ddbObject = ddbObject;
   oThis.methodName = methodName;
+  oThis.serviceType = serviceType;
 };
 
 Base.prototype = {
@@ -124,7 +125,8 @@ Base.prototype = {
   executeDdbRequest: async function () {
     const oThis = this
     ;
-    return await oThis.ddbObject.call(oThis.methodName, oThis.params);
+    // Last parameter is service type (dax or dynamoDB)
+    return await oThis.ddbObject.queryDdb(oThis.methodName, oThis.params, oThis.serviceType);
   },
 
 };

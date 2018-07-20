@@ -65,6 +65,26 @@ MochaTestConstants.prototype = {
     'endpoint': "http://localhost:8000"
   },
 
+  CONFIG_STRATEGIES: {
+    OS_DYNAMODB_API_VERSION: '2012-08-10',
+    OS_DYNAMODB_ACCESS_KEY_ID: 'x',
+    OS_DYNAMODB_SECRET_ACCESS_KEY: 'x',
+    OS_DYNAMODB_REGION: 'localhost',
+    OS_DYNAMODB_ENDPOINT: "http://localhost:8000",
+    OS_DYNAMODB_SSL_ENABLED: false,
+
+    OS_DAX_API_VERSION: '2012-08-10',
+    OS_DAX_ACCESS_KEY_ID: 'x',
+    OS_DAX_SECRET_ACCESS_KEY: 'x',
+    OS_DAX_REGION: 'localhost',
+    OS_DAX_ENDPOINT: "http://localhost:8000",
+    OS_DAX_SSL_ENABLED: false,
+
+    OS_DAX_ENABLED: false,
+    OS_DYNAMODB_LOGGING_ENABLED: "console",
+
+  },
+
   transactionLogTableName: 'shard_00001_transaction_logs',
 
   shardEntityType: 'tokenBalance',

@@ -17,7 +17,7 @@ describe('Create Table', function() {
   before(async function() {
      this.timeout(1000000);
     // create dynamodbApiObject
-    dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE);
+    dynamodbApiObject = new DdbApiKlass(testConstants.CONFIG_STRATEGIES);
     autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE);
 
     const oThis = this
