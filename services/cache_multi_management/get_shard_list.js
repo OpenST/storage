@@ -1,11 +1,13 @@
 "use strict";
 
 const rootPrefix = '../..'
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
-  , availableShard = require(rootPrefix + '/lib/models/dynamodb/shard_management/available_shard')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
 ;
+
+require(rootPrefix + '/lib/models/dynamodb/shard_management/available_shard');
+require(rootPrefix + "/config/core_constants");
 
 /**
  * @constructor
@@ -15,6 +17,7 @@ const rootPrefix = '../..'
  * @param {Object} params - cache key generation & expiry related params
  *
  */
+InstanceComposer.registerShadowableClass(GetShardListCacheKlass, 'getDDBServiceShardListCacheKlass');
 const GetShardListCacheKlass = module.exports = function (params) {
 
   const oThis = this;
@@ -71,7 +74,10 @@ GetShardListCacheKlass.prototype.setCacheExpiry = function () {
  */
 GetShardListCacheKlass.prototype.fetchDataFromSource = async function (cacheIds) {
 
-  const oThis = this;
+  const oThis = this
+    , availableShard = oThis.ic().getDDBServiceAvailableShard()
+    , coreConstants = oThis.ic().getCoreConstants();
+  ;
 
   if (!cacheIds) {
 

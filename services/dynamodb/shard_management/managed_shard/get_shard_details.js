@@ -9,12 +9,13 @@
  */
 
 const rootPrefix = '../../../..'
-  , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
-  , GetShardDetailsMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_details')
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
 ;
+
+require(rootPrefix + '/services/cache_multi_management/get_shard_details');
+require(rootPrefix + "/config/core_constants");
 
 /**
  * Constructor to create object of Get Shard Details
@@ -50,6 +51,7 @@ GetShardDetails.prototype = {
    */
   perform: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return oThis.asyncPerform()
@@ -70,6 +72,7 @@ GetShardDetails.prototype = {
    */
   asyncPerform: async function () {
     const oThis = this
+      , GetShardDetailsMultiCacheKlass = oThis.ic().getShardDetailsCacheKlass()
     ;
 
     let r = null;
@@ -102,6 +105,7 @@ GetShardDetails.prototype = {
    */
   validateParams: function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
       , errorCodePrefix = 's_sm_as_gsd_validateParams_'
     ;
 
@@ -138,5 +142,5 @@ GetShardDetails.prototype = {
     });
   }
 };
-
+InstanceComposer.registerShadowableClass(GetShardDetails, 'getShardDetails');
 module.exports = GetShardDetails;

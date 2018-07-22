@@ -12,16 +12,14 @@ const rootPrefix = '../../../..'
   , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
 
-  , coreConstants = require(rootPrefix + "/config/core_constants")
-  , availableShard = require( rootPrefix + '/lib/models/dynamodb/shard_management/available_shard')
 
-  , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
+  , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')//Exports a function.
   , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
 ;
 
 require(rootPrefix + "/config/core_constants");
 require( rootPrefix + '/lib/models/dynamodb/shard_management/available_shard');
-
+require(rootPrefix + '/services/cache_multi_management/has_shard');
 /**
  * Constructor to create object of Add Shard
  *

@@ -1,10 +1,9 @@
 "use strict";
 
 const rootPrefix = '../..'
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
-  , managedShard = require(rootPrefix + '/lib/models/dynamodb/shard_management/managed_shard')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
   , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
 
 ;
@@ -19,6 +18,7 @@ const rootPrefix = '../..'
  * @param {String} params.entity_type - Entity type of Item
  *
  */
+InstanceComposer.registerShadowableClass(GetShardDetailsCacheKlass, 'getShardDetailsCacheKlass');
 const GetShardDetailsCacheKlass = module.exports = function (params) {
 
   const oThis = this;
@@ -73,7 +73,10 @@ GetShardDetailsCacheKlass.prototype.setCacheExpiry = function () {
  */
 GetShardDetailsCacheKlass.prototype.fetchDataFromSource = async function (cacheIds) {
 
-  const oThis = this;
+  const oThis = this
+    , managedShard = oThis.ic().getLibModelsManagedShard()
+    , coreConstants = oThis.ic().getCoreConstants()
+  ;
 
   if (!cacheIds) {
     

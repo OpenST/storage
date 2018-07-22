@@ -9,14 +9,16 @@
  */
 
 const rootPrefix = '../../../..'
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
-  , availableShard = require( rootPrefix + '/lib/models/dynamodb/shard_management/available_shard')
-  , GetShardListMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_list')
-  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
-  , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
   , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
 ;
+
+require(rootPrefix + "/config/core_constants");
+require( rootPrefix + '/lib/models/dynamodb/shard_management/available_shard');
+require(rootPrefix + '/services/cache_multi_management/get_shard_list');
+require(rootPrefix + "/lib/global_constant/available_shard");
+require(rootPrefix + '/services/cache_multi_management/has_shard');
 
 /**
  * Constructor to create object of Configure Shard
@@ -53,6 +55,7 @@ ConfigureShard.prototype = {
    */
   perform: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return oThis.asyncPerform()
@@ -73,6 +76,7 @@ ConfigureShard.prototype = {
    */
   asyncPerform: async function () {
     const oThis = this
+      , availableShard = oThis.ic().getDDBServiceAvailableShard()
     ;
 
     let r = null;
@@ -103,6 +107,9 @@ ConfigureShard.prototype = {
   validateParams: function () {
     const oThis = this
       , errorCodePrefix = 's_sm_as_cs_validateParams_'
+      , coreConstants = oThis.ic().getCoreConstants()
+      , availableShardConst = oThis.ic().getLibAvailableShard()
+      , HasShardMultiCacheKlass =oThis.ic().getDDBServiceHasShardKlass()
     ;
 
     return new Promise(async function (onResolve) {
@@ -158,8 +165,10 @@ ConfigureShard.prototype = {
    */
   isRedundantUpdate : async function() {
     const oThis = this
+      , availableShard = oThis.ic().getDDBServiceAvailableShard()
       , responseShardInfo = await availableShard.getShardByName(oThis.params)
       , shardInfo = responseShardInfo.data[oThis.shardName]
+      , availableShardConst = oThis.ic().getLibAvailableShard()
     ;
 
     if (responseShardInfo.isFailure() || !shardInfo) {
@@ -179,6 +188,7 @@ ConfigureShard.prototype = {
    */
   clearAnyAssociatedCache: async function() {
     const oThis = this
+      , GetShardListMultiCacheKlass = oThis.ic().getDDBServiceShardListCacheKlass()
     ;
 
     logger.debug("=======ConfigureShard.cacheClearance.result=======");
@@ -196,4 +206,5 @@ ConfigureShard.prototype = {
   }
 };
 
+InstanceComposer.registerShadowableClass(ConfigureShard, 'getDDBServiceConfigureShard');
 module.exports = ConfigureShard;

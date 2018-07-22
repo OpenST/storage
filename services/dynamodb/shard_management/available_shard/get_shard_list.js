@@ -9,13 +9,15 @@
  */
 
 const rootPrefix = '../../../..'
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
-  , availableShardGlobalConstant = require(rootPrefix + '/lib/global_constant/available_shard')
-  , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
-  , GetShardListMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_list')
   , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
 ;
+
+require(rootPrefix + "/config/core_constants");
+require(rootPrefix + '/lib/global_constant/available_shard');
+require(rootPrefix + '/lib/global_constant/managed_shard');
+require(rootPrefix + '/services/cache_multi_management/get_shard_list');
 
 /**
  * Constructor to create object of Get Shard List
@@ -32,7 +34,9 @@ const rootPrefix = '../../../..'
  *
  */
 const GetShardList = function (params) {
-  const oThis = this;
+  const oThis = this
+    , availableShardGlobalConstant = oThis.ic().getLibAvailableShard()
+  ;
   logger.debug("=======GetShardList.params=======");
   logger.debug(params);
 
@@ -52,6 +56,7 @@ GetShardList.prototype = {
    */
   perform: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return oThis.asyncPerform()
@@ -94,6 +99,8 @@ GetShardList.prototype = {
    */
   validateParams: function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
+      , availableShardGlobalConstant = oThis.ic().getLibAvailableShard()
     ;
 
     return new Promise(async function (onResolve) {
@@ -118,6 +125,7 @@ GetShardList.prototype = {
    */
   getShardListFromCache : async function () {
     const oThis = this
+      , GetShardListMultiCacheKlass = oThis.ic().getDDBServiceShardListCacheKlass()
       , cacheParams = {
       ddb_object: oThis.ddbObject,
       ids: [{entity_type: oThis.entityType, shard_type: oThis.shardType}]
@@ -133,4 +141,6 @@ GetShardList.prototype = {
   }
 };
 
+
+InstanceComposer.registerShadowableClass(GetShardList, 'GetShardList');
 module.exports = GetShardList;

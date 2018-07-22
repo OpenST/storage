@@ -204,5 +204,5 @@ BaseCache.prototype = {
 
 };
 
-InstanceComposer.registerShadowableClass(BaseCache, 'getDDBCacheBaseCache',true);
+InstanceComposer.registerShadowableClass(BaseCache, 'getDDBCacheBaseCache');
 module.exports = BaseCache;

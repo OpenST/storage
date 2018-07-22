@@ -9,11 +9,13 @@
  */
 
 const rootPrefix = '../../../..'
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
-  , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
   , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
 ;
+
+require(rootPrefix + "/config/core_constants");
+require(rootPrefix + '/services/cache_multi_management/has_shard');
 
 /**
  * Constructor to create object of Has Shard class
@@ -49,6 +51,7 @@ HasShard.prototype = {
    */
   perform: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return oThis.asyncPerform()
@@ -92,6 +95,7 @@ HasShard.prototype = {
     const oThis = this
       , BATCH_SIZE_LIMIT = 50
       , errorCodePrefix = 's_sm_as_hs_validateParams_'
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return new Promise(async function (onResolve) {
@@ -141,6 +145,7 @@ HasShard.prototype = {
    */
   hasShardFromCache: async function() {
     const oThis = this
+      , HasShardMultiCacheKlass = oThis.ic().getDDBServiceHasShardKlass()
       , cacheParams = {
       ddb_object: oThis.ddbObject,
       shard_names: oThis.shardNames
@@ -153,4 +158,5 @@ HasShard.prototype = {
   }
 };
 
+InstanceComposer.registerShadowableClass(HasShard, 'HasShard');
 module.exports = HasShard;

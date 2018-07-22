@@ -9,18 +9,15 @@
 
 const rootPrefix  = "../../.."
   , InstanceComposer = require(rootPrefix + '/instance_composer')
-  , ShardMigrationKlass  = require(rootPrefix + '/services/dynamodb/shard_management/shard_migration')
-
-  , AddShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/add_shard')
-  , ConfigureShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/configure_shard')
-  , AssignShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/assign_shard')
-  , GetShardNameKlass = require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/get_shard_details')
-  , GetShardListKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/get_shard_list')
-  , HasShardKlass = require(rootPrefix + '/services/dynamodb/shard_management/available_shard/has_shard')
 ;
 
 require(rootPrefix + '/services/dynamodb/shard_management/shard_migration');
 require(rootPrefix + '/services/dynamodb/shard_management/available_shard/add_shard');
+require(rootPrefix + '/services/dynamodb/shard_management/available_shard/configure_shard');
+require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/assign_shard');
+require(rootPrefix + '/services/dynamodb/shard_management/managed_shard/get_shard_details');
+require(rootPrefix + '/services/dynamodb/shard_management/available_shard/get_shard_list');
+require(rootPrefix + '/services/dynamodb/shard_management/available_shard/has_shard');
 
 /**
  * Constructor for Shard Service api class
@@ -74,6 +71,7 @@ ShardServiceApi.prototype = {
   addShard: function(params) {
     const oThis = this
       , addShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
+      , AddShardKlass = oThis.ic().getDDBServiceAddShard();
     ;
 
     return new AddShardKlass(addShardParams).perform();
@@ -95,6 +93,7 @@ ShardServiceApi.prototype = {
   configureShard: function(params) {
     const oThis = this
       , configureShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
+      , ConfigureShardKlass = oThis.ic().getDDBServiceConfigureShard()
     ;
 
     return new ConfigureShardKlass(configureShardParams).perform();
@@ -117,6 +116,7 @@ ShardServiceApi.prototype = {
   getShardsByType: function (params) {
     const oThis = this
       , shardsByTypeParams = Object.assign({ddb_object: oThis.ddbObject}, params)
+      , GetShardListKlass = oThis.ic().GetShardList();
     ;
 
     return new GetShardListKlass(shardsByTypeParams).perform();
@@ -134,6 +134,7 @@ ShardServiceApi.prototype = {
   hasShard: function (params) {
     const oThis = this
       , hasShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
+      , HasShardKlass = oThis.ic().HasShard()
     ;
 
     return new HasShardKlass(hasShardParams).perform();
@@ -159,6 +160,7 @@ ShardServiceApi.prototype = {
   assignShard: function (params) {
     const oThis = this
       , assignShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
+      , AssignShardKlass = oThis.ic().getDDBAssignShard()
     ;
 
     return new AssignShardKlass(assignShardParams).perform();
@@ -179,10 +181,12 @@ ShardServiceApi.prototype = {
   getManagedShard: function (params) {
     const oThis = this
       , getShardParams = Object.assign({ddb_object: oThis.ddbObject}, params)
+      , GetShardNameKlass = oThis.ic().getShardDetails()
     ;
 
     return new GetShardNameKlass(getShardParams).perform();
   }
 };
 
+InstanceComposer.registerShadowableClass(ShardServiceApi, 'ShardServiceApi');
 module.exports = ShardServiceApi;

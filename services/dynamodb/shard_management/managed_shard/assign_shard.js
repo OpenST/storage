@@ -9,16 +9,18 @@
  */
 
 const rootPrefix = '../../../..'
-  , managedShard = require(rootPrefix + '/lib/models/dynamodb/shard_management/managed_shard')
-  , managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard')
-  , GetShardNameMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/get_shard_details')
-  , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')
-  , availableShard = require(rootPrefix + '/lib/models/dynamodb/shard_management/available_shard')
-  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , coreConstants = require(rootPrefix + "/config/core_constants")
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
 ;
+
+require(rootPrefix + '/lib/models/dynamodb/shard_management/managed_shard');
+require(rootPrefix + '/services/cache_multi_management/get_shard_details');
+require(rootPrefix + '/services/cache_multi_management/has_shard');
+require(rootPrefix + '/lib/models/dynamodb/shard_management/available_shard');
+require(rootPrefix + "/lib/global_constant/available_shard");
+require(rootPrefix + "/config/core_constants")
 
 /**
  * Constructor to create object of Assign Shard
@@ -57,6 +59,7 @@ AssignShard.prototype = {
    */
   perform: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return oThis.asyncPerform()
@@ -77,6 +80,7 @@ AssignShard.prototype = {
    */
   asyncPerform: async function () {
     const oThis = this
+      , managedShard = oThis.ic().getLibModelsManagedShard()
     ;
 
     let r = null;
@@ -112,6 +116,7 @@ AssignShard.prototype = {
 
       oThis.hasShard = async function () {
         const oThis = this
+          , HasShardMultiCacheKlass = oThis.ic().getDDBServiceHasShardKlass()
           , paramsHasShard = {
           ddb_object: oThis.ddbObject,
           shard_names: [oThis.shardName]
@@ -127,8 +132,10 @@ AssignShard.prototype = {
       // Shared shard i.e. enabled for allocation
       oThis.isSharedShard = async function () {
         const oThis = this
+          , availableShard = oThis.ic().getDDBServiceAvailableShard()
           , responseShardInfo = await availableShard.getShardByName(oThis.params)
           , shardInfo = responseShardInfo.data[oThis.shardName]
+          , availableShardConst = oThis.ic().getLibAvailableShard()
         ;
 
         if (responseShardInfo.isFailure() || !shardInfo) {
@@ -173,6 +180,7 @@ AssignShard.prototype = {
    */
   clearAnyAssociatedCache: async function () {
     const oThis = this
+      , GetShardNameMultiCacheKlass = oThis.ic().getShardDetailsCacheKlass()
       , cacheParamsGetShard = {
       ddb_object: oThis.ddbObject,
       entity_type: oThis.entityType,
@@ -182,4 +190,5 @@ AssignShard.prototype = {
   }
 };
 
+InstanceComposer.registerShadowableClass(AssignShard, 'getDDBAssignShard');
 module.exports = AssignShard;
