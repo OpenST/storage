@@ -9,14 +9,13 @@ const rootPrefix    = '.'
   //, TokenBalanceModel = require(rootPrefix + '/lib/models/dynamodb/token_balance')
   //, TokenBalanceCache = require(rootPrefix + '/services/cache_multi_management/token_balance')
   //, ShardedBaseModel = require(rootPrefix + '/lib/models/dynamodb/base')
-  //, entityTypesConst = require(rootPrefix + '/lib/global_constant/entity_types')
+  , entityTypesConst = require(rootPrefix + '/lib/global_constant/entity_types')
   , InstanceComposer = require(rootPrefix + '/instance_composer')
 ;
 
 require(rootPrefix + '/lib/models/dynamodb/token_balance');
 require(rootPrefix + '/services/cache_multi_management/token_balance');
 require(rootPrefix + '/lib/models/dynamodb/base');
-require(rootPrefix + '/lib/global_constant/entity_types');
 
 const OpenSTStorage = function (configStrategy) {
   const oThis = this
@@ -24,7 +23,6 @@ const OpenSTStorage = function (configStrategy) {
     , TokenBalanceModel = instanceComposer.getLibDDBTokenBalanceModel()
     , TokenBalanceCache = instanceComposer.getDDBTokenBalanceCache()
     , ShardedBaseModel = instanceComposer.getLibDDBBaseModel()
-    , entityTypesConst = instanceComposer.getLibGlobalConstantEntityTypes()
   ;
 
   if (!configStrategy) {
@@ -43,22 +41,41 @@ const OpenSTStorage = function (configStrategy) {
   oThis.entityTypesConst = entityTypesConst;
 };
 
-InstanceComposer.registerShadowableClass(OpenSTStorage, 'getOpenSTStorage');
+
+const getInstanceKey = function (configStrategy) {
+  return [configStrategy.OS_DAX_API_VERSION, configStrategy.OS_DAX_ACCESS_KEY_ID, configStrategy.OS_DAX_REGION,
+    configStrategy.OS_DAX_ENDPOINT, configStrategy.OS_DAX_SSL_ENABLED,
+    configStrategy.OS_DYNAMODB_API_VERSION, configStrategy.OS_DYNAMODB_ACCESS_KEY_ID, configStrategy.OS_DYNAMODB_REGION,
+    configStrategy.OS_DYNAMODB_ENDPOINT, configStrategy.OS_DYNAMODB_SSL_ENABLED
+  ].join('-');
+};
+
+const instanceMap = {};
+
+const Factory = function () {};
+
+Factory.prototype = {
+  getInstance: function (configStrategy) {
+    // check if instance already present
+    let instanceKey = getInstanceKey(configStrategy)
+      , _instance = instanceMap[instanceKey];
+
+    if(!_instance) {
+      _instance = new OpenSTStorage(configStrategy);
+      instanceMap[instanceKey] = _instance;
+    }
+
+    return _instance;
+  }
+};
+
+const factory = new Factory();
+OpenSTStorage.getInstance = factory.getInstance;
+
+
 module.exports = OpenSTStorage;
 
 
-
-
-
-
-
-
-
-
-
-
-// const DynamodbApi  = require(rootPrefix + '/services/dynamodb/api')
-// , AutoScalingApi  = require(rootPrefix + '/services/auto_scale/api')
 
 // // Expose all libs here.
 // // All classes should begin with Capital letter.
@@ -77,3 +94,6 @@ module.exports = OpenSTStorage;
 
   OSTStorage = require("./index");
 */
+
+
+

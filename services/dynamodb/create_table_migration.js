@@ -19,11 +19,11 @@ const rootPrefix  = "../.."
 ;
 
 require(rootPrefix + "/config/core_constants");
+require(rootPrefix + '/services/auto_scale/api');
 
 /**
  * Constructor for TableExist service class
  *
- * @params {Object} ddbObject - DynamoDB Object
  * @params {Object} autoScalingObject - auto scaling Object
  * @params {Object} params - params
  * @params {Object} params.createTableConfig - create table configurations
@@ -36,16 +36,14 @@ require(rootPrefix + "/config/core_constants");
  *
  * @constructor
  */
-const CreateTableMigration = function(autoScalingObject ,params, serviceType) {
+const CreateTableMigration = function(params, serviceType) {
   const oThis = this
   ;
-  oThis.autoScalingObject = autoScalingObject;
+  oThis.autoScalingObject = oThis.ic().getAutoScaleService();
   oThis.createTableConfig = params.createTableConfig;
   //oThis.updateContinuousBackupConfig = params.updateContinuousBackupConfig;
   oThis.autoScalingConfig = params.autoScalingConfig;
   logger.debug("\nparams.createTableConfig", params.createTableConfig, "\nparams.autoScalingConfig", params.autoScalingConfig);
-  //logger.debug("\nautoScalingMethods");
-  //console.log(Object.getOwnPropertyNames(autoScalingObject));
   oThis.shouldAutoScale = !!oThis.autoScalingObject;
   oThis.serviceType = serviceType;
 

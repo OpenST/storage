@@ -23,10 +23,10 @@ const CoreConstants = function (configStrategy, instanceComposer) {
   ;
 
   // STORAGE CACHING ENGINE
-  oThis.CACHING_ENGINE = configStrategy.OS_CACHING_ENGINE || "none";
+  oThis.CACHING_ENGINE = configStrategy.OS_CACHING_ENGINE;
 
   // Generic env variable across NPM packages
-  oThis.DEBUG_ENABLED = configStrategy.OST_DEBUG_ENABLED || 0;
+  oThis.DEBUG_ENABLED = configStrategy.OST_DEBUG_ENABLED;
 
   oThis.DYNAMODB_TABLE_NAME_PREFIX = configStrategy.OS_DYNAMODB_TABLE_NAME_PREFIX || '';
 };

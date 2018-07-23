@@ -20,7 +20,7 @@ require(rootPrefix + '/services/dynamodb/create_table_migration');
 require(rootPrefix + '/services/dynamodb/batch_get');
 require(rootPrefix + '/services/dynamodb/batch_write');
 require(rootPrefix + '/services/dynamodb/update_item');
-require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
+require(rootPrefix + '/services/dynamodb/shard_management/shard_api');
 
 /**
  * Constructor for DynamoDB api service class
@@ -32,8 +32,6 @@ require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
 const DynamoDBService = function() {
   const oThis = this
   ;
-
-  oThis.ddbObject = oThis.ic().getLibDynamoDBBase();
 };
 
 DynamoDBService.prototype = {
@@ -72,10 +70,10 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  createTableMigration: function(autoScaleObject, params) {
+  createTableMigration: function(params) {
     const oThis = this
       , CreateTableMigrationServiceKlass = oThis.ic().getDDBServiceCreateTableMigration()
-      , createTableMigrationObject = new CreateTableMigrationServiceKlass(autoScaleObject, params, 'raw')
+      , createTableMigrationObject = new CreateTableMigrationServiceKlass(params, 'raw')
     ;
     return createTableMigrationObject.perform();
   },
@@ -339,7 +337,7 @@ DynamoDBService.prototype = {
     const oThis = this
       , ShardServiceApiKlass = oThis.ic().getShardServiceApi()
     ;
-    return new ShardServiceApiKlass(oThis.ddbObject);
+    return new ShardServiceApiKlass();
   }
 };
 

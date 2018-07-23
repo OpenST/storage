@@ -2,14 +2,13 @@
 
 const rootPrefix = '../..'
   , InstanceComposer = require(rootPrefix + '/instance_composer')
+  , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
 ;
 
-require(rootPrefix + '/services/cache_multi_management/base');
 require(rootPrefix + '/lib/models/dynamodb/shard_management/available_shard');
 require(rootPrefix + "/config/core_constants");
 
-const baseCache = oThis.ic().getDDBCacheBaseCache();
 
 /**
  * @constructor
@@ -19,9 +18,8 @@ const baseCache = oThis.ic().getDDBCacheBaseCache();
  * @param {Object} params - cache key generation & expiry related params
  *
  */
-  //Exposes a function. How to register a funtion.
-InstanceComposer.registerShadowableClass(HasShardKlass, 'getDDBServiceHasShardKlass');
-const HasShardKlass = module.exports = function (params) {
+
+const HasShardKlass = function (params) {
 
   const oThis = this;
   oThis.params = params;
@@ -92,3 +90,7 @@ HasShardKlass.prototype.fetchDataFromSource = async function (cacheIds) {
     shard_names: cacheIds
   }));
 };
+
+InstanceComposer.registerShadowableClass(HasShardKlass, 'getDDBServiceHasShardKlass');
+
+module.exports = HasShardKlass;

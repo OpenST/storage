@@ -23,7 +23,6 @@ require(rootPrefix + "/config/core_constants");
  * @constructor
  *
  * @params {Object} params - Parameters
- * @param {Object} params.ddb_object - dynamodb object
  * @param {String} params.entity_type - entity type
  * @param {Array} params.identifiers - Array of identifiers containing string
  *
@@ -36,7 +35,6 @@ const GetShardDetails = function (params) {
   logger.debug("=======GetShardDetails.params=======");
   logger.debug(params);
   oThis.params = params;
-  oThis.ddbObject = params.ddb_object;
   oThis.entityType = params.entity_type;
   oThis.identifiers = params.identifiers;
 };
@@ -83,7 +81,6 @@ GetShardDetails.prototype = {
     if (r.isFailure()) return r;
 
     const cacheParams = {
-      ddb_object: oThis.ddbObject,
       entity_type: oThis.entityType,
       identifiers: oThis.identifiers
     };
@@ -142,5 +139,5 @@ GetShardDetails.prototype = {
     });
   }
 };
-InstanceComposer.registerShadowableClass(GetShardDetails, 'getShardDetails');
+InstanceComposer.registerShadowableClass(GetShardDetails, 'getDdbShardDetails');
 module.exports = GetShardDetails;

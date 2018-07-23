@@ -26,7 +26,6 @@ require(rootPrefix + '/services/cache_multi_management/has_shard');
  * @constructor
  *
  * @params {Object} params - Parameters
- * @param {String} params.ddb_object - dynamoDbObject
  * @param {String} params.shard_name - Name of the shard
  * @param {String} params.allocation_type - enable or disable allocation. enabled/disabled
  *
@@ -40,7 +39,6 @@ const ConfigureShard = function (params) {
   logger.debug(params);
 
   oThis.params = params;
-  oThis.ddbObject = params.ddb_object;
   oThis.shardName = params.shard_name;
   oThis.allocationType = params.allocation_type;
 };
@@ -120,7 +118,6 @@ ConfigureShard.prototype = {
 
       oThis.hasShard = async function() {
         const paramsHasShard = {
-          ddb_object: oThis.ddbObject,
           shard_names: [oThis.shardName]
         };
         const response  = await (new HasShardMultiCacheKlass(paramsHasShard)).fetch();
@@ -193,7 +190,6 @@ ConfigureShard.prototype = {
 
     logger.debug("=======ConfigureShard.cacheClearance.result=======");
     const cacheParams = {
-      ddb_object: oThis.ddbObject,
       ids: [{
         entity_type: oThis.oldEntityType,
         shard_type: oThis.allocationType}, {

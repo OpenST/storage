@@ -12,6 +12,7 @@ const rootPrefix = "../.."
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
 ;
 
+require(rootPrefix+'/lib/auto_scale/base');
 require(rootPrefix + "/config/core_constants");
 
 
@@ -24,13 +25,12 @@ require(rootPrefix + "/config/core_constants");
  *
  * @constructor
  */
-const Base = function (autoScaleObject, methodName, params) {
+const Base = function (methodName, params) {
   const oThis = this
   ;
   logger.debug("=======AutoScale.Base.params=======");
   logger.debug("\nmethodName: " + methodName, "\nparams: " + params);
   oThis.params = params;
-  oThis.autoScaleObject = autoScaleObject;
   oThis.methodName = methodName;
 };
 
@@ -99,13 +99,6 @@ Base.prototype = {
       error_config: coreConstants.ERROR_CONFIG
     });
 
-    if (!oThis.autoScaleObject) return responseHelper.error({
-      internal_error_identifier: "l_as_b_validateParams_2",
-      api_error_identifier: "invalid_auto_scale_object",
-      debug_options: {},
-      error_config: coreConstants.ERROR_CONFIG
-    });
-
     if (!oThis.params) return responseHelper.error({
       internal_error_identifier: "l_as_b_validateParams_3",
       api_error_identifier: "invalid_params",
@@ -125,7 +118,8 @@ Base.prototype = {
    */
   executeAutoScaleRequest: async function () {
     const oThis = this
-      , r = await oThis.autoScaleObject.call(oThis.methodName, oThis.params)
+      , autoScaleObject = new ASBase()
+      , r = await autoScaleObject.call(oThis.methodName, oThis.params)
     ;
 
     logger.debug("=======Base.perform.result=======");

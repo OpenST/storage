@@ -2,7 +2,7 @@
 
 //Load external files
 require('http').globalAgent.keepAlive = true;
-
+const rootPrefix = "..";
 const AWS = require('aws-sdk')
   , AWSDaxClient = require('amazon-dax-client')
   , InstanceComposer = require(rootPrefix + '/instance_composer')
@@ -59,8 +59,8 @@ DynamoConfigFactory.prototype = {
         secretAccessKey: configStrategies.OS_DAX_SECRET_ACCESS_KEY,
         region: configStrategies.OS_DAX_REGION,
         endpoint: configStrategies.OS_DAX_ENDPOINT,
-        sslEnabled: configStrategies.OS_DAX_SSL_ENABLED,
-        logger: configStrategies.logger
+        sslEnabled: (configStrategies.OS_DAX_SSL_ENABLED==1),
+        logger: (configStrategies.OS_DYNAMODB_LOGGING_ENABLED==1)
       });
     }
     else {
@@ -70,11 +70,13 @@ DynamoConfigFactory.prototype = {
         secretAccessKey: configStrategies.OS_DYNAMODB_SECRET_ACCESS_KEY,
         region: configStrategies.OS_DYNAMODB_REGION,
         endpoint: configStrategies.OS_DYNAMODB_ENDPOINT,
-        sslEnabled: configStrategies.OS_DYNAMODB_SSL_ENABLED,
-        logger: configStrategies.logger
+        sslEnabled: (configStrategies.OS_DYNAMODB_SSL_ENABLED==1),
+        logger: (configStrategies.OS_DYNAMODB_LOGGING_ENABLED==1)
       });
     }
   }
+
+  //  apiVersion-accessKeyId-region-endpoint-sslEnabled
 
   , createRawObject: async function (connectionParams) {
     return await new AWS.DynamoDB(connectionParams);

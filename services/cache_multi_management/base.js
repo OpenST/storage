@@ -3,7 +3,6 @@
 //External Libraries
 const openStCache = require('@openstfoundation/openst-cache');
 
-
 const rootPrefix = '../..'
   , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
@@ -12,12 +11,6 @@ const rootPrefix = '../..'
 ;
 
 require(rootPrefix + '/config/core_constants');
-
-const oThis = this
-  , coreConstants = oThis.ic().getCoreConstants();
-
-const cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, true)
-;
 
 /**
  * constructor
@@ -87,6 +80,8 @@ BaseCache.prototype = {
   clear: function () {
     const oThis = this
       , promiseArray = []
+      , coreConstants = oThis.ic().getCoreConstants()
+      , cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, true)
     ;
 
     for (let i = 0; i < Object.keys(oThis.cacheKeyToexternalIdMap).length; i++) {
@@ -137,9 +132,13 @@ BaseCache.prototype = {
    */
   _fetchFromCache: async function () {
 
-    const oThis = this;
+    const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
+      , cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, true)
+    ;
     let cacheFetchResponse = null
-      , cacheKeys = Object.keys(oThis.cacheKeyToexternalIdMap);
+      , cacheKeys = Object.keys(oThis.cacheKeyToexternalIdMap)
+    ;
 
     cacheFetchResponse = await cacheImplementer.multiGet(cacheKeys);
     let cacheMiss = []
@@ -177,7 +176,10 @@ BaseCache.prototype = {
    */
   _setCache: function (key, dataToSet) {
 
-    const oThis = this;
+    const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
+      , cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, true)
+    ;
 
     var setCacheFunction = function (k, v) {
       var cacheKey = utils.invert(oThis.cacheKeyToexternalIdMap)[k];

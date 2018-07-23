@@ -18,7 +18,7 @@ const rootPrefix = '../../..'
 require(rootPrefix + "/config/core_constants");
 require(rootPrefix + "/lib/global_constant/managed_shard");
 require(rootPrefix + "/lib/global_constant/available_shard");
-require(rootPrefix + '/lib/auto_scale/helper')
+require(rootPrefix + '/lib/auto_scale/helper');
 /**
  * Constructor to create object of shard migration
  *

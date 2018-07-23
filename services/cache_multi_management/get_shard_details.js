@@ -18,8 +18,7 @@ const rootPrefix = '../..'
  * @param {String} params.entity_type - Entity type of Item
  *
  */
-InstanceComposer.registerShadowableClass(GetShardDetailsCacheKlass, 'getShardDetailsCacheKlass');
-const GetShardDetailsCacheKlass = module.exports = function (params) {
+const GetShardDetailsCacheKlass = function (params) {
 
   const oThis = this;
   oThis.params = params;
@@ -92,3 +91,7 @@ GetShardDetailsCacheKlass.prototype.fetchDataFromSource = async function (cacheI
     identifiers: cacheIds,
   }));
 };
+
+InstanceComposer.registerShadowableClass(GetShardDetailsCacheKlass, 'getShardDetailsCacheKlass');
+
+module.exports = GetShardDetailsCacheKlass;

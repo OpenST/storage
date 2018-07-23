@@ -19,7 +19,6 @@ require(rootPrefix + "/config/core_constants");
 /**
  * Constructor for wait for service class
  * @param {Object} params - Parameters
- * @param {Object} ddbObject - DynamoDB Object
  * @param {String} waitForMethod - wait for method
  *
  * @constructor

@@ -23,7 +23,6 @@ require(rootPrefix + '/services/cache_multi_management/has_shard');
  * @constructor
  *
  * @params {Object} params - Parameters
- * @param {String} params.ddb_object - dynamoDbObject
  * @param {String} params.shard_names - Name of the shard
  * @param {Boolean} params.enable_allocation - to enable or disable allocation
  *
@@ -37,7 +36,6 @@ const HasShard = function (params) {
   logger.debug(params);
 
   oThis.params = params;
-  oThis.ddbObject = params.ddb_object;
   oThis.shardNames = params.shard_names;
 };
 
@@ -147,7 +145,6 @@ HasShard.prototype = {
     const oThis = this
       , HasShardMultiCacheKlass = oThis.ic().getDDBServiceHasShardKlass()
       , cacheParams = {
-      ddb_object: oThis.ddbObject,
       shard_names: oThis.shardNames
     };
     let r = await new HasShardMultiCacheKlass(cacheParams).fetch();
@@ -158,5 +155,5 @@ HasShard.prototype = {
   }
 };
 
-InstanceComposer.registerShadowableClass(HasShard, 'HasShard');
+InstanceComposer.registerShadowableClass(HasShard, 'getHasShardInfo');
 module.exports = HasShard;

@@ -83,6 +83,6 @@ const TableExistPrototype = {
 Object.assign(TableExist.prototype, TableExistPrototype);
 TableExist.prototype.constructor = TableExist;
 
-InstanceComposer.registerShadowableClass(Base, 'getDDBServiceTableExist');
+InstanceComposer.registerShadowableClass(TableExist, 'getDDBServiceTableExist');
 
 module.exports = TableExist;

@@ -20,7 +20,7 @@ require(rootPrefix + '/services/cache_multi_management/get_shard_details');
 require(rootPrefix + '/services/cache_multi_management/has_shard');
 require(rootPrefix + '/lib/models/dynamodb/shard_management/available_shard');
 require(rootPrefix + "/lib/global_constant/available_shard");
-require(rootPrefix + "/config/core_constants")
+require(rootPrefix + "/config/core_constants");
 
 /**
  * Constructor to create object of Assign Shard
@@ -28,7 +28,6 @@ require(rootPrefix + "/config/core_constants")
  * @constructor
  *
  * @params {Object} params - Parameters
- * @param {Object} params.ddb_object - dynamo db object
  * @param {String} params.identifier - identifier of the shard
  * @param {String} params.entity_type - schema of the table in shard
  * @param {String} params.shard_name - shard name
@@ -42,7 +41,6 @@ const AssignShard = function (params) {
   logger.debug("=======AssignShard.params=======");
   logger.debug(params);
   oThis.params = params;
-  oThis.ddbObject = params.ddb_object;
   oThis.identifier = params.identifier;
   oThis.entityType = params.entity_type;
   oThis.shardName = params.shard_name;
@@ -118,7 +116,6 @@ AssignShard.prototype = {
         const oThis = this
           , HasShardMultiCacheKlass = oThis.ic().getDDBServiceHasShardKlass()
           , paramsHasShard = {
-          ddb_object: oThis.ddbObject,
           shard_names: [oThis.shardName]
         };
         const response = await (new HasShardMultiCacheKlass(paramsHasShard)).fetch();
@@ -149,9 +146,6 @@ AssignShard.prototype = {
       if (!oThis.identifier) {
         errorCode = errorCodePrefix + '1';
         error_identifier = "invalid_shard_identifier";
-      } else if (!oThis.ddbObject) {
-        errorCode = errorCodePrefix + '2';
-        error_identifier = "invalid_ddb_object";
       } else if (!(await oThis.hasShard())) {
         errorCode = errorCodePrefix + '3';
         error_identifier = "invalid_shard_name";
@@ -182,7 +176,6 @@ AssignShard.prototype = {
     const oThis = this
       , GetShardNameMultiCacheKlass = oThis.ic().getShardDetailsCacheKlass()
       , cacheParamsGetShard = {
-      ddb_object: oThis.ddbObject,
       entity_type: oThis.entityType,
       identifiers: [oThis.identifier]
     };

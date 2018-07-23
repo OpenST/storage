@@ -30,8 +30,6 @@ const TokenBalanceCache = function (params) {
 
   oThis.erc20ContractAddress = params.erc20_contract_address;
   oThis.ethereumAddresses = JSON.parse(JSON.stringify(params.ethereum_addresses));
-  oThis.ddbServiceObj = params.ddb_service || {};
-  oThis.autoScalingObj = params.auto_scaling || {};
 
   // sanitize the params
   if(oThis.erc20ContractAddress) oThis.erc20ContractAddress = oThis.erc20ContractAddress.toLowerCase();
@@ -118,8 +116,6 @@ const tokenBalanceCacheSpecificPrototype = {
     }
 
     let getBalanceResponse = await new TokenBalanceModel({
-      ddb_service: oThis.ddbServiceObj,
-      auto_scaling: oThis.autoScalingObj,
       erc20_contract_address: oThis.erc20ContractAddress
     })
       .getBalance({

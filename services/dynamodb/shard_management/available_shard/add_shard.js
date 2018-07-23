@@ -11,9 +11,6 @@
 const rootPrefix = '../../../..'
   , InstanceComposer = require(rootPrefix + '/instance_composer')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-
-
-  , HasShardMultiCacheKlass = require(rootPrefix + '/services/cache_multi_management/has_shard')//Exports a function.
   , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
 ;
 
@@ -26,7 +23,6 @@ require(rootPrefix + '/services/cache_multi_management/has_shard');
  * @constructor
  *
  * @params {Object} params - Parameters
- * @param {String} params.ddb_object - dynamoDbObject
  * @param {String} params.shard_name - Shard Name
  * @param {String} params.entity_type - entity type of shard
  *
@@ -40,7 +36,6 @@ const AddShard = function (params) {
 
   oThis.params = params;
   oThis.shardName = params.shard_name;
-  oThis.ddbObject = params.ddb_object;
   oThis.entityType = params.entity_type;
 };
 
@@ -139,9 +134,9 @@ AddShard.prototype = {
    */
   clearAnyAssociatedCache: function () {
     const oThis = this
+      , HasShardMultiCacheKlass = oThis.ic().getDDBServiceHasShardKlass()
     ;
     const cacheParams = {
-      ddb_object: oThis.ddbObject,
       shard_names: [oThis.shardName]
     };
     return new HasShardMultiCacheKlass(cacheParams).clear();

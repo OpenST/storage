@@ -25,7 +25,6 @@ require(rootPrefix + '/services/cache_multi_management/get_shard_list');
  * @constructor
  *
  * @params {Object} params - Parameters
- * @param {Object} params.ddb_object - Dynamo db object
  * @param {String} params.entity_type - entity type
  * @param {String} params.shard_type - get shard type Example :- 'all', 'enabled', 'disabled' (Default 'all')
  * @param {JSON} params.table_schema - schema of the table in shard
@@ -41,7 +40,6 @@ const GetShardList = function (params) {
   logger.debug(params);
 
   oThis.params = params;
-  oThis.ddbObject = params.ddb_object;
   oThis.entityType = params.entity_type;
   oThis.shardType = params.shard_type || availableShardGlobalConstant.all;
 };
@@ -127,7 +125,6 @@ GetShardList.prototype = {
     const oThis = this
       , GetShardListMultiCacheKlass = oThis.ic().getDDBServiceShardListCacheKlass()
       , cacheParams = {
-      ddb_object: oThis.ddbObject,
       ids: [{entity_type: oThis.entityType, shard_type: oThis.shardType}]
     };
     let r = await new GetShardListMultiCacheKlass(cacheParams).fetch();
@@ -142,5 +139,5 @@ GetShardList.prototype = {
 };
 
 
-InstanceComposer.registerShadowableClass(GetShardList, 'GetShardList');
+InstanceComposer.registerShadowableClass(GetShardList, 'getDdbShardList'); //getShardList
 module.exports = GetShardList;

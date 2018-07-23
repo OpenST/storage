@@ -47,7 +47,7 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
      // 1. Creates table
      // 2. Enables read/write auto scaling
      // 3. Returns describe table response 
-     ddbServiceObj.createTableMigration(autoScaleObject, createTableMigrationParams);
+     ddbServiceObj.createTableMigration(createTableMigrationParams);
     
 #### Update table 
 &nbsp; params [updateTableParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#updateTable-property)

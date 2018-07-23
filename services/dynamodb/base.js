@@ -19,7 +19,6 @@ require(rootPrefix + "/config/core_constants");
 /**
  * Constructor for base service class
  *
- * @param {Object} ddbObject - connection object
  * @param {String} methodName - DDB method name
  * @param {Object} params - DDB method params
  *

@@ -17,8 +17,7 @@ require(rootPrefix + "/config/core_constants");
  * @param {Object} params - cache key generation & expiry related params
  *
  */
-InstanceComposer.registerShadowableClass(GetShardListCacheKlass, 'getDDBServiceShardListCacheKlass');
-const GetShardListCacheKlass = module.exports = function (params) {
+const GetShardListCacheKlass = function (params) {
 
   const oThis = this;
   oThis.params = params;
@@ -94,3 +93,6 @@ GetShardListCacheKlass.prototype.fetchDataFromSource = async function (cacheIds)
     id_value_map: oThis.idToValueMap
   }));
 };
+
+InstanceComposer.registerShadowableClass(GetShardListCacheKlass, 'getDDBServiceShardListCacheKlass');
+module.exports = GetShardListCacheKlass;
