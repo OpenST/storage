@@ -7,10 +7,12 @@
  *
  */
 const rootPrefix = "../.."
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
 ;
+
+require(rootPrefix + "/config/core_constants");
 
 
 /**
@@ -42,6 +44,7 @@ Base.prototype = {
    */
   perform: async function () {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
     ;
 
     return oThis.asyncPerform()
@@ -85,7 +88,9 @@ Base.prototype = {
    *
    */
   validateParams: function () {
-    const oThis = this;
+    const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
+    ;
     // validate if the method is available
     if (!oThis.methodName) return responseHelper.error({
       internal_error_identifier: "l_as_b_validateParams_1",
@@ -129,5 +134,7 @@ Base.prototype = {
   }
 
 };
+
+InstanceComposer.registerShadowableClass(Base, 'getServicesAutoScaleBase');
 
 module.exports = Base;

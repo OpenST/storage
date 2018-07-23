@@ -9,10 +9,9 @@
 
 const rootPrefix  = "../.."
   , InstanceComposer = require(rootPrefix + '/instance_composer')
-  , ASBase = require(rootPrefix+'/lib/auto_scale/base')
-  , ASServiceBaseKlass = require(rootPrefix + "/services/auto_scale/base")
 ;
 require(rootPrefix+'/lib/auto_scale/base');
+require(rootPrefix + "/services/auto_scale/base");
 
 /**
  * Constructor for AutoScale api service class
@@ -23,6 +22,7 @@ require(rootPrefix+'/lib/auto_scale/base');
  */
 const AutoScaleService = function(params) {
   const oThis = this
+    , ASBase = oThis.ic().getLibAutoScaleBase()
   ;
 
   oThis.autoScaleObject = new ASBase(params);
@@ -39,6 +39,7 @@ AutoScaleService.prototype = {
    */
   registerScalableTarget: function(params) {
     const oThis = this
+      , ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase()
       , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'registerScalableTarget', params)
     ;
     return createAutoScalingGroup.perform();
@@ -53,6 +54,7 @@ AutoScaleService.prototype = {
    */
   putScalingPolicy:function(params) {
     const oThis = this
+      , ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase()
       , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'putScalingPolicy', params)
     ;
     return createAutoScalingGroup.perform();
@@ -67,6 +69,7 @@ AutoScaleService.prototype = {
    */
   deleteScalingPolicy: function(params) {
     const oThis = this
+      , ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase()
       , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'deleteScalingPolicy', params)
     ;
     return createAutoScalingGroup.perform();
@@ -81,6 +84,7 @@ AutoScaleService.prototype = {
    */
   deregisterScalableTarget: function(params) {
     const oThis = this
+      , ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase()
       , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'deregisterScalableTarget', params)
     ;
     return createAutoScalingGroup.perform();
@@ -95,6 +99,7 @@ AutoScaleService.prototype = {
    */
   describeScalableTargets: function(params) {
     const oThis = this
+      , ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase()
       , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'describeScalableTargets', params)
     ;
     return createAutoScalingGroup.perform();
@@ -109,11 +114,14 @@ AutoScaleService.prototype = {
    */
   describeScalingPolicies: function(params) {
     const oThis = this
+      , ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase()
       , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'describeScalingPolicies', params)
     ;
     return createAutoScalingGroup.perform();
   }
 };
+
+InstanceComposer.registerShadowableClass(AutoScaleService, 'getAutoScaleService');
 
 AutoScaleService.prototype.constructor = AutoScaleService;
 module.exports = AutoScaleService;
