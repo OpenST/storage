@@ -1,13 +1,15 @@
 "use strict";
 
 const rootPrefix = '../..'
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , BaseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + '/config/core_constants')
-  , TokenBalanceModel = require(rootPrefix + '/lib/models/dynamodb/token_balance')
   , logger = require( rootPrefix + '/lib/logger/custom_console_logger')
   , BigNumber = require('bignumber.js')
 ;
+
+require(rootPrefix + '/config/core_constants');
+require(rootPrefix + '/lib/models/dynamodb/token_balance');
 
 /**
  * GetBalanceCacheKlass
@@ -92,6 +94,8 @@ const tokenBalanceCacheSpecificPrototype = {
    */
   fetchDataFromSource: async function (ethereumAddresses) {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
+      , TokenBalanceModel = oThis.ic().getLibDDBTokenBalanceModel()
     ;
 
     if (!ethereumAddresses) {
@@ -192,5 +196,7 @@ const tokenBalanceCacheSpecificPrototype = {
 };
 
 Object.assign(TokenBalanceCache.prototype, tokenBalanceCacheSpecificPrototype);
+
+InstanceComposer.registerShadowableClass(TokenBalanceCache, 'getDDBTokenBalanceCache');
 
 module.exports = TokenBalanceCache;

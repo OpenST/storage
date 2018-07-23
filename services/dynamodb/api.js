@@ -10,8 +10,6 @@
 const rootPrefix  = "../.."
   , InstanceComposer = require(rootPrefix + '/instance_composer')
 
-  , ShardServiceApiKlass = require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
-
 ;
 
 require(rootPrefix+'/lib/dynamodb/base');
@@ -22,6 +20,7 @@ require(rootPrefix + '/services/dynamodb/create_table_migration');
 require(rootPrefix + '/services/dynamodb/batch_get');
 require(rootPrefix + '/services/dynamodb/batch_write');
 require(rootPrefix + '/services/dynamodb/update_item');
+require(rootPrefix + '/services/dynamodb/shard_management/shard_api')
 
 /**
  * Constructor for DynamoDB api service class
@@ -338,10 +337,13 @@ DynamoDBService.prototype = {
    */
   shardManagement: function() {
     const oThis = this
+      , ShardServiceApiKlass = oThis.ic().getShardServiceApi()
     ;
     return new ShardServiceApiKlass(oThis.ddbObject);
   }
 };
+
+InstanceComposer.register(DynamoDBService, 'getDynamoDBService', true);
 
 DynamoDBService.prototype.constructor = DynamoDBService;
 module.exports = DynamoDBService;

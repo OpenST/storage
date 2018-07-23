@@ -8,9 +8,11 @@
  */
 
 const rootPrefix  = "../.."
+  , InstanceComposer = require(rootPrefix + '/instance_composer')
   , ASBase = require(rootPrefix+'/lib/auto_scale/base')
   , ASServiceBaseKlass = require(rootPrefix + "/services/auto_scale/base")
 ;
+require(rootPrefix+'/lib/auto_scale/base');
 
 /**
  * Constructor for AutoScale api service class

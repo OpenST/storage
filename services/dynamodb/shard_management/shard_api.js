@@ -188,5 +188,5 @@ ShardServiceApi.prototype = {
   }
 };
 
-InstanceComposer.registerShadowableClass(ShardServiceApi, 'ShardServiceApi');
+InstanceComposer.registerShadowableClass(ShardServiceApi, 'getShardServiceApi');
 module.exports = ShardServiceApi;
