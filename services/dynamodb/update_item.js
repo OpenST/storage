@@ -112,7 +112,7 @@ const updateItemPrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, updateItemParams, oThis.serviceType);
+        let r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, oThis.serviceType, updateItemParams);
         resolve(r);
       }, waitTime);
     });

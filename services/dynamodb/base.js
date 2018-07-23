@@ -122,7 +122,7 @@ Base.prototype = {
     const oThis = this
     ;
     // Last parameter is service type (dax or dynamoDB)
-    return await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, oThis.params, oThis.serviceType);
+    return await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, oThis.serviceType, oThis.params);
   },
 
 };

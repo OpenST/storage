@@ -72,7 +72,7 @@ const waitForPrototype = {
 
     try {
 
-      const r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, oThis.waitForMethod, oThis.params, 'raw');
+      const r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, 'raw', oThis.waitForMethod, oThis.params);
       logger.debug("=======Base.perform.result=======");
       logger.debug(r);
       return r;

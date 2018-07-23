@@ -160,7 +160,7 @@ const CreateTableMigrationPrototype = {
     return new Promise(async function (onResolve) {
 
       logger.info("Creating table..");
-      const createTableResponse = await ddbObject.queryDdb('createTable', oThis.createTableConfig, oThis.serviceType);
+      const createTableResponse = await ddbObject.queryDdb('createTable', oThis.serviceType, oThis.createTableConfig);
       if(createTableResponse.isFailure()){
         return onResolve(createTableResponse);
       }
@@ -173,7 +173,7 @@ const CreateTableMigrationPrototype = {
       logger.debug("Table arn :", roleARN);
 
       logger.info("Waiting for table creation..");
-      const waitForTableExistsResponse = await ddbObject.queryDdb('waitFor','tableExists', waitForTableExistsParams, oThis.serviceType);
+      const waitForTableExistsResponse = await ddbObject.queryDdb('waitFor', oThis.serviceType,'tableExists', waitForTableExistsParams);
       if(waitForTableExistsResponse.isFailure()){
         return onResolve(waitForTableExistsResponse);
       }
@@ -250,7 +250,7 @@ const CreateTableMigrationPrototype = {
       }
 
       const describeTableParams = {TableName: tableName}
-        , describeTableResponse = await ddbObject.queryDdb('describeTable', describeTableParams, oThis.serviceType)
+        , describeTableResponse = await ddbObject.queryDdb('describeTable', oThis.serviceType, describeTableParams)
        ;
 
       onResolve(describeTableResponse)

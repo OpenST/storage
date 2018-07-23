@@ -175,7 +175,7 @@ const batchGetPrototype = {
 
     return new Promise(function (resolve) {
       setTimeout(async function () {
-        let r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, batchGetKeys, oThis.serviceType);
+        let r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, oThis.serviceType, batchGetKeys,);
         resolve(r);
       }, waitTime);
     });
