@@ -2,7 +2,7 @@
 
 const rootPrefix = '../..'
   , InstanceComposer = require(rootPrefix + '/instance_composer')
-  , BaseCache = require(rootPrefix + '/services/cache_multi_management/base')
+  , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
   , logger = require( rootPrefix + '/lib/logger/custom_console_logger')
   , BigNumber = require('bignumber.js')
@@ -20,7 +20,7 @@ require(rootPrefix + '/lib/models/dynamodb/token_balance');
  * @param {object} params.ddb_service
  * @param {object} params.auto_scaling
  *
- * @augments BaseCache
+ * @augments baseCache
  *
  * @constructor
  */
@@ -39,10 +39,10 @@ const TokenBalanceCache = function (params) {
     }
   }
 
-  BaseCache.call(this, params);
+  baseCache.call(this, params);
 };
 
-TokenBalanceCache.prototype = Object.create(BaseCache.prototype);
+TokenBalanceCache.prototype = Object.create(baseCache.prototype);
 
 TokenBalanceCache.prototype.constructor = TokenBalanceCache;
 

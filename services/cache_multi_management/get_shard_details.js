@@ -4,7 +4,6 @@ const rootPrefix = '../..'
   , InstanceComposer = require(rootPrefix + '/instance_composer')
   , baseCache = require(rootPrefix + '/services/cache_multi_management/base')
   , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
 
 ;
 

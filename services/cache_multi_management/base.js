@@ -10,8 +10,6 @@ const rootPrefix = '../..'
   , utils = require(rootPrefix + '/lib/utils')
 ;
 
-require(rootPrefix + '/config/core_constants');
-
 /**
  * constructor
  *
@@ -80,8 +78,9 @@ BaseCache.prototype = {
   clear: function () {
     const oThis = this
       , promiseArray = []
-      , coreConstants = oThis.ic().getCoreConstants()
-      , cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, true)
+      , configStrategy = oThis.ic().configStrategy
+      , openSTCache = openStCache.getInstance(configStrategy)
+      , cacheImplementer = openSTCache.cacheInstance
     ;
 
     for (let i = 0; i < Object.keys(oThis.cacheKeyToexternalIdMap).length; i++) {
@@ -133,8 +132,9 @@ BaseCache.prototype = {
   _fetchFromCache: async function () {
 
     const oThis = this
-      , coreConstants = oThis.ic().getCoreConstants()
-      , cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, true)
+      , configStrategy = oThis.ic().configStrategy
+      , openSTCache = openStCache.getInstance(configStrategy)
+      , cacheImplementer = openSTCache.cacheInstance
     ;
     let cacheFetchResponse = null
       , cacheKeys = Object.keys(oThis.cacheKeyToexternalIdMap)
@@ -177,12 +177,13 @@ BaseCache.prototype = {
   _setCache: function (key, dataToSet) {
 
     const oThis = this
-      , coreConstants = oThis.ic().getCoreConstants()
-      , cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, true)
+      , configStrategy = oThis.ic().configStrategy
+      , openSTCache = openStCache.getInstance(configStrategy)
+      , cacheImplementer = openSTCache.cacheInstance
     ;
 
-    var setCacheFunction = function (k, v) {
-      var cacheKey = utils.invert(oThis.cacheKeyToexternalIdMap)[k];
+    let setCacheFunction = function (k, v) {
+      const cacheKey = utils.invert(oThis.cacheKeyToexternalIdMap)[k];
       return cacheImplementer.set(cacheKey, JSON.stringify(v), oThis.cacheExpiry);
     };
 

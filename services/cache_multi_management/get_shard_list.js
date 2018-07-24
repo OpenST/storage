@@ -75,7 +75,7 @@ GetShardListCacheKlass.prototype.fetchDataFromSource = async function (cacheIds)
 
   const oThis = this
     , availableShard = oThis.ic().getDDBServiceAvailableShard()
-    , coreConstants = oThis.ic().getCoreConstants();
+    , coreConstants = oThis.ic().getCoreConstants()
   ;
 
   if (!cacheIds) {
