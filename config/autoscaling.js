@@ -1,15 +1,13 @@
-"use strict";
+'use strict';
 
-const rootPrefix = '..'
-  , InstanceComposer = require(rootPrefix + '/instance_composer')
-;
+const rootPrefix = '..',
+  InstanceComposer = require(rootPrefix + '/instance_composer');
 
 /**
  * Constructor for auto-scaling config class
  */
-const AutoScalingConfig = function (configStrategy, instanceComposer) {
-  const oThis = this
-  ;
+const AutoScalingConfig = function(configStrategy, instanceComposer) {
+  const oThis = this;
 
   oThis.apiVersion = configStrategy.OS_AUTOSCALING_API_VERSION;
   oThis.accessKeyId = configStrategy.OS_AUTOSCALING_ACCESS_KEY_ID;
@@ -17,7 +15,7 @@ const AutoScalingConfig = function (configStrategy, instanceComposer) {
   oThis.region = configStrategy.OS_AUTOSCALING_REGION;
   oThis.endpoint = configStrategy.OS_AUTOSCALING_ENDPOINT;
 
-  oThis.sslEnabled = (configStrategy.OS_AUTOSCALING_SSL_ENABLED == 1);
+  oThis.sslEnabled = configStrategy.OS_AUTOSCALING_SSL_ENABLED == 1;
 
   if (configStrategy.OS_AUTOSCALING_LOGGING_ENABLED == 1) {
     oThis.logger = console;
