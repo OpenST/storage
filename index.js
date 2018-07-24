@@ -70,8 +70,9 @@ Factory.prototype = {
 };
 
 const factory = new Factory();
-OpenSTStorage.getInstance = factory.getInstance;
-
+OpenSTStorage.getInstance = function () {
+  return factory.getInstance.apply(factory, arguments);
+};
 
 module.exports = OpenSTStorage;
 
