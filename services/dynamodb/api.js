@@ -335,9 +335,9 @@ DynamoDBService.prototype = {
    */
   shardManagement: function() {
     const oThis = this
-      , ShardServiceApiKlass = oThis.ic().getShardServiceApi()
+      , ShardServiceApi = oThis.ic().getShardServiceApi()
     ;
-    return new ShardServiceApiKlass();
+    return ShardServiceApi;
   }
 };
 

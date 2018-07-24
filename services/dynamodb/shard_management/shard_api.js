@@ -37,13 +37,11 @@ ShardServiceApi.prototype = {
    *
    * @return {*|promise<result>}
    */
-  runShardMigration: function(ddbApiObject, autoScaleApiObj) {
+  runShardMigration: function() {
     const oThis = this
       , ShardMigrationKlass = oThis.ic().getDDBServiceShardMigration()
     ;
-    return new ShardMigrationKlass({ddb_api_object: ddbApiObject,
-          auto_scaling_api_object: autoScaleApiObj
-        }).perform();
+    return new ShardMigrationKlass().perform();
   },
 
   /**
