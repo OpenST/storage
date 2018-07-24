@@ -60,7 +60,7 @@ DynamoConfigFactory.prototype = {
         region: configStrategies.OS_DAX_REGION,
         endpoint: configStrategies.OS_DAX_ENDPOINT,
         sslEnabled: (configStrategies.OS_DAX_SSL_ENABLED==1),
-        logger: (configStrategies.OS_DYNAMODB_LOGGING_ENABLED==1)
+        logger: (configStrategies.OS_DYNAMODB_LOGGING_ENABLED==1 ? console : '')
       });
     }
     else {
@@ -71,7 +71,7 @@ DynamoConfigFactory.prototype = {
         region: configStrategies.OS_DYNAMODB_REGION,
         endpoint: configStrategies.OS_DYNAMODB_ENDPOINT,
         sslEnabled: (configStrategies.OS_DYNAMODB_SSL_ENABLED==1),
-        logger: (configStrategies.OS_DYNAMODB_LOGGING_ENABLED==1)
+        logger: (configStrategies.OS_DYNAMODB_LOGGING_ENABLED==1 ? console : '')
       });
     }
   }
