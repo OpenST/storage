@@ -23,7 +23,7 @@ const CoreConstants = function (configStrategy, instanceComposer) {
   ;
 
   // STORAGE CACHING ENGINE
-  oThis.CACHING_ENGINE = configStrategy.OS_CACHING_ENGINE;
+  oThis.CACHING_ENGINE = configStrategy.OST_CACHING_ENGINE;
 
   // Generic env variable across NPM packages
   oThis.DEBUG_ENABLED = configStrategy.OST_DEBUG_ENABLED;
