@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * Load all the core constants from the environment variables OR define them as literals here and export them.
@@ -7,20 +7,18 @@
  *
  */
 
-const rootPrefix = '..'
-  , paramErrorConfig = require(rootPrefix + '/config/error/param')
-  , apiErrorConfig = require(rootPrefix + '/config/error/general')
-  , InstanceComposer = require(rootPrefix + '/instance_composer')
-;
+const rootPrefix = '..',
+  paramErrorConfig = require(rootPrefix + '/config/error/param'),
+  apiErrorConfig = require(rootPrefix + '/config/error/general'),
+  InstanceComposer = require(rootPrefix + '/instance_composer');
 
 /**
  * Constructor for core constants
  *
  * @constructor
  */
-const CoreConstants = function (configStrategy, instanceComposer) {
-  const oThis = this
-  ;
+const CoreConstants = function(configStrategy, instanceComposer) {
+  const oThis = this;
 
   // STORAGE CACHING ENGINE
   oThis.CACHING_ENGINE = configStrategy.OST_CACHING_ENGINE;
@@ -30,11 +28,10 @@ const CoreConstants = function (configStrategy, instanceComposer) {
 
   oThis.DYNAMODB_TABLE_NAME_PREFIX = configStrategy.OS_DYNAMODB_TABLE_NAME_PREFIX || '';
 
-  oThis.AUTO_SCALE_DYNAMO = (configStrategy.AUTO_SCALE_DYNAMO==1)
+  oThis.AUTO_SCALE_DYNAMO = configStrategy.AUTO_SCALE_DYNAMO == 1;
 };
 
 CoreConstants.prototype = {
-
   /**
    * DynamoDB API Versions.<br><br>
    *

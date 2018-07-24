@@ -1,14 +1,13 @@
-"use strict";
+'use strict';
 
-const chai = require('chai')
-  , assert = chai.assert;
+const chai = require('chai'),
+  assert = chai.assert;
 
-const rootPrefix = "../../../.."
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
-  , openStStorage = require(rootPrefix + '/index')
-  , autoScaleHelper = require(rootPrefix + "/tests/mocha/services/auto_scale/helper")
-;
+const rootPrefix = '../../../..',
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
+  openStStorage = require(rootPrefix + '/index'),
+  autoScaleHelper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper');
 
 /**
  * Constructor for helper class
@@ -18,7 +17,6 @@ const rootPrefix = "../../../.."
 const helper = function() {};
 
 helper.prototype = {
-
   /**
    * Validate OpenST Storage Object
    *
@@ -34,8 +32,8 @@ helper.prototype = {
     // create dynamoDBApi object
     const openStStorageObject = new openStStorage(configStrategy);
     assert.exists(openStStorageObject, 'openStStorageObject is not created');
-    assert.equal(typeof openStStorageObject, "object");
-    assert.equal(openStStorageObject.constructor.name, "OpenSTStorage");
+    assert.equal(typeof openStStorageObject, 'object');
+    assert.equal(openStStorageObject.constructor.name, 'OpenSTStorage');
 
     return openStStorageObject;
   },
@@ -59,8 +57,8 @@ helper.prototype = {
       // logger.info("Waiting for table to get created.............");
       // await autoScaleHelper.waitForTableToGetCreated(openStStorageObject, params);
       // logger.info("Table is active");
-    } else{
-      assert.equal(createTableResponse.isSuccess(), false, "createTable: successfull, should fail for this case");
+    } else {
+      assert.equal(createTableResponse.isSuccess(), false, 'createTable: successfull, should fail for this case');
     }
     return createTableResponse;
   },
@@ -78,20 +76,18 @@ helper.prototype = {
   deleteTable: async function(openStStorageObject, params, isResultSuccess) {
     const deleteTableResponse = await openStStorageObject.deleteTable(params);
 
-    if(isResultSuccess === true){
+    if (isResultSuccess === true) {
       assert.equal(deleteTableResponse.isSuccess(), true);
-      logger.debug("deleteTableResponse.data.TableDescription",deleteTableResponse.data.TableDescription);
+      logger.debug('deleteTableResponse.data.TableDescription', deleteTableResponse.data.TableDescription);
       assert.exists(deleteTableResponse.data.TableDescription, params.TableName);
       // logger.info("Waiting for table to get deleted");
       // await autoScaleHelper.waitForTableToGetDeleted(openStStorageObject, params);
       // logger.info("Table got deleted")
-
-    } else{
+    } else {
       assert.equal(deleteTableResponse.isSuccess(), false);
     }
 
     return deleteTableResponse;
-
   },
 
   /**
@@ -106,7 +102,7 @@ helper.prototype = {
    */
   updateContinuousBackup: async function(openStStorageObject, params, isResultSuccess) {
     const enableContinousBackupResponse = await openStStorageObject.updateContinuousBackups(params);
-    if(isResultSuccess === true){
+    if (isResultSuccess === true) {
       assert.equal(enableContinousBackupResponse.isSuccess(), true);
       assert.equal(enableContinousBackupResponse.data.ContinuousBackupsStatus, 'ENABLED');
     } else {
@@ -127,7 +123,7 @@ helper.prototype = {
    */
   updateTable: async function(openStStorageObject, params, isResultSuccess) {
     const updateTableResponse = await openStStorageObject.updateTable(params);
-    if(isResultSuccess === true){
+    if (isResultSuccess === true) {
       assert.equal(updateTableResponse.isSuccess(), true);
       assert.exists(updateTableResponse.data.TableDescription, params.TableName);
     } else {
@@ -148,7 +144,7 @@ helper.prototype = {
    */
   describeTable: async function(openStStorageObject, params, isResultSuccess) {
     const describeTableResponse = await openStStorageObject.describeTable(params);
-    if(isResultSuccess === true){
+    if (isResultSuccess === true) {
       assert.equal(describeTableResponse.isSuccess(), true);
       assert.exists(describeTableResponse.data.Table.TableName, params.TableName);
     } else {
@@ -170,7 +166,7 @@ helper.prototype = {
    */
   listTables: async function(openStStorageObject, params, isResultSuccess) {
     const listTablesResponse = await openStStorageObject.listTables(params);
-    if(isResultSuccess === true){
+    if (isResultSuccess === true) {
       assert.equal(listTablesResponse.isSuccess(), true);
       assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogTableName);
     } else {
@@ -191,7 +187,7 @@ helper.prototype = {
    * @return {result}
    *
    */
-  performBatchGetTest: async function (openStStorageObject, params, isResultSuccess, resultCount) {
+  performBatchGetTest: async function(openStStorageObject, params, isResultSuccess, resultCount) {
     assert.exists(openStStorageObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
@@ -203,7 +199,11 @@ helper.prototype = {
 
     if (isResultSuccess) {
       // validate batchGet output count
-      assert.equal(batchGetResponse.data.Responses[testConstants.transactionLogTableName].length, resultCount, "Result count is not equal");
+      assert.equal(
+        batchGetResponse.data.Responses[testConstants.transactionLogTableName].length,
+        resultCount,
+        'Result count is not equal'
+      );
 
       // validate return output is object or not
       let returnObject = batchGetResponse.data.Responses[testConstants.transactionLogTableName];
@@ -226,7 +226,7 @@ helper.prototype = {
    * @return {result}
    *
    */
-  performBatchWriteTest: async function (openStStorageObject, params, isResultSuccess) {
+  performBatchWriteTest: async function(openStStorageObject, params, isResultSuccess) {
     assert.exists(openStStorageObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
@@ -258,7 +258,6 @@ helper.prototype = {
     assert.equal(putItemResponse.isSuccess(), isResultSuccess, 'put item failed');
 
     return putItemResponse;
-
   },
 
   /**
@@ -279,7 +278,6 @@ helper.prototype = {
     assert.equal(deleteItemResponse.isSuccess(), isResultSuccess, 'delete item failed');
 
     return deleteItemResponse;
-
   },
 
   /**
@@ -300,7 +298,6 @@ helper.prototype = {
     assert.equal(updateItemResponse.isSuccess(), isResultSuccess, 'update item failed');
 
     return updateItemResponse;
-
   },
 
   /**
@@ -323,7 +320,7 @@ helper.prototype = {
 
     if (isResultSuccess) {
       // validate query output count
-      assert.equal(queryResponse.data.Count, resultCount, "Result count is not equal");
+      assert.equal(queryResponse.data.Count, resultCount, 'Result count is not equal');
 
       // validate return output is object or not
       if (resultCount) {
@@ -333,7 +330,6 @@ helper.prototype = {
 
     return queryResponse;
   },
-
 
   /**
    * scan test helper method
@@ -355,7 +351,7 @@ helper.prototype = {
 
     if (isResultSuccess) {
       // validate scan output count
-      assert.equal(scanResponse.data.Count, resultCount, "Result count is not equal");
+      assert.equal(scanResponse.data.Count, resultCount, 'Result count is not equal');
 
       // validate return output is object or not
       if (resultCount) {
@@ -376,24 +372,22 @@ helper.prototype = {
    * @return {Promise<void>}
    */
   waitTillTableStatusProvided: async function(openStStorageObject, func, params, toAssert, retries) {
-    const oThis = this
-      , WAIT = retries ? retries: 30;
+    const oThis = this,
+      WAIT = retries ? retries : 30;
     let count = WAIT;
     let response = null;
     while (count > 0) {
       response = await oThis.waitTillResponse(openStStorageObject, func, params);
-      count-=1;
+      count -= 1;
     }
   },
 
   waitTillResponse: async function(openStStorageObject, func, params) {
-    return new Promise(function (resolve){
+    return new Promise(function(resolve) {
       setTimeout(async function() {
-
-        let response  = await func.call(openStStorageObject, params);
+        let response = await func.call(openStStorageObject, params);
         resolve(response);
-
-        }, 1000);
+      }, 1000);
     });
   }
 };

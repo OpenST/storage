@@ -1,48 +1,43 @@
-"use strict";
+'use strict';
 
 // Load external packages
-const Chai = require('chai')
-  , assert = Chai.assert
-;
+const Chai = require('chai'),
+  assert = Chai.assert;
 
 // Load dependencies package
-const rootPrefix = "../../../.."
-  , ApplicationAutoScalingKlass = require(rootPrefix + "/index").AutoScaling
-  , DdbApiKlass = require(rootPrefix + "/index").Dynamodb
-  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
-  , helper = require(rootPrefix + "/tests/mocha/services/auto_scale/helper")
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-;
+const rootPrefix = '../../../..',
+  ApplicationAutoScalingKlass = require(rootPrefix + '/index').AutoScaling,
+  DdbApiKlass = require(rootPrefix + '/index').Dynamodb,
+  testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
+  helper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
-const autoScaleObj = new ApplicationAutoScalingKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
-  , dynamodbApiObject = new DdbApiKlass(testConstants.CONFIG_STRATEGIES)
-;
+const autoScaleObj = new ApplicationAutoScalingKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE),
+  dynamodbApiObject = new DdbApiKlass(testConstants.CONFIG_STRATEGIES);
 
-let resourceId = 'table/' + testConstants.transactionLogTableName
-  , roleARN = null
-;
+let resourceId = 'table/' + testConstants.transactionLogTableName,
+  roleARN = null;
 
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
-  optionsDesc = optionsDesc || "";
+  optionsDesc = optionsDesc || '';
 
-  options = options || {invalid_service_name : false};
+  options = options || { invalid_service_name: false };
 
-  it(optionsDesc, async function () {
+  it(optionsDesc, async function() {
     this.timeout(100000);
 
-    let serviceNameSpace = "dynamodb";
+    let serviceNameSpace = 'dynamodb';
     if (options.invalid_service_name) {
-      serviceNameSpace = "invalidResId"
+      serviceNameSpace = 'invalidResId';
     }
 
     const scalableTargetParams = {
-      ResourceId: resourceId, /* required */
+      ResourceId: resourceId /* required */,
       ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
-      ServiceNamespace: 'dynamodb' , /* required */
+      ServiceNamespace: 'dynamodb' /* required */,
       MaxCapacity: 15,
       MinCapacity: 1,
       RoleARN: roleARN
-
     };
     const registerScalableTargetResponse = await autoScaleObj.registerScalableTarget(scalableTargetParams);
     assert.equal(registerScalableTargetResponse.isSuccess(), true, 'registerScalableTarget failed');
@@ -58,23 +53,24 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   });
 };
 
-describe('services/auto_scale/api#describeScalableTargets', function () {
-
+describe('services/auto_scale/api#describeScalableTargets', function() {
   before(async function() {
     this.timeout(1000000);
 
     const returnObject = await helper.createTestCaseEnvironment(dynamodbApiObject, autoScaleObj);
     roleARN = returnObject.role_arn;
-
   });
 
-  createTestCasesForOptions("Describe scalable targets happy case", null, true);
+  createTestCasesForOptions('Describe scalable targets happy case', null, true);
 
-  createTestCasesForOptions("Describe scalable targets having invalid service name case", {invalid_service_name : true}, false);
+  createTestCasesForOptions(
+    'Describe scalable targets having invalid service name case',
+    { invalid_service_name: true },
+    false
+  );
 
   after(async function() {
     this.timeout(1000000);
     await helper.cleanTestCaseEnvironment(dynamodbApiObject, autoScaleObj);
   });
-
 });

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  *
@@ -8,13 +8,12 @@
  *
  */
 
-const rootPrefix = '../../../..'
-  , InstanceComposer = require(rootPrefix + '/instance_composer')
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
-;
+const rootPrefix = '../../../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
-require(rootPrefix + "/config/core_constants");
+require(rootPrefix + '/config/core_constants');
 require(rootPrefix + '/services/cache_multi_management/has_shard');
 
 /**
@@ -29,10 +28,10 @@ require(rootPrefix + '/services/cache_multi_management/has_shard');
  * @return {Object}
  *
  */
-const HasShard = function (params) {
+const HasShard = function(params) {
   const oThis = this;
   params = params || {};
-  logger.debug("=======HasShard.params=======");
+  logger.debug('=======HasShard.params=======');
   logger.debug(params);
 
   oThis.params = params;
@@ -40,27 +39,24 @@ const HasShard = function (params) {
 };
 
 HasShard.prototype = {
-
   /**
    * Perform method
    *
    * @return {promise<result>}
    *
    */
-  perform: async function () {
-    const oThis = this
-      , coreConstants = oThis.ic().getCoreConstants()
-    ;
+  perform: async function() {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants();
 
-    return oThis.asyncPerform()
-      .catch(function(err){
-        return responseHelper.error({
-          internal_error_identifier:"s_sm_as_hs_perform_1",
-          api_error_identifier: "exception",
-          debug_options: {error: err},
-          error_config: coreConstants.ERROR_CONFIG
-        });
+    return oThis.asyncPerform().catch(function(err) {
+      return responseHelper.error({
+        internal_error_identifier: 's_sm_as_hs_perform_1',
+        api_error_identifier: 'exception',
+        debug_options: { error: err },
+        error_config: coreConstants.ERROR_CONFIG
       });
+    });
   },
 
   /**
@@ -68,14 +64,13 @@ HasShard.prototype = {
    *
    * @return {Promise<*>}
    */
-  asyncPerform: async function () {
-    const oThis = this
-    ;
+  asyncPerform: async function() {
+    const oThis = this;
 
     let r = null;
 
     r = await oThis.validateParams();
-    logger.debug("=======HasShard.validateParams.result=======");
+    logger.debug('=======HasShard.validateParams.result=======');
     logger.debug(r);
     if (r.isFailure()) return r;
 
@@ -89,21 +84,19 @@ HasShard.prototype = {
    * @return {Promise<any>}
    *
    */
-  validateParams: function () {
-    const oThis = this
-      , BATCH_SIZE_LIMIT = 50
-      , errorCodePrefix = 's_sm_as_hs_validateParams_'
-      , coreConstants = oThis.ic().getCoreConstants()
-    ;
+  validateParams: function() {
+    const oThis = this,
+      BATCH_SIZE_LIMIT = 50,
+      errorCodePrefix = 's_sm_as_hs_validateParams_',
+      coreConstants = oThis.ic().getCoreConstants();
 
-    return new Promise(async function (onResolve) {
-      let errorCode = null
-        , errorMsg = null
-        , error_identifier = null
-      ;
+    return new Promise(async function(onResolve) {
+      let errorCode = null,
+        errorMsg = null,
+        error_identifier = null;
 
-      oThis.hasAnyInvalidShard = function(){
-        for (let ind = 0; ind < oThis.shardNames.length ; ind++) {
+      oThis.hasAnyInvalidShard = function() {
+        for (let ind = 0; ind < oThis.shardNames.length; ind++) {
           let shardName = oThis.shardNames[ind];
           if (!shardName) {
             return true;
@@ -114,25 +107,26 @@ HasShard.prototype = {
 
       if (!oThis.shardNames || oThis.shardNames.constructor.name !== 'Array') {
         errorCode = errorCodePrefix + '1';
-        error_identifier = "invalid_shard_array";
+        error_identifier = 'invalid_shard_array';
       } else if (oThis.shardNames.length > BATCH_SIZE_LIMIT) {
         errorCode = errorCodePrefix + '2';
-        error_identifier = "exceeded_batch_limit";
+        error_identifier = 'exceeded_batch_limit';
       } else if (oThis.hasAnyInvalidShard()) {
         errorCode = errorCodePrefix + '3';
-        error_identifier = "invalid_shard_name";
+        error_identifier = 'invalid_shard_name';
       } else {
         return onResolve(responseHelper.successWithData({}));
       }
 
       logger.debug(errorCode, error_identifier);
-      return onResolve(responseHelper.error({
-        internal_error_identifier: errorCode,
-        api_error_identifier: error_identifier,
-        debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
-      }));
-
+      return onResolve(
+        responseHelper.error({
+          internal_error_identifier: errorCode,
+          api_error_identifier: error_identifier,
+          debug_options: {},
+          error_config: coreConstants.ERROR_CONFIG
+        })
+      );
     });
   },
 
@@ -142,13 +136,13 @@ HasShard.prototype = {
    * @return {Promise<*>}
    */
   hasShardFromCache: async function() {
-    const oThis = this
-      , HasShardMultiCacheKlass = oThis.ic().getDDBServiceHasShardKlass()
-      , cacheParams = {
-      shard_names: oThis.shardNames
-    };
+    const oThis = this,
+      HasShardMultiCacheKlass = oThis.ic().getDDBServiceHasShardKlass(),
+      cacheParams = {
+        shard_names: oThis.shardNames
+      };
     let r = await new HasShardMultiCacheKlass(cacheParams).fetch();
-    logger.debug("=======HasShard.hasShard.result=======");
+    logger.debug('=======HasShard.hasShard.result=======');
     logger.debug(r);
 
     return r;

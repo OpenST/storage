@@ -1,14 +1,12 @@
-const chai = require('chai')
-  , assert = chai.assert;
+const chai = require('chai'),
+  assert = chai.assert;
 
-const rootPrefix = "../../../.."
-  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , helper = require(rootPrefix + "/tests/mocha/services/dynamodb/helper")
-;
+const rootPrefix = '../../../..',
+  testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('Delete Table', function() {
-
   let openStStorageObject = null;
 
   before(async function() {
@@ -17,23 +15,23 @@ describe('Delete Table', function() {
     ddb_service = openStStorageObject.ddbServiceObj;
   });
 
-  it('should create table successfully', async function () {
+  it('should create table successfully', async function() {
     // build create table params
     const createTableParams = {
-      TableName : testConstants.transactionLogTableName,
+      TableName: testConstants.transactionLogTableName,
       KeySchema: [
         {
-          AttributeName: "tuid",
-          KeyType: "HASH"
-        },  //Partition key
+          AttributeName: 'tuid',
+          KeyType: 'HASH'
+        }, //Partition key
         {
-          AttributeName: "cid",
-          KeyType: "RANGE"
-        }  //Sort key
+          AttributeName: 'cid',
+          KeyType: 'RANGE'
+        } //Sort key
       ],
       AttributeDefinitions: [
-        { AttributeName: "tuid", AttributeType: "S" },
-        { AttributeName: "cid", AttributeType: "N" }
+        { AttributeName: 'tuid', AttributeType: 'S' },
+        { AttributeName: 'cid', AttributeType: 'N' }
       ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 1,
@@ -41,12 +39,12 @@ describe('Delete Table', function() {
       },
       SSESpecification: {
         Enabled: false
-      },
+      }
     };
     await helper.createTable(ddb_service, createTableParams, true);
   });
 
-  it('should update table successfully', async function () {
+  it('should update table successfully', async function() {
     // build create table params
     const updateTableParams = {
       TableName: testConstants.transactionLogTableName,
@@ -58,7 +56,7 @@ describe('Delete Table', function() {
     await helper.updateTable(ddb_service, updateTableParams, true);
   });
 
-  it('should fail when no update config data is passed', async function () {
+  it('should fail when no update config data is passed', async function() {
     // build create table params
     const updateTableParams = {
       TableName: testConstants.transactionLogTableName
@@ -71,8 +69,6 @@ describe('Delete Table', function() {
       TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(ddb_service, deleteTableParams, true);
-    logger.debug("Update Table Mocha Tests Complete");
+    logger.debug('Update Table Mocha Tests Complete');
   });
-
-
 });

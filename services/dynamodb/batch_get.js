@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * DynamoDB Batch Write with retry count
@@ -7,15 +7,14 @@
  *
  */
 
-const rootPrefix = "../.."
-  , InstanceComposer = require(rootPrefix + '/instance_composer')
-  , base = require(rootPrefix + "/services/dynamodb/base")
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-;
+const rootPrefix = '../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer'),
+  base = require(rootPrefix + '/services/dynamodb/base'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
-require(rootPrefix+'/lib/dynamodb/base');
-require(rootPrefix + "/config/core_constants");
+require(rootPrefix + '/lib/dynamodb/base');
+require(rootPrefix + '/config/core_constants');
 
 /**
  * Constructor for batch write item service class
@@ -25,9 +24,8 @@ require(rootPrefix + "/config/core_constants");
  *
  * @constructor
  */
-const BatchGetItem = function (params, unprocessed_keys_retry_count, serviceType) {
-  const oThis = this
-  ;
+const BatchGetItem = function(params, unprocessed_keys_retry_count, serviceType) {
+  const oThis = this;
   oThis.serviceType = serviceType;
   oThis.unprocessedKeysRetryCount = unprocessed_keys_retry_count || 0;
 
@@ -37,22 +35,18 @@ const BatchGetItem = function (params, unprocessed_keys_retry_count, serviceType
 BatchGetItem.prototype = Object.create(base.prototype);
 
 const batchGetPrototype = {
-
   /**
    * Validation of params
    *
    * @return {*}
    */
-  validateParams: function () {
+  validateParams: function() {
+    const oThis = this,
+      validationResponse = base.prototype.validateParams.call(oThis);
 
-    const oThis = this
-        , validationResponse = base.prototype.validateParams.call(oThis)
-    ;
-    
     if (validationResponse.isFailure()) return validationResponse;
 
     return responseHelper.successWithData({});
-    
   },
 
   /**
@@ -61,35 +55,36 @@ const batchGetPrototype = {
    * @return {promise<result>}
    *
    */
-  executeDdbRequest: async function () {
-    const oThis = this
-      , coreConstants = oThis.ic().getCoreConstants()
-    ;
+  executeDdbRequest: async function() {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants();
 
     try {
-      let batchGetParams = oThis.params
-          , waitTime = 0
-          , constantTimeFactor = 90
-          , variableTimeFactor = 10
-          , localResponse
-          , globalResponse
-          , attemptNo = 1
-          , unprocessedKeys
-          , unprocessedKeysLength
-      ;
+      let batchGetParams = oThis.params,
+        waitTime = 0,
+        constantTimeFactor = 90,
+        variableTimeFactor = 10,
+        localResponse,
+        globalResponse,
+        attemptNo = 1,
+        unprocessedKeys,
+        unprocessedKeysLength;
 
       while (true) {
-
         logger.info('executeDdbRequest batch_get attempNo ', attemptNo);
 
         localResponse = await oThis.batchGetItemAfterWait(batchGetParams, waitTime);
 
         if (!localResponse.isSuccess()) {
-          logger.error("services/dynamodb/batch_get.js:executeDdbRequest, attemptNo: ", attemptNo, localResponse.toHash());
+          logger.error(
+            'services/dynamodb/batch_get.js:executeDdbRequest, attemptNo: ',
+            attemptNo,
+            localResponse.toHash()
+          );
           return responseHelper.error({
-            internal_error_identifier: "s_dy_bw_executeDdbRequest_1",
-            api_error_identifier: "exception",
-            debug_options: {error: localResponse.toHash()},
+            internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
+            api_error_identifier: 'exception',
+            debug_options: { error: localResponse.toHash() },
             error_config: coreConstants.ERROR_CONFIG
           });
         }
@@ -98,14 +93,13 @@ const batchGetPrototype = {
           globalResponse = localResponse;
         } else {
           // append response of each succesful (partial/complete) attempt to globalresponse
-          let localResponses = localResponse.data.Responses
-              , globalResponses = globalResponse.data.Responses
-          ;
+          let localResponses = localResponse.data.Responses,
+            globalResponses = globalResponse.data.Responses;
           for (let tableName in localResponses) {
             if (globalResponses.hasOwnProperty(tableName)) {
               globalResponses[tableName] = globalResponses[tableName].concat(localResponses[tableName]);
             } else {
-              globalResponses[tableName] = localResponses[tableName]
+              globalResponses[tableName] = localResponses[tableName];
             }
           }
         }
@@ -116,10 +110,16 @@ const batchGetPrototype = {
         for (let tableName in unprocessedKeys) {
           if (unprocessedKeys.hasOwnProperty(tableName)) {
             unprocessedKeysLength += unprocessedKeys[tableName]['Keys'].length;
-            logger.error('dynamodb BATCH_GET ATTEMPT_FAILED TableName :', tableName,
-                ' unprocessedItemsCount: ', unprocessedKeysLength,
-                ' keys count: ', batchGetParams.RequestItems[tableName]['Keys'].length,
-                ' attemptNo ', attemptNo);
+            logger.error(
+              'dynamodb BATCH_GET ATTEMPT_FAILED TableName :',
+              tableName,
+              ' unprocessedItemsCount: ',
+              unprocessedKeysLength,
+              ' keys count: ',
+              batchGetParams.RequestItems[tableName]['Keys'].length,
+              ' attemptNo ',
+              attemptNo
+            );
           }
         }
 
@@ -130,7 +130,7 @@ const batchGetPrototype = {
         }
 
         //Create new batchWriteParams of unprocessedItems
-        batchGetParams = {RequestItems: unprocessedKeys};
+        batchGetParams = { RequestItems: unprocessedKeys };
 
         //adjust retry variables
         attemptNo += 1;
@@ -141,23 +141,27 @@ const batchGetPrototype = {
 
       for (let tableName in unprocessedKeys) {
         if (unprocessedKeys.hasOwnProperty(tableName)) {
-          logger.error('dynamodb BATCH_GET ALL_ATTEMPTS_FAILED TableName :', tableName,
-              ' unprocessedItemsCount: ', unprocessedKeysLength,
-              ' attempts Failed ', attemptNo);
+          logger.error(
+            'dynamodb BATCH_GET ALL_ATTEMPTS_FAILED TableName :',
+            tableName,
+            ' unprocessedItemsCount: ',
+            unprocessedKeysLength,
+            ' attempts Failed ',
+            attemptNo
+          );
         }
       }
 
-      logger.debug("=======Base.perform.result=======");
+      logger.debug('=======Base.perform.result=======');
       logger.debug(globalResponse);
 
       return globalResponse;
-
     } catch (err) {
-      logger.error("services/dynamodb/batch_get.js:executeDdbRequest inside catch ", err);
+      logger.error('services/dynamodb/batch_get.js:executeDdbRequest inside catch ', err);
       return responseHelper.error({
-        internal_error_identifier: "s_dy_bw_executeDdbRequest_1",
-        api_error_identifier: "exception",
-        debug_options: {error: err.message},
+        internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
+        api_error_identifier: 'exception',
+        debug_options: { error: err.message },
         error_config: coreConstants.ERROR_CONFIG
       });
     }
@@ -169,13 +173,15 @@ const batchGetPrototype = {
    * @param {Integer} waitTime - wait time in milliseconds
    * @return {Promise<any>}
    */
-  batchGetItemAfterWait: async function (batchGetKeys, waitTime) {
-    const oThis = this
-    ;
+  batchGetItemAfterWait: async function(batchGetKeys, waitTime) {
+    const oThis = this;
 
-    return new Promise(function (resolve) {
-      setTimeout(async function () {
-        let r = await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, oThis.serviceType, batchGetKeys,);
+    return new Promise(function(resolve) {
+      setTimeout(async function() {
+        let r = await oThis
+          .ic()
+          .getLibDynamoDBBase()
+          .queryDdb(oThis.methodName, oThis.serviceType, batchGetKeys);
         resolve(r);
       }, waitTime);
     });

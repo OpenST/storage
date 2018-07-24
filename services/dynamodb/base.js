@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * DynamoDB service base class
@@ -7,14 +7,13 @@
  *
  */
 
-const rootPrefix  = "../.."
-  , InstanceComposer = require(rootPrefix + '/instance_composer')
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-;
+const rootPrefix = '../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response');
 
-require(rootPrefix+'/lib/dynamodb/base');
-require(rootPrefix + "/config/core_constants");
+require(rootPrefix + '/lib/dynamodb/base');
+require(rootPrefix + '/config/core_constants');
 
 /**
  * Constructor for base service class
@@ -25,8 +24,7 @@ require(rootPrefix + "/config/core_constants");
  * @constructor
  */
 const Base = function(methodName, params, serviceType) {
-  const oThis = this
-  ;
+  const oThis = this;
 
   oThis.params = params;
   oThis.methodName = methodName;
@@ -34,24 +32,21 @@ const Base = function(methodName, params, serviceType) {
 };
 
 Base.prototype = {
-
   /**
    * Perform method
    *
    * @return {promise<result>}
    *
    */
-  perform: async function () {
-    const oThis = this
-      , coreConstants = oThis.ic().getCoreConstants()
-    ;
-    return oThis.asyncPerform()
-      .catch(function (err) {
-      logger.error("services/dynamodb/base.js:perform inside catch ", err);
+  perform: async function() {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants();
+    return oThis.asyncPerform().catch(function(err) {
+      logger.error('services/dynamodb/base.js:perform inside catch ', err);
       return responseHelper.error({
-        internal_error_identifier: "s_dy_b_perform_1",
-        api_error_identifier: "exception",
-        debug_options: {error: err.stack},
+        internal_error_identifier: 's_dy_b_perform_1',
+        api_error_identifier: 'exception',
+        debug_options: { error: err.stack },
         error_config: coreConstants.ERROR_CONFIG
       });
     });
@@ -63,20 +58,18 @@ Base.prototype = {
    * @return {Promise<*>}
    */
   asyncPerform: function() {
-    const oThis = this
-    ;
+    const oThis = this;
 
     let r = null;
     r = oThis.validateParams();
-    logger.debug("=======Base.validateParams.result=======");
+    logger.debug('=======Base.validateParams.result=======');
     logger.debug(r);
     if (r.isFailure()) return r;
 
     r = oThis.executeDdbRequest();
-    logger.debug("=======Base.executeDdbRequest.result=======");
+    logger.debug('=======Base.executeDdbRequest.result=======');
     logger.debug(r);
     return r;
-
   },
 
   /**
@@ -85,15 +78,14 @@ Base.prototype = {
    * @return {result}
    *
    */
-  validateParams: function () {
-    const oThis = this
-      , coreConstants = oThis.ic().getCoreConstants()
-    ;
+  validateParams: function() {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants();
 
     if (!oThis.methodName) {
       return responseHelper.error({
-        internal_error_identifier:"l_dy_b_validateParams_1",
-        api_error_identifier: "invalid_method_name",
+        internal_error_identifier: 'l_dy_b_validateParams_1',
+        api_error_identifier: 'invalid_method_name',
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });
@@ -101,8 +93,8 @@ Base.prototype = {
 
     if (!oThis.params) {
       return responseHelper.error({
-        internal_error_identifier:"l_dy_b_validateParams_3",
-        api_error_identifier: "invalid_params",
+        internal_error_identifier: 'l_dy_b_validateParams_3',
+        api_error_identifier: 'invalid_params',
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
       });
@@ -117,13 +109,14 @@ Base.prototype = {
    * @return {promise<result>}
    *
    */
-  executeDdbRequest: async function () {
-    const oThis = this
-    ;
+  executeDdbRequest: async function() {
+    const oThis = this;
     // Last parameter is service type (dax or dynamoDB)
-    return await oThis.ic().getLibDynamoDBBase().queryDdb(oThis.methodName, oThis.serviceType, oThis.params);
-  },
-
+    return await oThis
+      .ic()
+      .getLibDynamoDBBase()
+      .queryDdb(oThis.methodName, oThis.serviceType, oThis.params);
+  }
 };
 
 InstanceComposer.registerShadowableClass(Base, 'getDDBServiceBaseKlass');

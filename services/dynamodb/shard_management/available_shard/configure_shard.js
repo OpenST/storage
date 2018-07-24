@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  *
@@ -8,16 +8,15 @@
  *
  */
 
-const rootPrefix = '../../../..'
-  , InstanceComposer = require(rootPrefix + '/instance_composer')
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , logger            = require( rootPrefix + "/lib/logger/custom_console_logger")
-;
+const rootPrefix = '../../../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
-require(rootPrefix + "/config/core_constants");
-require( rootPrefix + '/lib/models/dynamodb/shard_management/available_shard');
+require(rootPrefix + '/config/core_constants');
+require(rootPrefix + '/lib/models/dynamodb/shard_management/available_shard');
 require(rootPrefix + '/services/cache_multi_management/get_shard_list');
-require(rootPrefix + "/lib/global_constant/available_shard");
+require(rootPrefix + '/lib/global_constant/available_shard');
 require(rootPrefix + '/services/cache_multi_management/has_shard');
 
 /**
@@ -32,10 +31,10 @@ require(rootPrefix + '/services/cache_multi_management/has_shard');
  * @return {Object}
  *
  */
-const ConfigureShard = function (params) {
+const ConfigureShard = function(params) {
   const oThis = this;
   params = params || {};
-  logger.debug("=======ConfigureShard.params=======");
+  logger.debug('=======ConfigureShard.params=======');
   logger.debug(params);
 
   oThis.params = params;
@@ -44,24 +43,21 @@ const ConfigureShard = function (params) {
 };
 
 ConfigureShard.prototype = {
-
   /**
    * Perform method
    *
    * @return {promise<result>}
    *
    */
-  perform: async function () {
-    const oThis = this
-      , coreConstants = oThis.ic().getCoreConstants()
-    ;
+  perform: async function() {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants();
 
-    return oThis.asyncPerform()
-      .catch(function(err){
+    return oThis.asyncPerform().catch(function(err) {
       return responseHelper.error({
-        internal_error_identifier:"s_sm_as_cs_perform_1",
-        api_error_identifier: "exception",
-        debug_options: {error: err},
+        internal_error_identifier: 's_sm_as_cs_perform_1',
+        api_error_identifier: 'exception',
+        debug_options: { error: err },
         error_config: coreConstants.ERROR_CONFIG
       });
     });
@@ -72,23 +68,22 @@ ConfigureShard.prototype = {
    *
    * @return {Promise<*>}
    */
-  asyncPerform: async function () {
-    const oThis = this
-      , availableShard = oThis.ic().getDDBServiceAvailableShard()
-    ;
+  asyncPerform: async function() {
+    const oThis = this,
+      availableShard = oThis.ic().getDDBServiceAvailableShard();
 
     let r = null;
 
     r = await oThis.validateParams();
-    logger.debug("=======ConfigureShard.validateParams.result=======");
+    logger.debug('=======ConfigureShard.validateParams.result=======');
     logger.debug(r);
     if (r.isFailure()) return r;
 
-    if ((await oThis.isRedundantUpdate())) {
-      logger.debug("ConfigureShard :: is redundant update");
+    if (await oThis.isRedundantUpdate()) {
+      logger.debug('ConfigureShard :: is redundant update');
     } else {
       r = await availableShard.configureShard(oThis.params);
-      logger.debug("=======ConfigureShard.configureShard.result=======");
+      logger.debug('=======ConfigureShard.configureShard.result=======');
       logger.debug(r);
       oThis.clearAnyAssociatedCache();
       if (r.isFailure()) return r;
@@ -102,56 +97,56 @@ ConfigureShard.prototype = {
    * @return {Promise<any>}
    *
    */
-  validateParams: function () {
-    const oThis = this
-      , errorCodePrefix = 's_sm_as_cs_validateParams_'
-      , coreConstants = oThis.ic().getCoreConstants()
-      , availableShardConst = oThis.ic().getLibAvailableShard()
-      , HasShardMultiCacheKlass =oThis.ic().getDDBServiceHasShardKlass()
-    ;
+  validateParams: function() {
+    const oThis = this,
+      errorCodePrefix = 's_sm_as_cs_validateParams_',
+      coreConstants = oThis.ic().getCoreConstants(),
+      availableShardConst = oThis.ic().getLibAvailableShard(),
+      HasShardMultiCacheKlass = oThis.ic().getDDBServiceHasShardKlass();
 
-    return new Promise(async function (onResolve) {
-      let errorCode = null
-        , errorMsg = null
-        , error_identifier = null
-      ;
+    return new Promise(async function(onResolve) {
+      let errorCode = null,
+        errorMsg = null,
+        error_identifier = null;
 
       oThis.hasShard = async function() {
         const paramsHasShard = {
           shard_names: [oThis.shardName]
         };
-        const response  = await (new HasShardMultiCacheKlass(paramsHasShard)).fetch();
-        if (response.isFailure()){
+        const response = await new HasShardMultiCacheKlass(paramsHasShard).fetch();
+        if (response.isFailure()) {
           return false;
         }
 
-        return response.data[oThis.shardName].has_shard
+        return response.data[oThis.shardName].has_shard;
       };
 
       if (!oThis.shardName) {
         errorCode = errorCodePrefix + '1';
-        error_identifier = "invalid_shard_name";
-      } else if (String(typeof(oThis.allocationType)) !== 'string') {
+        error_identifier = 'invalid_shard_name';
+      } else if (String(typeof oThis.allocationType) !== 'string') {
         errorCode = errorCodePrefix + '2';
-        error_identifier = "invalid_allocation_type";
+        error_identifier = 'invalid_allocation_type';
       } else if (undefined === availableShardConst.ALLOCATION_TYPES[oThis.allocationType]) {
         errorCode = errorCodePrefix + '3';
-        error_identifier = "invalid_allocation_type";
+        error_identifier = 'invalid_allocation_type';
       } else if (!(await oThis.hasShard())) {
         errorCode = errorCodePrefix + '4';
         errorMsg = 'shardName does not exists';
-        error_identifier = "invalid_shard_name";
+        error_identifier = 'invalid_shard_name';
       } else {
         return onResolve(responseHelper.successWithData({}));
       }
 
       logger.debug(errorCode, error_identifier);
-      return onResolve(responseHelper.error({
-        internal_error_identifier: errorCode,
-        api_error_identifier: error_identifier,
-        debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
-      }));
+      return onResolve(
+        responseHelper.error({
+          internal_error_identifier: errorCode,
+          api_error_identifier: error_identifier,
+          debug_options: {},
+          error_config: coreConstants.ERROR_CONFIG
+        })
+      );
     });
   },
 
@@ -160,16 +155,15 @@ ConfigureShard.prototype = {
    *
    * @return {Promise<boolean>}
    */
-  isRedundantUpdate : async function() {
-    const oThis = this
-      , availableShard = oThis.ic().getDDBServiceAvailableShard()
-      , responseShardInfo = await availableShard.getShardByName(oThis.params)
-      , shardInfo = responseShardInfo.data[oThis.shardName]
-      , availableShardConst = oThis.ic().getLibAvailableShard()
-    ;
+  isRedundantUpdate: async function() {
+    const oThis = this,
+      availableShard = oThis.ic().getDDBServiceAvailableShard(),
+      responseShardInfo = await availableShard.getShardByName(oThis.params),
+      shardInfo = responseShardInfo.data[oThis.shardName],
+      availableShardConst = oThis.ic().getLibAvailableShard();
 
     if (responseShardInfo.isFailure() || !shardInfo) {
-      throw "configure_shard :: validateParams :: getShardByName function failed OR ShardInfo not present"
+      throw 'configure_shard :: validateParams :: getShardByName function failed OR ShardInfo not present';
     }
 
     oThis.oldEntityType = shardInfo[availableShardConst.ENTITY_TYPE];
@@ -184,18 +178,21 @@ ConfigureShard.prototype = {
    * @return {Promise<*>}
    */
   clearAnyAssociatedCache: async function() {
-    const oThis = this
-      , GetShardListMultiCacheKlass = oThis.ic().getDDBServiceShardListCacheKlass()
-    ;
+    const oThis = this,
+      GetShardListMultiCacheKlass = oThis.ic().getDDBServiceShardListCacheKlass();
 
-    logger.debug("=======ConfigureShard.cacheClearance.result=======");
+    logger.debug('=======ConfigureShard.cacheClearance.result=======');
     const cacheParams = {
-      ids: [{
-        entity_type: oThis.oldEntityType,
-        shard_type: oThis.allocationType}, {
-        entity_type: oThis.oldEntityType,
-        shard_type: oThis.oldAllocationType
-      }]
+      ids: [
+        {
+          entity_type: oThis.oldEntityType,
+          shard_type: oThis.allocationType
+        },
+        {
+          entity_type: oThis.oldEntityType,
+          shard_type: oThis.oldAllocationType
+        }
+      ]
     };
 
     return new GetShardListMultiCacheKlass(cacheParams).clear();

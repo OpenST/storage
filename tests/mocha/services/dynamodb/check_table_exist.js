@@ -1,15 +1,13 @@
-const chai = require('chai')
-  , assert = chai.assert;
+const chai = require('chai'),
+  assert = chai.assert;
 
 //Load external files
-const rootPrefix = "../../../.."
-  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , helper = require(rootPrefix + "/tests/mocha/services/dynamodb/helper")
-;
+const rootPrefix = '../../../..',
+  testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('Check table exists', function() {
-
   let openStStorageObject = null;
 
   before(async function() {
@@ -18,20 +16,20 @@ describe('Check table exists', function() {
 
     // put item
     const createTableParams = {
-      TableName : testConstants.transactionLogTableName,
+      TableName: testConstants.transactionLogTableName,
       KeySchema: [
         {
-          AttributeName: "tuid",
-          KeyType: "HASH"
-        },  //Partition key
+          AttributeName: 'tuid',
+          KeyType: 'HASH'
+        }, //Partition key
         {
-          AttributeName: "cid",
-          KeyType: "RANGE"
-        }  //Sort key
+          AttributeName: 'cid',
+          KeyType: 'RANGE'
+        } //Sort key
       ],
       AttributeDefinitions: [
-        { AttributeName: "tuid", AttributeType: "S" },
-        { AttributeName: "cid", AttributeType: "N" }
+        { AttributeName: 'tuid', AttributeType: 'S' },
+        { AttributeName: 'cid', AttributeType: 'N' }
       ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 1,
@@ -42,13 +40,13 @@ describe('Check table exists', function() {
     await helper.createTable(ddb_service, createTableParams, true);
   });
 
-  it('check table exist successfully', async function () {
-    const response = await ddb_service.checkTableExist({TableName: testConstants.transactionLogTableName});
+  it('check table exist successfully', async function() {
+    const response = await ddb_service.checkTableExist({ TableName: testConstants.transactionLogTableName });
     assert.equal(response.isSuccess(), true, 'check table exist failed');
   });
 
-  it('check table exist unsuccessfully', async function () {
-    const response = await ddb_service.checkTableExist({TableName: 'unKnown_Table'});
+  it('check table exist unsuccessfully', async function() {
+    const response = await ddb_service.checkTableExist({ TableName: 'unKnown_Table' });
     assert.equal(response.isSuccess(), true, 'check table exist failed');
   });
 
@@ -57,6 +55,6 @@ describe('Check table exists', function() {
       TableName: testConstants.transactionLogTableName
     };
     await helper.deleteTable(ddb_service, deleteTableParams, true);
-    logger.debug("Update Table Mocha Tests Complete");
+    logger.debug('Update Table Mocha Tests Complete');
   });
 });

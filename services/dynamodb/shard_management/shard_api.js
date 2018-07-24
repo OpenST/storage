@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * Shard service api
@@ -7,9 +7,8 @@
  *
  */
 
-const rootPrefix  = "../../.."
-  , InstanceComposer = require(rootPrefix + '/instance_composer')
-;
+const rootPrefix = '../../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer');
 
 require(rootPrefix + '/services/dynamodb/shard_management/shard_migration');
 require(rootPrefix + '/services/dynamodb/shard_management/available_shard/add_shard');
@@ -27,7 +26,6 @@ require(rootPrefix + '/services/dynamodb/shard_management/available_shard/has_sh
 const ShardServiceApi = function() {};
 
 ShardServiceApi.prototype = {
-
   /**
    * To run Shard Migration
    *
@@ -38,9 +36,8 @@ ShardServiceApi.prototype = {
    * @return {*|promise<result>}
    */
   runShardMigration: function() {
-    const oThis = this
-      , ShardMigrationKlass = oThis.ic().getDDBServiceShardMigration()
-    ;
+    const oThis = this,
+      ShardMigrationKlass = oThis.ic().getDDBServiceShardMigration();
     return new ShardMigrationKlass().perform();
   },
 
@@ -59,10 +56,8 @@ ShardServiceApi.prototype = {
    * @return {*|promise<result>}
    */
   addShard: function(params) {
-    const oThis = this
-      , AddShardKlass = oThis.ic().getDDBServiceAddShard();
-    ;
-
+    const oThis = this,
+      AddShardKlass = oThis.ic().getDDBServiceAddShard();
     return new AddShardKlass(params).perform();
   },
 
@@ -80,9 +75,8 @@ ShardServiceApi.prototype = {
    * @return {*|promise<result>}
    */
   configureShard: function(params) {
-    const oThis = this
-      , ConfigureShardKlass = oThis.ic().getDDBServiceConfigureShard()
-    ;
+    const oThis = this,
+      ConfigureShardKlass = oThis.ic().getDDBServiceConfigureShard();
 
     return new ConfigureShardKlass(params).perform();
   },
@@ -101,10 +95,9 @@ ShardServiceApi.prototype = {
    *
    * @return {*|promise<result>}
    */
-  getShardsByType: function (params) {
-    const oThis = this
-      , GetShardListKlass = oThis.ic().getDdbShardList()
-    ;
+  getShardsByType: function(params) {
+    const oThis = this,
+      GetShardListKlass = oThis.ic().getDdbShardList();
 
     return new GetShardListKlass(params).perform();
   },
@@ -118,14 +111,12 @@ ShardServiceApi.prototype = {
    *
    * @return {*|promise<result>}
    */
-  hasShard: function (params) {
-    const oThis = this
-      , HasShardKlass = oThis.ic().getHasShardInfo()
-    ;
+  hasShard: function(params) {
+    const oThis = this,
+      HasShardKlass = oThis.ic().getHasShardInfo();
 
     return new HasShardKlass(params).perform();
   },
-
 
   /**
    * Assign provided Shard name to given Identifier
@@ -143,14 +134,12 @@ ShardServiceApi.prototype = {
    *
    * @return {*|promise<result>}
    */
-  assignShard: function (params) {
-    const oThis = this
-      , AssignShardKlass = oThis.ic().getDDBAssignShard()
-    ;
+  assignShard: function(params) {
+    const oThis = this,
+      AssignShardKlass = oThis.ic().getDDBAssignShard();
 
     return new AssignShardKlass(params).perform();
   },
-
 
   /**
    * It provides Shard details
@@ -163,10 +152,9 @@ ShardServiceApi.prototype = {
    *
    * @return {*|promise<result>}
    */
-  getManagedShard: function (params) {
-    const oThis = this
-      , GetShardNameKlass = oThis.ic().getDdbShardDetails()
-    ;
+  getManagedShard: function(params) {
+    const oThis = this,
+      GetShardNameKlass = oThis.ic().getDdbShardDetails();
 
     return new GetShardNameKlass(params).perform();
   }

@@ -1,42 +1,38 @@
-const chai = require('chai')
-  , assert = chai.assert;
+const chai = require('chai'),
+  assert = chai.assert;
 
-const rootPrefix = "../../../.."
-  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , helper = require(rootPrefix + "/tests/mocha/services/dynamodb/helper")
-;
+const rootPrefix = '../../../..',
+  testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('List Tables', function() {
-
   let openStStorageObject = null;
 
   before(async function() {
-
     // get openStStorageObject
     openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
     ddb_service = openStStorageObject.ddbServiceObj;
-
   });
 
-  it('should create table successfully', async function () {
+  it('should create table successfully', async function() {
     // build create table params
     const createTableParams = {
-      TableName : testConstants.transactionLogTableName,
+      TableName: testConstants.transactionLogTableName,
       KeySchema: [
         {
-          AttributeName: "tuid",
-          KeyType: "HASH"
-        },  //Partition key
+          AttributeName: 'tuid',
+          KeyType: 'HASH'
+        }, //Partition key
         {
-          AttributeName: "cid",
-          KeyType: "RANGE"
-        }  //Sort key
+          AttributeName: 'cid',
+          KeyType: 'RANGE'
+        } //Sort key
       ],
       AttributeDefinitions: [
-        { AttributeName: "tuid", AttributeType: "S" },
-        { AttributeName: "cid", AttributeType: "N" },
-        { AttributeName: "thash", AttributeType: "S" }
+        { AttributeName: 'tuid', AttributeType: 'S' },
+        { AttributeName: 'cid', AttributeType: 'N' },
+        { AttributeName: 'thash', AttributeType: 'S' }
       ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 5,
@@ -48,32 +44,32 @@ describe('List Tables', function() {
           KeySchema: [
             {
               AttributeName: 'thash',
-              KeyType: "HASH"
+              KeyType: 'HASH'
             }
           ],
           Projection: {
-            ProjectionType: "KEYS_ONLY"
+            ProjectionType: 'KEYS_ONLY'
           },
           ProvisionedThroughput: {
             ReadCapacityUnits: 1,
             WriteCapacityUnits: 1
           }
-        },
+        }
       ],
       SSESpecification: {
         Enabled: false
-      },
+      }
     };
     await helper.createTable(ddb_service, createTableParams, true);
   });
 
-  it('should list table successfully', async function () {
+  it('should list table successfully', async function() {
     // build create table params
     const listTablesParams = {};
     await helper.listTables(ddb_service, listTablesParams, true);
   });
 
-  it('should fail when table name is passed in parameter', async function () {
+  it('should fail when table name is passed in parameter', async function() {
     // build create table params
     const listTablesParams = {
       TableName: testConstants.transactionLogTableName
@@ -87,8 +83,6 @@ describe('List Tables', function() {
     };
 
     await helper.deleteTable(ddb_service, deleteTableParams, true);
-    logger.debug("List Tables Mocha Tests Complete");
+    logger.debug('List Tables Mocha Tests Complete');
   });
-
-
 });
