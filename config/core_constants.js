@@ -29,6 +29,8 @@ const CoreConstants = function (configStrategy, instanceComposer) {
   oThis.DEBUG_ENABLED = configStrategy.OST_DEBUG_ENABLED;
 
   oThis.DYNAMODB_TABLE_NAME_PREFIX = configStrategy.OS_DYNAMODB_TABLE_NAME_PREFIX || '';
+
+  oThis.AUTO_SCALE_DYNAMO = (configStrategy.AUTO_SCALE_DYNAMO==1)
 };
 
 CoreConstants.prototype = {

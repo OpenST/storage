@@ -23,6 +23,7 @@ const OpenSTStorage = function (configStrategy) {
     , TokenBalanceModel = instanceComposer.getLibDDBTokenBalanceModel()
     , TokenBalanceCache = instanceComposer.getDDBTokenBalanceCache()
     , ShardedBaseModel = instanceComposer.getLibDDBBaseModel()
+    , ddbServiceObj = oThis.ic().getDynamoDBService()
   ;
 
   if (!configStrategy) {
@@ -39,6 +40,8 @@ const OpenSTStorage = function (configStrategy) {
   cache.TokenBalance = TokenBalanceCache;
 
   oThis.entityTypesConst = entityTypesConst;
+  oThis.ddbServiceObj = ddbServiceObj;
+
 };
 
 

@@ -80,7 +80,7 @@ const CreateTableMigrationPrototype = {
     //   return responseHelper.error('l_dy_ctm_validateParams_3', 'updateContinuousBackupConfig config is mandatory');
     // }
 
-    if (oThis.shouldAutoScale) {
+    if (coreConstants.AUTO_SCALE_DYNAMO) {
 
       if (oThis.autoScalingObject.constructor.name !== 'AutoScaleService') {
         return responseHelper.error({
@@ -153,6 +153,7 @@ const CreateTableMigrationPrototype = {
   // TODO Refactor to small methods
   executeDdbRequest: function() {
     const oThis = this
+      , coreConstants = oThis.ic().getCoreConstants()
       , ddbObject = oThis.ic().getLibDynamoDBBase()
       ;
     return new Promise(async function (onResolve) {
@@ -177,7 +178,7 @@ const CreateTableMigrationPrototype = {
       }
       logger.info(tableName + " Table created..");
 
-      if (oThis.shouldAutoScale) {
+      if (coreConstants.AUTO_SCALE_DYNAMO) {
 
         oThis.autoScalingConfig.registerScalableTargetWrite.RoleARN = roleARN;
         oThis.autoScalingConfig.registerScalableTargetRead.RoleARN = roleARN;

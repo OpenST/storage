@@ -19,6 +19,8 @@ require(rootPrefix + "/config/core_constants");
 require(rootPrefix + "/lib/global_constant/managed_shard");
 require(rootPrefix + "/lib/global_constant/available_shard");
 require(rootPrefix + '/lib/auto_scale/helper');
+require(rootPrefix + '/services/dynamodb/api');
+
 /**
  * Constructor to create object of shard migration
  *
@@ -31,12 +33,7 @@ require(rootPrefix + '/lib/auto_scale/helper');
  * @return {Object}
  *
  */
-const ShardMigration = function (params) {
-  const oThis = this
-  ;
-  oThis.ddbApiObject = params.ddb_api_object;
-  oThis.autoScalingApiObject = params.auto_scaling_api_object;
-};
+const ShardMigration = function () {};
 
 ShardMigration.prototype = {
 
@@ -91,15 +88,6 @@ ShardMigration.prototype = {
       , coreConstants = oThis.ic().getCoreConstants()
     ;
 
-    if (!oThis.ddbApiObject) {
-      return responseHelper.error({
-        internal_error_identifier: "d_sm_sm_validateParams_1",
-        api_error_identifier: "invalid_ddb_api_object",
-        debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
-      });
-    }
-
     return responseHelper.successWithData({});
   },
 
@@ -146,6 +134,7 @@ ShardMigration.prototype = {
    */
   runAvailableShardMigration: async function () {
     const oThis = this
+      , ddbServiceObj = oThis.ic().getDynamoDBService()
     ;
 
     logger.debug("========ShardMigration.runAvailableShardMigration Started=======");
@@ -165,7 +154,7 @@ ShardMigration.prototype = {
     }
 
     params.autoScalingConfig = oThis.getAvailableShardsAutoScalingParams(tableName, globalSecondaryIndexesArray);
-    const availableShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
+    const availableShardsResponse = await ddbServiceObj.createTableMigration(params);
 
     logger.debug(availableShardsResponse);
     if (availableShardsResponse.isFailure()) {
@@ -182,6 +171,7 @@ ShardMigration.prototype = {
    */
   runManagedShardMigration: async function () {
     const oThis = this
+      , ddbServiceObj = oThis.ic().getDynamoDBService()
     ;
 
     logger.debug("========ShardMigration.runManagedShardMigration Started=======");
@@ -201,7 +191,7 @@ ShardMigration.prototype = {
     }
 
     params.autoScalingConfig = oThis.getManagedShardsAutoScalingParams(tableName, arn, resourceId);
-    const managedShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
+    const managedShardsResponse = await ddbServiceObj.createTableMigration(params);
     logger.debug(managedShardsResponse);
     if (managedShardsResponse.isFailure()) {
       logger.error("Is Failure having err ", managedShardsResponse);
@@ -357,9 +347,10 @@ ShardMigration.prototype = {
    */
   tableExist: async function (tableName) {
     const oThis = this
+      , ddbServiceObj = oThis.ic().getDynamoDBService()
     ;
 
-    let listTablesResponse = await oThis.ddbApiObject.listTables({});
+    let listTablesResponse = await ddbServiceObj.listTables({});
     if (listTablesResponse.isFailure()) {
       logger.error("s_dy_sm tableExist api failure");
       return false;
