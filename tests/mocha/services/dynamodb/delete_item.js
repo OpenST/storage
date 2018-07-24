@@ -10,11 +10,12 @@ const rootPrefix = "../../../.."
 
 describe('Delete Item', function() {
 
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
 
   before(async function() {
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
+    // get openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = openStStorageObject.ddbServiceObj;
 
     // put item
     const createTableParams = {
@@ -38,7 +39,7 @@ describe('Delete Item', function() {
         WriteCapacityUnits: 1
       }
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
+    await helper.createTable(ddb_service, createTableParams, true);
   });
 
   it('should delete item successfully', async function () {
@@ -52,7 +53,7 @@ describe('Delete Item', function() {
         U: {S: String(new Date().getTime())}
       }
     };
-    await helper.putItem(dynamodbApiObject, insertItemParams, true);
+    await helper.putItem(ddb_service, insertItemParams, true);
 
     const deleteItemParams = {
       TableName: testConstants.transactionLogTableName,
@@ -65,7 +66,7 @@ describe('Delete Item', function() {
         }
       }
     };
-    await helper.deleteItem(dynamodbApiObject, deleteItemParams, true);
+    await helper.deleteItem(ddb_service, deleteItemParams, true);
   });
 
   it('should delete item successfully with unknown key', async function () {
@@ -79,7 +80,7 @@ describe('Delete Item', function() {
         U: {S: String(new Date().getTime())}
       }
     };
-    await helper.putItem(dynamodbApiObject, insertItemParams, true);
+    await helper.putItem(ddb_service, insertItemParams, true);
 
     const deleteItemParams = {
       TableName: testConstants.transactionLogTableName,
@@ -92,7 +93,7 @@ describe('Delete Item', function() {
         }
       }
     };
-    await helper.deleteItem(dynamodbApiObject, deleteItemParams, true);
+    await helper.deleteItem(ddb_service, deleteItemParams, true);
   });
 
   it('should delete item unsuccessfully with invalid table name', async function () {
@@ -109,7 +110,7 @@ describe('Delete Item', function() {
         }
       }
     };
-    await helper.deleteItem(dynamodbApiObject, deleteItemParams, false);
+    await helper.deleteItem(ddb_service, deleteItemParams, false);
   });
 
 
@@ -117,7 +118,7 @@ describe('Delete Item', function() {
     const deleteTableParams = {
       TableName: testConstants.transactionLogTableName
     };
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
+    await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");
   });
 

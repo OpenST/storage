@@ -10,11 +10,12 @@ const rootPrefix = "../../../.."
 
 describe('Delete Table', function() {
 
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
 
   before(async function() {
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
+    // get openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = openStStorageObject.ddbServiceObj;
 
     // put item
     const createTableParams = {
@@ -38,7 +39,7 @@ describe('Delete Table', function() {
         WriteCapacityUnits: 1
       }
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
+    await helper.createTable(ddb_service, createTableParams, true);
 
   });
 
@@ -52,7 +53,7 @@ describe('Delete Table', function() {
         U: {S: String(new Date().getTime())}
       }
     };
-    await helper.putItem(dynamodbApiObject, insertItemParams, true);
+    await helper.putItem(ddb_service, insertItemParams, true);
   });
 
   it('should put item with invalid datatype', async function () {
@@ -65,14 +66,14 @@ describe('Delete Table', function() {
         U: {S: String(new Date().getTime())}
       }
     };
-    await helper.putItem(dynamodbApiObject, insertItemParams, false);
+    await helper.putItem(ddb_service, insertItemParams, false);
   });
 
   after(async function() {
     const deleteTableParams = {
       TableName: testConstants.transactionLogTableName
     };
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
+    await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");
   });
 

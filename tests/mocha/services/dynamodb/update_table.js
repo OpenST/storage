@@ -9,11 +9,12 @@ const rootPrefix = "../../../.."
 
 describe('Delete Table', function() {
 
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
 
   before(async function() {
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
+    // get openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = openStStorageObject.ddbServiceObj;
   });
 
   it('should create table successfully', async function () {
@@ -42,7 +43,7 @@ describe('Delete Table', function() {
         Enabled: false
       },
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
+    await helper.createTable(ddb_service, createTableParams, true);
   });
 
   it('should update table successfully', async function () {
@@ -54,7 +55,7 @@ describe('Delete Table', function() {
         WriteCapacityUnits: 5
       }
     };
-    await helper.updateTable(dynamodbApiObject, updateTableParams, true);
+    await helper.updateTable(ddb_service, updateTableParams, true);
   });
 
   it('should fail when no update config data is passed', async function () {
@@ -62,14 +63,14 @@ describe('Delete Table', function() {
     const updateTableParams = {
       TableName: testConstants.transactionLogTableName
     };
-    await helper.updateTable(dynamodbApiObject, updateTableParams, false);
+    await helper.updateTable(ddb_service, updateTableParams, false);
   });
 
   after(async function() {
     const deleteTableParams = {
       TableName: testConstants.transactionLogTableName
     };
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
+    await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");
   });
 

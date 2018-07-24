@@ -17,7 +17,7 @@ describe('Create Table', function() {
 
     // create dynamodbApiObject
     dynamodbApiObject = new DdbApiKlass(testConstants.CONFIG_STRATEGIES);
-    helper.validateDynamodbApiObject(dynamodbApiObject);
+    helper.validateOpenStStorageObject(dynamodbApiObject);
   });
 
   it('should delete table successfully if exists', async function () {

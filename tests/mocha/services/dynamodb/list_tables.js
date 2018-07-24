@@ -9,12 +9,13 @@ const rootPrefix = "../../../.."
 
 describe('List Tables', function() {
 
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
 
   before(async function() {
 
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
+    // get openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = openStStorageObject.ddbServiceObj;
 
   });
 
@@ -63,13 +64,13 @@ describe('List Tables', function() {
         Enabled: false
       },
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
+    await helper.createTable(ddb_service, createTableParams, true);
   });
 
   it('should list table successfully', async function () {
     // build create table params
     const listTablesParams = {};
-    await helper.listTables(dynamodbApiObject, listTablesParams, true);
+    await helper.listTables(ddb_service, listTablesParams, true);
   });
 
   it('should fail when table name is passed in parameter', async function () {
@@ -77,7 +78,7 @@ describe('List Tables', function() {
     const listTablesParams = {
       TableName: testConstants.transactionLogTableName
     };
-    await helper.listTables(dynamodbApiObject, listTablesParams, false);
+    await helper.listTables(ddb_service, listTablesParams, false);
   });
 
   after(async function() {
@@ -85,7 +86,7 @@ describe('List Tables', function() {
       TableName: testConstants.transactionLogTableName
     };
 
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
+    await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug("List Tables Mocha Tests Complete");
   });
 

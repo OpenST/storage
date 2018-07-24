@@ -10,11 +10,12 @@ const rootPrefix = "../../../.."
 
 describe('Update Item in Table', function() {
 
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
 
   before(async function() {
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
+    // get openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = openStStorageObject.ddbServiceObj;
 
     // put item
     const createTableParams = {
@@ -38,7 +39,7 @@ describe('Update Item in Table', function() {
         WriteCapacityUnits: 1
       }
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
+    await helper.createTable(ddb_service, createTableParams, true);
 
     const insertItemParams = {
       TableName: testConstants.transactionLogTableName,
@@ -49,7 +50,7 @@ describe('Update Item in Table', function() {
         U: {S: String(new Date().getTime())}
       }
     };
-    await helper.putItem(dynamodbApiObject, insertItemParams, true);
+    await helper.putItem(ddb_service, insertItemParams, true);
   });
 
   it('should update item successfully', async function () {
@@ -75,7 +76,7 @@ describe('Update Item in Table', function() {
       UpdateExpression: "SET #c = :t"
     };
 
-    await helper.updateItem(dynamodbApiObject, updateItemParam, true);
+    await helper.updateItem(ddb_service, updateItemParam, true);
   });
 
   it('update item should be unsuccessfully when key type is invalid', async function () {
@@ -101,14 +102,14 @@ describe('Update Item in Table', function() {
       UpdateExpression: "SET #c = :t"
     };
 
-    await helper.updateItem(dynamodbApiObject, updateItemParam, false);
+    await helper.updateItem(ddb_service, updateItemParam, false);
   });
 
   after(async function() {
     const deleteTableParams = {
       TableName: testConstants.transactionLogTableName
     };
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
+    await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");
   });
 });

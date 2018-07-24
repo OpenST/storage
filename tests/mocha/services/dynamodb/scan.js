@@ -10,11 +10,12 @@ const rootPrefix = "../../../.."
 
 describe('Scan Table', function() {
 
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
 
   before(async function() {
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
+    // get openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = openStStorageObject.ddbServiceObj;
 
     // put item
     const createTableParams = {
@@ -38,7 +39,7 @@ describe('Scan Table', function() {
         WriteCapacityUnits: 1
       }
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
+    await helper.createTable(ddb_service, createTableParams, true);
 
     const insertItem1Params = {
       TableName: testConstants.transactionLogTableName,
@@ -49,7 +50,7 @@ describe('Scan Table', function() {
         U: {S: String(new Date().getTime())}
       }
     };
-    await helper.putItem(dynamodbApiObject, insertItem1Params, true);
+    await helper.putItem(ddb_service, insertItem1Params, true);
 
     const insertItem2Params = {
       TableName: testConstants.transactionLogTableName,
@@ -60,7 +61,7 @@ describe('Scan Table', function() {
         U: {S: String(new Date().getTime())}
       }
     };
-    await helper.putItem(dynamodbApiObject, insertItem2Params, true);
+    await helper.putItem(ddb_service, insertItem2Params, true);
 
   });
 
@@ -80,7 +81,7 @@ describe('Scan Table', function() {
     };
 
     const resultCount = 1;
-    const response = await helper.scan(dynamodbApiObject, queryParams, true, resultCount);
+    const response = await helper.scan(ddb_service, queryParams, true, resultCount);
   });
 
   it('scan table for item with invalid key successfully', async function () {
@@ -99,7 +100,7 @@ describe('Scan Table', function() {
     };
 
     const resultCount = 0;
-    const response = await helper.scan(dynamodbApiObject, queryParams, true, resultCount);
+    const response = await helper.scan(ddb_service, queryParams, true, resultCount);
   });
 
   it('scan table for item with key only without using sort key successfully', async function () {
@@ -115,7 +116,7 @@ describe('Scan Table', function() {
     };
 
     const resultCount = 1;
-    const response = await helper.scan(dynamodbApiObject, queryParams, true, resultCount);
+    const response = await helper.scan(ddb_service, queryParams, true, resultCount);
   });
 
   it('scan table for item with invalid table name unsuccessfully', async function () {
@@ -134,14 +135,14 @@ describe('Scan Table', function() {
     };
 
     const resultCount = 0;
-    const response = await helper.scan(dynamodbApiObject, queryParams, false, resultCount);
+    const response = await helper.scan(ddb_service, queryParams, false, resultCount);
   });
 
   after(async function() {
     const deleteTableParams = {
       TableName: testConstants.transactionLogTableName
     };
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
+    await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug("Update Table Mocha Tests Complete");
   });
 });

@@ -9,12 +9,14 @@ const rootPrefix = "../../../.."
 
 describe('Delete Table', function() {
 
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
 
   before(async function() {
 
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
+    // get openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+
+    ddb_service = openStStorageObject.ddbServiceObj;
 
   });
 
@@ -63,7 +65,7 @@ describe('Delete Table', function() {
         Enabled: false
       },
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
+    await helper.createTable(ddb_service, createTableParams, true);
   });
 
   it('should delete table successfully', async function () {
@@ -72,7 +74,7 @@ describe('Delete Table', function() {
       TableName: testConstants.transactionLogTableName
     };
 
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
+    await helper.deleteTable(ddb_service, deleteTableParams, true);
   });
 
   it('should fail when table name is not passed', async function () {
@@ -81,7 +83,7 @@ describe('Delete Table', function() {
       TableName: testConstants.transactionLogTableName
     };
 
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, false);
+    await helper.deleteTable(ddb_service, deleteTableParams, false);
   });
 
   after(function() {

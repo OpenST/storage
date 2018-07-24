@@ -9,21 +9,22 @@ const rootPrefix = "../../../.."
 
 describe('Create Table', function() {
 
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
 
   before(async function() {
 
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
+    // get openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = openStStorageObject.ddbServiceObj;
   });
 
   it('should delete table successfully if exists', async function () {
     const params = {
       TableName: testConstants.transactionLogTableName
     };
-    const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
+    const checkTableExistsResponse = await ddb_service.checkTableExist(params);
     if (checkTableExistsResponse.data.response === true) {
-      await helper.deleteTable(dynamodbApiObject, params, true);
+      await helper.deleteTable(ddb_service, params, true);
     }
   });
 
@@ -72,7 +73,7 @@ describe('Create Table', function() {
         Enabled: false
       },
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
+    await helper.createTable(ddb_service, createTableParams, true);
   });
 
   it('create table should fail when table name is not passed', async function () {
@@ -119,7 +120,7 @@ describe('Create Table', function() {
         Enabled: false
       },
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, false);
+    await helper.createTable(ddb_service, createTableParams, false);
   });
 
   // it('should enable continous backup successfully', async function () {
@@ -137,7 +138,7 @@ describe('Create Table', function() {
     const params = {
       TableName: testConstants.transactionLogTableName
     };
-    await helper.deleteTable(dynamodbApiObject, params, true);
+    await helper.deleteTable(ddb_service, params, true);
 
     logger.debug("Create Table Mocha Tests Complete");
   });

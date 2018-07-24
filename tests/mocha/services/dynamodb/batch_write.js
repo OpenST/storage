@@ -9,23 +9,25 @@ const rootPrefix = "../../../.."
   , testDataSource = require(rootPrefix + '/tests/mocha/services/dynamodb/testdata/batch_get_write_data')
 ;
 
-var dynamoDBApi = null;
+let openStStorageObject = null;
 
 describe('Batch write', function () {
   before(async function() {
     this.timeout(100000);
     // get dynamoDB API object
-    dynamoDBApi = helper.validateDynamodbApiObject(testConstants.CONFIG_STRATEGIES);
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+
+    ddb_service = openStStorageObject.ddbServiceObj;
 
     // check if table exists
-    const checkTableExistsResponse = await dynamoDBApi.checkTableExist(testDataSource.DELETE_TABLE_DATA);
+    const checkTableExistsResponse = await ddb_service.checkTableExist(testDataSource.DELETE_TABLE_DATA);
     if (checkTableExistsResponse.data.response === true) {
       // delete if table exists
-      await helper.deleteTable(dynamoDBApi,testDataSource.DELETE_TABLE_DATA, true);
+      await helper.deleteTable(ddb_service,testDataSource.DELETE_TABLE_DATA, true);
     }
 
     // create table for the test
-    await helper.createTable(dynamoDBApi,testDataSource.CREATE_TABLE_DATA, true);
+    await helper.createTable(ddb_service,testDataSource.CREATE_TABLE_DATA, true);
 
   });
 
@@ -33,7 +35,7 @@ describe('Batch write', function () {
     this.timeout(100000);
 
     const batchWriteParams = testDataSource.getBatchWriteData(0);
-    await  helper.performBatchWriteTest(dynamoDBApi, batchWriteParams ,false);
+    await  helper.performBatchWriteTest(ddb_service, batchWriteParams ,false);
 
   });
 
@@ -41,7 +43,7 @@ describe('Batch write', function () {
     this.timeout(100000);
 
     const batchWriteParams = testDataSource.getBatchWriteData(1);
-    const batchWriteResponse = await  helper.performBatchWriteTest(dynamoDBApi, batchWriteParams ,true);
+    const batchWriteResponse = await  helper.performBatchWriteTest(ddb_service, batchWriteParams ,true);
     assert.empty(batchWriteResponse.data.UnprocessedItems);
 
   });
@@ -50,7 +52,7 @@ describe('Batch write', function () {
     this.timeout(100000);
 
     const batchWriteParams = testDataSource.getBatchWriteData(5);
-    const batchWriteResponse = await  helper.performBatchWriteTest(dynamoDBApi, batchWriteParams ,true);
+    const batchWriteResponse = await  helper.performBatchWriteTest(ddb_service, batchWriteParams ,true);
     assert.empty(batchWriteResponse.data.UnprocessedItems);
 
   });
@@ -58,7 +60,7 @@ describe('Batch write', function () {
     this.timeout(100000);
 
     const batchWriteParams = testDataSource.getBatchWriteData(25);
-    const batchWriteResponse = await  helper.performBatchWriteTest(dynamoDBApi, batchWriteParams ,true);
+    const batchWriteResponse = await  helper.performBatchWriteTest(ddb_service, batchWriteParams ,true);
     assert.empty(batchWriteResponse.data.UnprocessedItems);
 
   });
@@ -66,7 +68,7 @@ describe('Batch write', function () {
     this.timeout(100000);
 
     const batchWriteParams = testDataSource.getBatchWriteData(26);
-    await  helper.performBatchWriteTest(dynamoDBApi, batchWriteParams ,false);
+    await  helper.performBatchWriteTest(ddb_service, batchWriteParams ,false);
 
   });
 
@@ -75,7 +77,7 @@ describe('Batch write', function () {
   after(async function() {
     this.timeout(100000);
     // runs after all tests in this block
-    await helper.deleteTable(dynamoDBApi,testDataSource.DELETE_TABLE_DATA, true);
+    await helper.deleteTable(ddb_service,testDataSource.DELETE_TABLE_DATA, true);
   });
 
 });

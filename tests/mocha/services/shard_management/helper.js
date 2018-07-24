@@ -1,12 +1,9 @@
-
+/* global describe, it */
 
 const rootPrefix = "../../../.."
   , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
   , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
 ;
-
-
-
 
 function Helper(){
 }
