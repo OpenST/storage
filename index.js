@@ -6,9 +6,6 @@
 
 const rootPrefix = '.',
   version = require(rootPrefix + '/package.json').version,
-  //, TokenBalanceModel = require(rootPrefix + '/lib/models/dynamodb/token_balance')
-  //, TokenBalanceCache = require(rootPrefix + '/services/cache_multi_management/token_balance')
-  //, ShardedBaseModel = require(rootPrefix + '/lib/models/dynamodb/base')
   entityTypesConst = require(rootPrefix + '/lib/global_constant/entity_types'),
   InstanceComposer = require(rootPrefix + '/instance_composer');
 
@@ -49,11 +46,18 @@ const getInstanceKey = function(configStrategy) {
     configStrategy.OS_DAX_REGION,
     configStrategy.OS_DAX_ENDPOINT,
     configStrategy.OS_DAX_SSL_ENABLED,
+
     configStrategy.OS_DYNAMODB_API_VERSION,
     configStrategy.OS_DYNAMODB_ACCESS_KEY_ID,
     configStrategy.OS_DYNAMODB_REGION,
     configStrategy.OS_DYNAMODB_ENDPOINT,
-    configStrategy.OS_DYNAMODB_SSL_ENABLED
+    configStrategy.OS_DYNAMODB_SSL_ENABLED,
+
+    configStrategy.OS_AUTOSCALING_API_VERSION,
+    configStrategy.OS_AUTOSCALING_ACCESS_KEY_ID,
+    configStrategy.OS_AUTOSCALING_REGION,
+    configStrategy.OS_AUTOSCALING_ENDPOINT,
+    configStrategy.OS_AUTOSCALING_SSL_ENABLED
   ].join('-');
 };
 
@@ -82,21 +86,3 @@ OpenSTStorage.getInstance = function() {
 };
 
 module.exports = OpenSTStorage;
-
-// // Expose all libs here.
-// // All classes should begin with Capital letter.
-// // All instances/objects should begin with small letter.
-// module.exports = {
-//   Dynamodb : DynamodbApi
-//   , AutoScaling : AutoScalingApi
-//   , TokenBalanceModel: TokenBalanceModel
-//   , TokenBalanceCache: TokenBalanceCache
-//   , ShardedBaseModel: ShardedBaseModel
-//   , StorageEntityTypesConst: EntityTypesConst
-// };
-
-/*
-  Usage:
-
-  OSTStorage = require("./index");
-*/
