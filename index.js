@@ -15,6 +15,7 @@ const rootPrefix = '.',
 require(rootPrefix + '/lib/models/dynamodb/token_balance');
 require(rootPrefix + '/services/cache_multi_management/token_balance');
 require(rootPrefix + '/lib/models/dynamodb/base');
+require(rootPrefix + '/services/dynamodb/api');
 
 const OpenSTStorage = function(configStrategy) {
   const oThis = this,

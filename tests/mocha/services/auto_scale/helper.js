@@ -6,7 +6,6 @@ const chai = require('chai'),
 const rootPrefix = '../../../..',
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  api = require(rootPrefix + '/index').Dynamodb,
   autoScaleHelper = require(rootPrefix + '/lib/auto_scale/helper');
 
 /**

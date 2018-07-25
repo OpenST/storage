@@ -6,14 +6,14 @@ const Chai = require('chai'),
 
 // Load dependencies package
 const rootPrefix = '../../../..',
-  ApplicationAutoScalingKlass = require(rootPrefix + '/index').AutoScaling,
-  DdbApiKlass = require(rootPrefix + '/index').Dynamodb,
+  openStStorage = require(rootPrefix + '/index'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
   helper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
-const autoScaleObj = new ApplicationAutoScalingKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE),
-  dynamodbApiObject = new DdbApiKlass(testConstants.CONFIG_STRATEGIES);
+const openStStorageObject = openStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
+  autoScaleObj = openStStorageObject.ic.getAutoScaleService(),
+  dynamodbApiObject = openStStorageObject.ddbServiceObj;
 
 let resourceId = 'table/' + testConstants.transactionLogTableName,
   roleARN = null;

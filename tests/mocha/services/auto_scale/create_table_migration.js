@@ -2,26 +2,25 @@ const chai = require('chai'),
   assert = chai.assert;
 
 const rootPrefix = '../../../..',
-  DdbApiKlass = require(rootPrefix + '/index').Dynamodb,
-  AutoScaleApiKlass = require(rootPrefix + '/index').AutoScaling,
+  openStStorage = require(rootPrefix + '/index'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
   helper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper');
 
 describe('Create Table', function() {
-  var dynamodbApiObject = null;
-  var autoScaleObj = null;
+  let dynamodbApiObject = null;
+  let autoScaleObj = null;
 
   before(async function() {
     this.timeout(1000000);
-    // create dynamodbApiObject
-    dynamodbApiObject = new DdbApiKlass(testConstants.CONFIG_STRATEGIES);
-    autoScaleObj = new AutoScaleApiKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE);
+    // create openStStorageObject
+    const openStStorageObject = openStStorage.getInstance(testConstants.CONFIG_STRATEGIES);
+    dynamodbApiObject = openStStorageObject.ddbServiceObj;
+    autoScaleObj = openStStorageObject.ic.getAutoScaleService();
 
-    const oThis = this,
-      params = {
-        TableName: testConstants.transactionLogTableName
-      };
+    const params = {
+      TableName: testConstants.transactionLogTableName
+    };
 
     const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
 

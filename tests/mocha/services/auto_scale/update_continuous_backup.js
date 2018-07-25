@@ -2,19 +2,20 @@ const chai = require('chai'),
   assert = chai.assert;
 
 const rootPrefix = '../../../..',
-  DdbApiKlass = require(rootPrefix + '/index').Dynamodb,
+  openStStorage = require(rootPrefix + '/index'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper'),
   autoScaleHelper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper');
 
 describe('Create Table', function() {
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
+  let dynamodbApiObject = null;
 
   before(async function() {
-    // create dynamodbApiObject
-    dynamodbApiObject = new DdbApiKlass(testConstants.CONFIG_STRATEGIES);
-    helper.validateOpenStStorageObject(dynamodbApiObject);
+    // create openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    dynamodbApiObject = openStStorageObject.ddbServiceObj;
   });
 
   it('should delete table successfully if exists', async function() {

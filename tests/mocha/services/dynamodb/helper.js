@@ -30,7 +30,7 @@ helper.prototype = {
     assert.exists(configStrategy, 'configStrategy is neither `null` nor `undefined`');
 
     // create dynamoDBApi object
-    const openStStorageObject = new openStStorage(configStrategy);
+    const openStStorageObject = openStStorage.getInstance(configStrategy);
     assert.exists(openStStorageObject, 'openStStorageObject is not created');
     assert.equal(typeof openStStorageObject, 'object');
     assert.equal(openStStorageObject.constructor.name, 'OpenSTStorage');
