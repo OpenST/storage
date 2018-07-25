@@ -6,8 +6,7 @@ const chai = require('chai'),
 const rootPrefix = '../../../..',
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  openStStorage = require(rootPrefix + '/index'),
-  autoScaleHelper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper');
+  openStStorage = require(rootPrefix + '/index');
 
 /**
  * Constructor for helper class
