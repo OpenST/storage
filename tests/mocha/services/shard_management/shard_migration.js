@@ -6,14 +6,19 @@ const Chai = require('chai'),
 
 // Load dependencies package
 const rootPrefix = '../../../..',
-  DynamoDbKlass = require(rootPrefix + '/index').Dynamodb,
-  testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  availableShardConst = require(rootPrefix + '/lib/global_constant/available_shard'),
-  managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard'),
-  helper = require(rootPrefix + '/tests/mocha/services/shard_management/helper');
+  OpenStStorage = require(rootPrefix + '/index'),
+  testConstants = require(rootPrefix + '/tests/mocha/services/constants');
 
-const dynamoDbObject = new DynamoDbKlass(testConstants.CONFIG_STRATEGIES),
-  shardManagementObject = dynamoDbObject.shardManagement();
+require(rootPrefix + '/tests/mocha/services/shard_management/helper');
+require(rootPrefix + '/lib/global_constant/available_shard');
+require(rootPrefix + '/lib/global_constant/managed_shard');
+
+const openStStorageObject = OpenStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
+  dynamoDbObject = openStStorageObject.ddbServiceObj,
+  shardManagementObject = dynamoDbObject.shardManagement(),
+  helper = openStStorageObject.ic.getShardManagementTestCaseHelper(),
+  availableShardConst = openStStorageObject.ic.getLibAvailableShard(),
+  managedShardConst = openStStorageObject.ic.getLibManagedShard();
 
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   optionsDesc = optionsDesc || '';

@@ -1,8 +1,10 @@
 /* global describe, it */
 
 const rootPrefix = '../../../..',
-  availableShardConst = require(rootPrefix + '/lib/global_constant/available_shard'),
-  managedShardConst = require(rootPrefix + '/lib/global_constant/managed_shard');
+  InstanceComposer = require(rootPrefix + '/instance_composer');
+
+require(rootPrefix + '/lib/global_constant/managed_shard');
+require(rootPrefix + '/lib/global_constant/available_shard');
 
 function Helper() {}
 
@@ -43,7 +45,9 @@ Helper.prototype = {
   },
 
   cleanShardMigrationTables: async function(dynamoDbObject) {
-    const oThis = this;
+    const oThis = this,
+      managedShardConst = oThis.ic().getLibManagedShard(),
+      availableShardConst = oThis.ic().getLibAvailableShard();
 
     // delete table
     await oThis.deleteTableIfExist(dynamoDbObject, managedShardConst.getTableName());
@@ -52,4 +56,5 @@ Helper.prototype = {
   }
 };
 
+InstanceComposer.register(Helper, 'getShardManagementTestCaseHelper', true);
 module.exports = new Helper();
