@@ -12,7 +12,7 @@ const rootPrefix = '../../../../..',
 require(rootPrefix + '/tests/mocha/services/shard_management/helper');
 
 const openStStorageObject = OpenStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
-  dynamoDbObject = openStStorageObject.ddbServiceObj,
+  dynamoDbObject = openStStorageObject.dynamoDBService,
   shardManagementObject = dynamoDbObject.shardManagement(),
   identifier = '0x1234',
   shardName = testConstants.shardTableName,

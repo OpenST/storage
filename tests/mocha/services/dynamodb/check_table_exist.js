@@ -36,7 +36,7 @@ describe('Check table exists', function() {
         WriteCapacityUnits: 1
       }
     };
-    ddb_service = openStStorageObject.ddbServiceObj;
+    ddb_service = openStStorageObject.dynamoDBService;
     await helper.createTable(ddb_service, createTableParams, true);
   });
 

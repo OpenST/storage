@@ -13,7 +13,7 @@ describe('Update Item in Table', function() {
   before(async function() {
     // get openStStorageObject
     openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-    ddb_service = openStStorageObject.ddbServiceObj;
+    ddb_service = openStStorageObject.dynamoDBService;
 
     // put item
     const createTableParams = {

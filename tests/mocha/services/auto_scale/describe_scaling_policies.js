@@ -13,7 +13,7 @@ const rootPrefix = '../../../..',
 
 const openStStorageObject = openStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
   autoScaleObj = openStStorageObject.ic.getAutoScaleService(),
-  dynamodbApiObject = openStStorageObject.ddbServiceObj;
+  dynamodbApiObject = openStStorageObject.dynamoDBService;
 
 let resourceId = 'table/' + testConstants.transactionLogTableName,
   roleARN = null;

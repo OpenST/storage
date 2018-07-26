@@ -14,7 +14,7 @@ require(rootPrefix + '/lib/global_constant/available_shard');
 require(rootPrefix + '/lib/global_constant/managed_shard');
 
 const openStStorageObject = OpenStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
-  dynamoDbObject = openStStorageObject.ddbServiceObj,
+  dynamoDbObject = openStStorageObject.dynamoDBService,
   shardManagementObject = dynamoDbObject.shardManagement(),
   helper = openStStorageObject.ic.getShardManagementTestCaseHelper(),
   availableShardConst = openStStorageObject.ic.getLibAvailableShard(),

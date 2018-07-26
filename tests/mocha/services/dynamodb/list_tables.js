@@ -12,7 +12,7 @@ describe('List Tables', function() {
   before(async function() {
     // get openStStorageObject
     openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-    ddb_service = openStStorageObject.ddbServiceObj;
+    ddb_service = openStStorageObject.dynamoDBService;
   });
 
   it('should create table successfully', async function() {

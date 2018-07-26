@@ -38,8 +38,8 @@ const OpenSTStorage = function(configStrategy) {
   cache.TokenBalance = TokenBalanceCache;
 
   oThis.entityTypesConst = entityTypesConst;
-  oThis.ddbServiceObj = ddbServiceObj;
-  oThis.autoScalingObject = autoScalingObject;
+  oThis.dynamoDBService = ddbServiceObj;
+  oThis.autoScalingService = autoScalingObject;
 };
 
 const getInstanceKey = function(configStrategy) {

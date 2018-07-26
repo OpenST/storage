@@ -13,7 +13,7 @@ describe('Batch get', function() {
 
     // get dynamoDB API object
     openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-    ddb_service = openStStorageObject.ddbServiceObj;
+    ddb_service = openStStorageObject.dynamoDBService;
 
     // check if table exists
     const checkTableExistsResponse = await ddb_service.checkTableExist(testDataSource.DELETE_TABLE_DATA);

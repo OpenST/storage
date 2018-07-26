@@ -15,7 +15,7 @@ describe('Create Table', function() {
     this.timeout(1000000);
     // create openStStorageObject
     const openStStorageObject = openStStorage.getInstance(testConstants.CONFIG_STRATEGIES);
-    dynamodbApiObject = openStStorageObject.ddbServiceObj;
+    dynamodbApiObject = openStStorageObject.dynamoDBService;
     autoScaleObj = openStStorageObject.ic.getAutoScaleService();
 
     const params = {

@@ -15,7 +15,7 @@ describe('Create Table', function() {
   before(async function() {
     // create openStStorageObject
     openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-    dynamodbApiObject = openStStorageObject.ddbServiceObj;
+    dynamodbApiObject = openStStorageObject.dynamoDBService;
   });
 
   it('should delete table successfully if exists', async function() {

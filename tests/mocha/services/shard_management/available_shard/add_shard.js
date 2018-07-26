@@ -13,7 +13,7 @@ const rootPrefix = '../../../../..',
 require(rootPrefix + '/tests/mocha/services/shard_management/helper');
 
 const openStStorageObject = OpenStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
-  dynamoDbObject = openStStorageObject.ddbServiceObj,
+  dynamoDbObject = openStStorageObject.dynamoDBService,
   shardManagementObject = dynamoDbObject.shardManagement(),
   helper = openStStorageObject.ic.getShardManagementTestCaseHelper();
 
