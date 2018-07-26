@@ -5,6 +5,9 @@ const rootPrefix = '../..',
   baseCache = require(rootPrefix + '/services/cache_multi_management/base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response');
 
+require(rootPrefix + '/lib/models/dynamodb/shard_management/managed_shard');
+require(rootPrefix + '/config/core_constants');
+
 /**
  * @constructor
  *
