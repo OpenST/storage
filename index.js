@@ -13,6 +13,7 @@ require(rootPrefix + '/lib/models/dynamodb/token_balance');
 require(rootPrefix + '/services/cache_multi_management/token_balance');
 require(rootPrefix + '/lib/models/dynamodb/base');
 require(rootPrefix + '/services/dynamodb/api');
+require(rootPrefix + 'services/auto_scale/api');
 
 const OpenSTStorage = function(configStrategy) {
   const oThis = this,
@@ -20,7 +21,8 @@ const OpenSTStorage = function(configStrategy) {
     TokenBalanceModel = instanceComposer.getLibDDBTokenBalanceModel(),
     TokenBalanceCache = instanceComposer.getDDBTokenBalanceCache(),
     ShardedBaseModel = instanceComposer.getLibDDBBaseModel(),
-    ddbServiceObj = instanceComposer.getDynamoDBService();
+    ddbServiceObj = instanceComposer.getDynamoDBService(),
+    autoScalingObject = oThis.ic().getAutoScaleService();
 
   if (!configStrategy) {
     throw 'Mandatory argument configStrategy missing';
@@ -37,6 +39,7 @@ const OpenSTStorage = function(configStrategy) {
 
   oThis.entityTypesConst = entityTypesConst;
   oThis.ddbServiceObj = ddbServiceObj;
+  oThis.autoScalingObject = autoScalingObject;
 };
 
 const getInstanceKey = function(configStrategy) {
