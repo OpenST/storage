@@ -30,7 +30,9 @@ before_script:
   - mkdir -p dynamodb
   - wget https://s3.ap-south-1.amazonaws.com/dynamodb-local-mumbai/dynamodb_local_latest.zip -O ./dynamodb/dynamodb_local_latest.zip
   - unzip ./dynamodb/dynamodb_local_latest.zip
+  - mkdir -p dynamodb_instance_2
   - nohup java -Djava.library.path=./dynamodb/DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb &
+  - nohup java -Djava.library.path=./dynamodb/DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb -dbPath ./dynamodb_instance_2 -port 8001 &
 script:
   - node_modules/mocha/bin/mocha tests/mocha/services/dynamodb/* tests/mocha/services/shard_management/* --timeout 10000 --exit
 after_script:
