@@ -22,10 +22,10 @@ require(rootPrefix + '/config/core_constants');
  *
  * @constructor
  */
-const TableExist = function(params) {
+const TableExist = function(params, serviceType) {
   const oThis = this;
 
-  DDBServiceBaseKlass.call(oThis, 'describeTable', params);
+  DDBServiceBaseKlass.call(oThis, 'describeTable', params, serviceType);
 };
 
 TableExist.prototype = Object.create(DDBServiceBaseKlass.prototype);

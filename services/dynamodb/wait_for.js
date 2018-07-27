@@ -22,10 +22,10 @@ require(rootPrefix + '/config/core_constants');
  *
  * @constructor
  */
-const WaitFor = function(waitForMethod, params) {
+const WaitFor = function(waitForMethod, params, serviceType) {
   const oThis = this;
   oThis.waitForMethod = waitForMethod;
-  base.call(oThis, 'waitFor', params);
+  base.call(oThis, 'waitFor', params, serviceType);
 };
 
 WaitFor.prototype = Object.create(base.prototype);

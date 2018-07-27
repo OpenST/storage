@@ -50,7 +50,7 @@ const CreateTableMigration = function(params, serviceType) {
   oThis.shouldAutoScale = !!oThis.autoScalingObject;
   oThis.serviceType = serviceType;
 
-  DDBServiceBaseKlass.call(oThis, 'createTableMigration', params);
+  DDBServiceBaseKlass.call(oThis, 'createTableMigration', params, serviceType);
 };
 
 CreateTableMigration.prototype = Object.create(DDBServiceBaseKlass.prototype);

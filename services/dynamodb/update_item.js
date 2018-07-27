@@ -33,7 +33,7 @@ const UpdateItem = function(params, retryCount, serviceType) {
     oThis.attemptToPerformCount = 1;
   }
 
-  base.call(oThis, 'updateItem', params);
+  base.call(oThis, 'updateItem', params, serviceType);
 };
 
 UpdateItem.prototype = Object.create(base.prototype);
