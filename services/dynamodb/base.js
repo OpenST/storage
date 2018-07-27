@@ -57,7 +57,7 @@ Base.prototype = {
    *
    * @return {Promise<*>}
    */
-  asyncPerform: function() {
+  asyncPerform: async function() {
     const oThis = this;
 
     let r = null;
@@ -66,7 +66,7 @@ Base.prototype = {
     logger.debug(r);
     if (r.isFailure()) return r;
 
-    r = oThis.executeDdbRequest();
+    r = await oThis.executeDdbRequest();
     logger.debug('=======Base.executeDdbRequest.result=======');
     logger.debug(r);
     return r;
