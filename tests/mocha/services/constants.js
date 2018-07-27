@@ -15,54 +15,6 @@
 const MochaTestConstants = function() {};
 
 MochaTestConstants.prototype = {
-  /**
-   * DynamoDB default configuration
-   *
-   * @constant {object}
-   *
-   */
-  DYNAMODB_DEFAULT_CONFIGURATIONS: {
-    apiVersion: '2012-08-10',
-    accessKeyId: 'x',
-    secretAccessKey: 'x',
-    region: 'localhost',
-    logger: console,
-    sslEnabled: false,
-    endpoint: 'http://localhost:8000'
-  },
-
-  /**
-   * DynamoDB AWS Account configuration
-   *
-   * @constant {object}
-   *
-   */
-  DYNAMODB_CONFIGURATIONS_REMOTE: {
-    apiVersion: '2012-08-10',
-    accessKeyId: 'x',
-    secretAccessKey: 'x',
-    region: 'localhost',
-    logger: console,
-    sslEnabled: false,
-    endpoint: 'http://localhost:8000'
-  },
-
-  /**
-   * auto scale configuration
-   *
-   * @constant {object}
-   *
-   */
-  AUTO_SCALE_CONFIGURATIONS_REMOTE: {
-    apiVersion: '2016-02-06',
-    accessKeyId: 'x',
-    secretAccessKey: 'x',
-    region: 'localhost',
-    logger: console,
-    sslEnabled: false,
-    endpoint: 'http://localhost:8000'
-  },
-
   CONFIG_STRATEGIES: {
     OST_DEBUG_ENABLED: '1',
     OS_DYNAMODB_API_VERSION: '2012-08-10',
