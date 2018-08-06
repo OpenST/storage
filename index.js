@@ -20,7 +20,7 @@ const OpenSTStorage = function(configStrategy) {
     instanceComposer = (oThis.ic = new InstanceComposer(configStrategy)),
     TokenBalanceModel = instanceComposer.getLibDDBTokenBalanceModel(),
     TokenBalanceCache = instanceComposer.getDDBTokenBalanceCache(),
-    ShardedBaseModel = instanceComposer.getLibDDBBaseModel(),
+    ShardHelper = instanceComposer.getLibDDBShardHelper(),
     ddbServiceObj = instanceComposer.getDynamoDBService(),
     autoScalingObject = instanceComposer.getAutoScaleService();
 
@@ -32,7 +32,7 @@ const OpenSTStorage = function(configStrategy) {
 
   const model = (oThis.model = {});
   model.TokenBalance = TokenBalanceModel;
-  model.ShardedBase = ShardedBaseModel;
+  model.ShardHelper = ShardHelper;
 
   const cache = (oThis.cache = {});
   cache.TokenBalance = TokenBalanceCache;
