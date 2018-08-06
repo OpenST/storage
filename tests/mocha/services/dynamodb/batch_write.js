@@ -309,37 +309,97 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
       const batchGetResponse = await helper.performBatchGetTest(ddb_service, batchGetParams, true, returnCount);
     });
 
-    /*it('should pass batch write when number of items = 25', async function () {
+    it('should pass batch write when number of items = 25 also data should be written only on first database', async function() {
       this.timeout(100000);
 
-      const batchWriteParams = testDataSource.getBatchWriteData(25);
+      const batchWriteParams = testDataSource.getBatchWriteDataBasedOnParam(25);
       const batchWriteResponse = await helper.performBatchWriteTest(ddb_service, batchWriteParams, true);
       assert.empty(batchWriteResponse.data.UnprocessedItems);
+
+      const batchGetParams = {
+        RequestItems: {
+          [testConstants.transactionLogTableName]: {
+            Keys: [
+              {
+                tuid: {
+                  S: 'tuid_24'
+                },
+                cid: {
+                  N: '24'
+                }
+              },
+              {
+                tuid: {
+                  S: 'tuid_23'
+                },
+                cid: {
+                  N: '23'
+                }
+              }
+            ]
+          }
+        }
+      };
+
+      const returnCount = 2;
+      const batchGetResponse = await helper.performBatchGetTest(ddb_service, batchGetParams, true, returnCount);
+
+      const returnCount2 = 0;
+      const batchGetResponse2 = await helper.performBatchGetTest(ddb_service2, batchGetParams, true, returnCount2);
     });
 
-    it('should pass batch write when number of items = 25', async function () {
+    it('should pass batch write when number of items = 25 also data should be written only on second database', async function() {
       this.timeout(100000);
 
-      const batchWriteParams = testDataSource.getBatchWriteData(25);
+      const batchWriteParams = testDataSource.getBatchWriteDataBasedOnParam_2(25);
       const batchWriteResponse = await helper.performBatchWriteTest(ddb_service2, batchWriteParams, true);
       assert.empty(batchWriteResponse.data.UnprocessedItems);
+
+      const batchGetParams = {
+        RequestItems: {
+          [testConstants.transactionLogTableName]: {
+            Keys: [
+              {
+                tuid: {
+                  S: 'tuid_26'
+                },
+                cid: {
+                  N: '26'
+                }
+              },
+              {
+                tuid: {
+                  S: 'tuid_27'
+                },
+                cid: {
+                  N: '27'
+                }
+              }
+            ]
+          }
+        }
+      };
+
+      const returnCount = 0;
+      const batchGetResponse = await helper.performBatchGetTest(ddb_service, batchGetParams, true, returnCount);
+
+      const returnCount2 = 2;
+      const batchGetResponse2 = await helper.performBatchGetTest(ddb_service2, batchGetParams, true, returnCount2);
     });
 
-    it('should fail batch write when number of items > 25', async function () {
+    it('should fail batch write when number of items > 25', async function() {
       this.timeout(100000);
 
       const batchWriteParams = testDataSource.getBatchWriteData(26);
       await helper.performBatchWriteTest(ddb_service, batchWriteParams, false);
     });
 
-    it('should fail batch write when number of items > 25', async function () {
+    it('should fail batch write when number of items > 25 on second ddb instance', async function() {
       this.timeout(100000);
 
       const batchWriteParams = testDataSource.getBatchWriteData(26);
       const batchWriteResponse = await helper.performBatchWriteTest(ddb_service2, batchWriteParams, false);
     });
-    */
-    // size related tests
 
     after(async function() {
       this.timeout(100000);
@@ -349,8 +409,6 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
     });
   });
 }
-// mocha tests/mocha/services/dynamodb/
-// mocha tests/mocha/services/dynamodb/batch_write.js
 
 openStStorageObject1 = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
 ddb_service1 = openStStorageObject1.dynamoDBService;
