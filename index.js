@@ -11,7 +11,7 @@ const rootPrefix = '.',
 
 require(rootPrefix + '/lib/models/dynamodb/token_balance');
 require(rootPrefix + '/services/cache_multi_management/token_balance');
-require(rootPrefix + '/lib/models/dynamodb/base');
+require(rootPrefix + '/lib/models/dynamodb/shard_helper');
 require(rootPrefix + '/services/dynamodb/api');
 require(rootPrefix + '/services/auto_scale/api');
 
