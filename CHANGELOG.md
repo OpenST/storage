@@ -1,4 +1,4 @@
-## OpenST-Storage v1.0.1
+## OpenST-Storage v1.0.2
 - Common style guide followed across all openst repos using prettier ([openst-storage#21](https://github.com/OpenSTFoundation/openst-storage/issues/21))
 - Environment variables were a hard dependency. These lead to problems when multiple instances of OpenST-Storage are needed, 
     each having connection to different cache instances (for example). Thus making scaling not possible. Instead of reading 
