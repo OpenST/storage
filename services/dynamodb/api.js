@@ -322,4 +322,4 @@ DynamoDBService.prototype = {
 InstanceComposer.register(DynamoDBService, 'getDynamoDBService', true);
 
 DynamoDBService.prototype.constructor = DynamoDBService;
-module.exports = new DynamoDBService();
+module.exports = DynamoDBService;

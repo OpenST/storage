@@ -57,4 +57,4 @@ Helper.prototype = {
 };
 
 InstanceComposer.register(Helper, 'getShardManagementTestCaseHelper', true);
-module.exports = new Helper();
+module.exports = Helper;

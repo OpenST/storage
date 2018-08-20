@@ -109,4 +109,4 @@ AutoScaleService.prototype = {
 AutoScaleService.prototype.constructor = AutoScaleService;
 
 InstanceComposer.register(AutoScaleService, 'getAutoScaleService', true);
-module.exports = new AutoScaleService();
+module.exports = AutoScaleService;

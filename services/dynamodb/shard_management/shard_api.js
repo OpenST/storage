@@ -161,4 +161,4 @@ ShardServiceApi.prototype = {
 };
 
 InstanceComposer.register(ShardServiceApi, 'getShardServiceApi', true);
-module.exports = new ShardServiceApi();
+module.exports = ShardServiceApi;

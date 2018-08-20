@@ -110,6 +110,7 @@ Base.prototype = {
    */
   executeAutoScaleRequest: async function() {
     const oThis = this,
+      ASBase = oThis.ic().getLibAutoScaleBase(),
       autoScaleObject = new ASBase(),
       r = await autoScaleObject.call(oThis.methodName, oThis.params);
 
