@@ -7,10 +7,10 @@ const Chai = require('chai'),
 const rootPrefix = '../../../../..',
   OpenStStorage = require(rootPrefix + '/index'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  availableShardConst = require(rootPrefix + '/lib/global_constant/available_shard');
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
 require(rootPrefix + '/tests/mocha/services/shard_management/helper');
+require(rootPrefix + '/lib/global_constant/available_shard');
 
 const openStStorageObject = OpenStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
   dynamoDbObject = openStStorageObject.dynamoDBService,
@@ -33,6 +33,8 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert, dataT
     forceAssignment = true;
 
   it(optionsDesc, async function() {
+    let availableShardConst = openStStorageObject.ic.getLibAvailableShard();
+
     if (options.invalidShardName) {
       // delete table
       await helper.cleanShardMigrationTables(dynamoDbObject);

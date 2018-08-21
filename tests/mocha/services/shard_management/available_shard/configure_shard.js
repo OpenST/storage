@@ -8,9 +8,9 @@ const Chai = require('chai'),
 const rootPrefix = '../../../../..',
   OpenStStorage = require(rootPrefix + '/index'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  availableShardConst = require(rootPrefix + '/lib/global_constant/available_shard');
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
+require(rootPrefix + '/lib/global_constant/available_shard');
 require(rootPrefix + '/tests/mocha/services/shard_management/helper');
 
 const openStStorageObject = OpenStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
@@ -27,6 +27,8 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   };
 
   it(optionsDesc, async function() {
+    let availableShardConst = openStStorageObject.ic.getLibAvailableShard();
+
     let shardName = testConstants.shardTableName,
       allocation = availableShardConst.enabled;
 
@@ -39,6 +41,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
     if (options.redundantAllocationType) {
       allocation = availableShardConst.disabled;
     }
+
     const response = await shardManagementObject.configureShard({ shard_name: shardName, allocation_type: allocation });
 
     logger.log('LOG', response);

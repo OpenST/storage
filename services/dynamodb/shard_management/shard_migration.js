@@ -11,8 +11,7 @@
 const rootPrefix = '../../..',
   InstanceComposer = require(rootPrefix + '/instance_composer'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  autoScaleHelper = require(rootPrefix + '/lib/auto_scale/helper');
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
 require(rootPrefix + '/config/core_constants');
 require(rootPrefix + '/lib/global_constant/managed_shard');
@@ -252,6 +251,7 @@ ShardMigration.prototype = {
    */
   getAvailableShardsAutoScalingParams: function(tableName, gsiArray) {
     const oThis = this,
+      autoScaleHelper = oThis.ic().getAutoScaleHelper(),
       resourceId = autoScaleHelper.createResourceId(tableName);
 
     let autoScalingConfig = {};
@@ -404,6 +404,7 @@ ShardMigration.prototype = {
    */
   getManagedShardsAutoScalingParams: function(tableName) {
     const oThis = this,
+      autoScaleHelper = oThis.ic().getAutoScaleHelper(),
       resourceId = autoScaleHelper.createResourceId(tableName);
 
     let autoScalingConfig = {};
