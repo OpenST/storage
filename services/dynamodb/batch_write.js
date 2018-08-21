@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * DynamoDB Batch Write with retry count
@@ -7,44 +7,41 @@
  *
  */
 
-const rootPrefix = "../.."
-  , base = require(rootPrefix + "/services/dynamodb/base")
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-;
+const rootPrefix = '../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer'),
+  base = require(rootPrefix + '/services/dynamodb/base'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
+require(rootPrefix + '/config/core_constants');
 
 /**
  * Constructor for batch write item service class
- * @param {Object} ddbObject - DynamoDB Object
  * @param {Object} params - Parameters
  * @param {Integer} unprocessed_items_retry_count - retry count for unprocessed items (optional)
+ * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
-const BatchWriteItem = function (ddbObject, params, unprocessed_items_retry_count) {
-  const oThis = this
-  ;
+const BatchWriteItem = function(params, unprocessed_items_retry_count, serviceType) {
+  const oThis = this;
+  oThis.serviceType = serviceType;
   oThis.unprocessedItemsRetryCount = unprocessed_items_retry_count || 0;
 
-  base.call(oThis, ddbObject, 'batchWriteItem', params);
+  base.call(oThis, 'batchWriteItem', params, oThis.serviceType);
 };
 
 BatchWriteItem.prototype = Object.create(base.prototype);
 
 const batchWritePrototype = {
-
   /**
    * Validation of params
    *
    * @return {*}
    */
-  validateParams: function () {
-
-    const oThis = this
-      , validationResponse = base.prototype.validateParams.call(oThis)
-    ;
+  validateParams: function() {
+    const oThis = this,
+      validationResponse = base.prototype.validateParams.call(oThis);
     if (validationResponse.isFailure()) return validationResponse;
 
     return responseHelper.successWithData({});
@@ -56,20 +53,19 @@ const batchWritePrototype = {
    * @return {promise<result>}
    *
    */
-  executeDdbRequest: async function () {
-    const oThis = this
-    ;
+  executeDdbRequest: async function() {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants();
 
     try {
-      let batchWriteParams = oThis.params
-        , waitTime = 0
-        , constantTimeFactor = 90
-        , variableTimeFactor = 10
-        , response
-        , attemptNo = 1
-        , unprocessedItems
-        , unprocessedItemsLength
-      ;
+      let batchWriteParams = oThis.params,
+        waitTime = 0,
+        constantTimeFactor = 90,
+        variableTimeFactor = 10,
+        response,
+        attemptNo = 1,
+        unprocessedItems,
+        unprocessedItemsLength;
 
       while (true) {
         logger.info('executeDdbRequest attempNo ', attemptNo);
@@ -77,11 +73,11 @@ const batchWritePrototype = {
         response = await oThis.batchWriteItemAfterWait(batchWriteParams, waitTime);
 
         if (!response.isSuccess()) {
-          logger.error("services/dynamodb/batch_write.js:executeDdbRequest, attemptNo: ", attemptNo, response.toHash());
+          logger.error('services/dynamodb/batch_write.js:executeDdbRequest, attemptNo: ', attemptNo, response.toHash());
           return responseHelper.error({
-            internal_error_identifier: "s_dy_bw_executeDdbRequest_1",
-            api_error_identifier: "exception",
-            debug_options: {error: response.toHash()},
+            internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
+            api_error_identifier: 'exception',
+            debug_options: { error: response.toHash() },
             error_config: coreConstants.ERROR_CONFIG
           });
         }
@@ -89,14 +85,19 @@ const batchWritePrototype = {
         unprocessedItems = response.data['UnprocessedItems'];
         unprocessedItemsLength = 0;
 
-
         for (let tableName in unprocessedItems) {
           if (unprocessedItems.hasOwnProperty(tableName)) {
             unprocessedItemsLength += unprocessedItems[tableName].length;
-            logger.error('dynamodb BATCH_WRITE ATTEMPT_FAILED TableName :', tableName,
-              ' unprocessedItemsCount: ', unprocessedItemsLength,
-              ' items count: ', batchWriteParams.RequestItems[tableName].length,
-              ' attemptNo ', attemptNo);
+            logger.error(
+              'dynamodb BATCH_WRITE ATTEMPT_FAILED TableName :',
+              tableName,
+              ' unprocessedItemsCount: ',
+              unprocessedItemsLength,
+              ' items count: ',
+              batchWriteParams.RequestItems[tableName].length,
+              ' attemptNo ',
+              attemptNo
+            );
           }
         }
 
@@ -106,7 +107,7 @@ const batchWritePrototype = {
         }
 
         //Create new batchWriteParams of unprocessedItems
-        batchWriteParams = {RequestItems: unprocessedItems};
+        batchWriteParams = { RequestItems: unprocessedItems };
 
         //adjust retry variables
         attemptNo += 1;
@@ -117,22 +118,26 @@ const batchWritePrototype = {
 
       for (let tableName in unprocessedItems) {
         if (unprocessedItems.hasOwnProperty(tableName)) {
-          logger.error('dynamodb BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :', tableName,
-            ' unprocessedItemsCount: ', unprocessedItemsLength,
-            ' attempts Failed ', attemptNo);
+          logger.error(
+            'dynamodb BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :',
+            tableName,
+            ' unprocessedItemsCount: ',
+            unprocessedItemsLength,
+            ' attempts Failed ',
+            attemptNo
+          );
         }
       }
 
-      logger.debug("=======Base.perform.result=======");
+      logger.debug('=======Base.perform.result=======');
       logger.debug(response);
       return response;
-
     } catch (err) {
-      logger.error("services/dynamodb/batch_write.js:executeDdbRequest inside catch ", err);
+      logger.error('services/dynamodb/batch_write.js:executeDdbRequest inside catch ', err);
       return responseHelper.error({
-        internal_error_identifier: "s_dy_bw_executeDdbRequest_1",
-        api_error_identifier: "exception",
-        debug_options: {error: err.message},
+        internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
+        api_error_identifier: 'exception',
+        debug_options: { error: err.message },
         error_config: coreConstants.ERROR_CONFIG
       });
     }
@@ -144,13 +149,15 @@ const batchWritePrototype = {
    * @param {Integer} waitTime - wait time in milliseconds
    * @return {Promise<any>}
    */
-  batchWriteItemAfterWait: async function (batchWriteParams, waitTime) {
-    const oThis = this
-    ;
+  batchWriteItemAfterWait: async function(batchWriteParams, waitTime) {
+    const oThis = this;
 
-    return new Promise(function (resolve) {
-      setTimeout(async function () {
-        let r = await oThis.ddbObject.call(oThis.methodName, batchWriteParams);
+    return new Promise(function(resolve) {
+      setTimeout(async function() {
+        let r = await oThis
+          .ic()
+          .getLibDynamoDBBase()
+          .queryDdb(oThis.methodName, oThis.serviceType, batchWriteParams);
         resolve(r);
       }, waitTime);
     });
@@ -159,4 +166,7 @@ const batchWritePrototype = {
 
 Object.assign(BatchWriteItem.prototype, batchWritePrototype);
 BatchWriteItem.prototype.constructor = batchWritePrototype;
+
+InstanceComposer.registerShadowableClass(BatchWriteItem, 'getDDBServiceBatchWriteItem');
+
 module.exports = BatchWriteItem;

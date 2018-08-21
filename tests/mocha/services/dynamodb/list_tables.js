@@ -1,41 +1,38 @@
-const chai = require('chai')
-  , assert = chai.assert;
+const chai = require('chai'),
+  assert = chai.assert;
 
-const rootPrefix = "../../../.."
-  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , helper = require(rootPrefix + "/tests/mocha/services/dynamodb/helper")
-;
+const rootPrefix = '../../../..',
+  testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('List Tables', function() {
-
-  var dynamodbApiObject = null;
+  let openStStorageObject = null;
 
   before(async function() {
-
-    // get dynamodbApiObject
-    dynamodbApiObject = helper.validateDynamodbApiObject(testConstants.DYNAMODB_DEFAULT_CONFIGURATIONS);
-
+    // get openStStorageObject
+    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = openStStorageObject.dynamoDBService;
   });
 
-  it('should create table successfully', async function () {
+  it('should create table successfully', async function() {
     // build create table params
     const createTableParams = {
-      TableName : testConstants.transactionLogTableName,
+      TableName: testConstants.transactionLogTableName,
       KeySchema: [
         {
-          AttributeName: "tuid",
-          KeyType: "HASH"
-        },  //Partition key
+          AttributeName: 'tuid',
+          KeyType: 'HASH'
+        }, //Partition key
         {
-          AttributeName: "cid",
-          KeyType: "RANGE"
-        }  //Sort key
+          AttributeName: 'cid',
+          KeyType: 'RANGE'
+        } //Sort key
       ],
       AttributeDefinitions: [
-        { AttributeName: "tuid", AttributeType: "S" },
-        { AttributeName: "cid", AttributeType: "N" },
-        { AttributeName: "thash", AttributeType: "S" }
+        { AttributeName: 'tuid', AttributeType: 'S' },
+        { AttributeName: 'cid', AttributeType: 'N' },
+        { AttributeName: 'thash', AttributeType: 'S' }
       ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 5,
@@ -47,37 +44,37 @@ describe('List Tables', function() {
           KeySchema: [
             {
               AttributeName: 'thash',
-              KeyType: "HASH"
+              KeyType: 'HASH'
             }
           ],
           Projection: {
-            ProjectionType: "KEYS_ONLY"
+            ProjectionType: 'KEYS_ONLY'
           },
           ProvisionedThroughput: {
             ReadCapacityUnits: 1,
             WriteCapacityUnits: 1
           }
-        },
+        }
       ],
       SSESpecification: {
         Enabled: false
-      },
+      }
     };
-    await helper.createTable(dynamodbApiObject, createTableParams, true);
+    await helper.createTable(ddb_service, createTableParams, true);
   });
 
-  it('should list table successfully', async function () {
+  it('should list table successfully', async function() {
     // build create table params
     const listTablesParams = {};
-    await helper.listTables(dynamodbApiObject, listTablesParams, true);
+    await helper.listTables(ddb_service, listTablesParams, true);
   });
 
-  it('should fail when table name is passed in parameter', async function () {
+  it('should fail when table name is passed in parameter', async function() {
     // build create table params
     const listTablesParams = {
       TableName: testConstants.transactionLogTableName
     };
-    await helper.listTables(dynamodbApiObject, listTablesParams, false);
+    await helper.listTables(ddb_service, listTablesParams, false);
   });
 
   after(async function() {
@@ -85,9 +82,7 @@ describe('List Tables', function() {
       TableName: testConstants.transactionLogTableName
     };
 
-    await helper.deleteTable(dynamodbApiObject, deleteTableParams, true);
-    logger.debug("List Tables Mocha Tests Complete");
+    await helper.deleteTable(ddb_service, deleteTableParams, true);
+    logger.debug('List Tables Mocha Tests Complete');
   });
-
-
 });

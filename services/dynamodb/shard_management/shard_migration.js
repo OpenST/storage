@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  *
@@ -8,14 +8,16 @@
  *
  */
 
-const rootPrefix = '../../..'
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + "/config/core_constants")
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , managedShardConst = require(rootPrefix + "/lib/global_constant/managed_shard")
-  , availableShardConst = require(rootPrefix + "/lib/global_constant/available_shard")
-  , autoScaleHelper = require(rootPrefix + '/lib/auto_scale/helper')
-;
+const rootPrefix = '../../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
+
+require(rootPrefix + '/config/core_constants');
+require(rootPrefix + '/lib/global_constant/managed_shard');
+require(rootPrefix + '/lib/global_constant/available_shard');
+require(rootPrefix + '/lib/auto_scale/helper');
+require(rootPrefix + '/services/dynamodb/api');
 
 /**
  * Constructor to create object of shard migration
@@ -29,34 +31,26 @@ const rootPrefix = '../../..'
  * @return {Object}
  *
  */
-const ShardMigration = function (params) {
-  const oThis = this
-  ;
-  oThis.ddbApiObject = params.ddb_api_object;
-  oThis.autoScalingApiObject = params.auto_scaling_api_object;
-};
+const ShardMigration = function() {};
 
 ShardMigration.prototype = {
-
   /**
    * Perform method
    *
    * @return {promise<result>}
    *
    */
-  perform: async function () {
-    const oThis = this
-    ;
-
-    return oThis.asyncPerform()
-      .catch(function (err) {
-        return responseHelper.error({
-          internal_error_identifier: "s_sm_sm_perform_1",
-          api_error_identifier: "exception",
-          debug_options: {error: err},
-          error_config: coreConstants.ERROR_CONFIG
-        });
+  perform: async function() {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants();
+    return oThis.asyncPerform().catch(function(err) {
+      return responseHelper.error({
+        internal_error_identifier: 's_sm_sm_perform_1',
+        api_error_identifier: 'exception',
+        debug_options: { error: err },
+        error_config: coreConstants.ERROR_CONFIG
       });
+    });
   },
 
   /**
@@ -64,17 +58,16 @@ ShardMigration.prototype = {
    *
    * @return {Promise<*>}
    */
-  asyncPerform: async function () {
-    const oThis = this
-    ;
+  asyncPerform: async function() {
+    const oThis = this;
 
     let r = null;
     r = oThis.validateParams();
-    logger.debug("ShardMigration.executeShardMigration.validateParams", r);
+    logger.debug('ShardMigration.executeShardMigration.validateParams', r);
     if (r.isFailure()) return r;
 
     r = await oThis.executeShardMigration();
-    logger.debug("ShardMigration.executeShardMigration.executeShardMigration", r);
+    logger.debug('ShardMigration.executeShardMigration.executeShardMigration', r);
     return r;
   },
 
@@ -84,18 +77,9 @@ ShardMigration.prototype = {
    * @return {Promise<any>}
    *
    */
-  validateParams: function () {
-    const oThis = this
-    ;
-
-    if (!oThis.ddbApiObject) {
-      return responseHelper.error({
-        internal_error_identifier: "d_sm_sm_validateParams_1",
-        api_error_identifier: "invalid_ddb_api_object",
-        debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
-      });
-    }
+  validateParams: function() {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants();
 
     return responseHelper.successWithData({});
   },
@@ -106,32 +90,28 @@ ShardMigration.prototype = {
    * @return {Promise<any>}
    *
    */
-  executeShardMigration: function () {
-    const oThis = this
-    ;
+  executeShardMigration: function() {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants();
 
-    return new Promise(async function (onResolve) {
+    return new Promise(async function(onResolve) {
       let r = null;
       try {
-
         r = await oThis.runAvailableShardMigration();
 
         if (!r.isFailure()) {
           r = await oThis.runManagedShardMigration();
         }
-
       } catch (err) {
         r = responseHelper.error({
-          internal_error_identifier: "s_am_r_runRegister_1",
-          api_error_identifier: "exception",
-          debug_options: {error: err},
+          internal_error_identifier: 's_am_r_runRegister_1',
+          api_error_identifier: 'exception',
+          debug_options: { error: err },
           error_config: coreConstants.ERROR_CONFIG
         });
-
       }
       return onResolve(r);
     });
-
   },
 
   /**
@@ -140,34 +120,33 @@ ShardMigration.prototype = {
    * @return {Promise<void>}
    *
    */
-  runAvailableShardMigration: async function () {
-    const oThis = this
-    ;
+  runAvailableShardMigration: async function() {
+    const oThis = this,
+      ddbServiceObj = oThis.ic().getDynamoDBService();
 
-    logger.debug("========ShardMigration.runAvailableShardMigration Started=======");
+    logger.debug('========ShardMigration.runAvailableShardMigration Started=======');
 
     let params = {};
     params.createTableConfig = oThis.getAvailableShardsCreateTableParams();
-    const tableName = params.createTableConfig.TableName
-      , globalSecondaryIndexesArray = params.createTableConfig.GlobalSecondaryIndexes
-    ;
+    const tableName = params.createTableConfig.TableName,
+      globalSecondaryIndexesArray = params.createTableConfig.GlobalSecondaryIndexes;
 
     //Check whether table already exists
     let hasTable = await oThis.tableExist(tableName);
 
     if (hasTable) {
-      logger.info("Migration Already done for", tableName);
+      logger.info('Migration Already done for', tableName);
       return responseHelper.successWithData({});
     }
 
     params.autoScalingConfig = oThis.getAvailableShardsAutoScalingParams(tableName, globalSecondaryIndexesArray);
-    const availableShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
+    const availableShardsResponse = await ddbServiceObj.createTableMigration(params);
 
     logger.debug(availableShardsResponse);
     if (availableShardsResponse.isFailure()) {
-      logger.error("Failure error ", availableShardsResponse);
+      logger.error('Failure error ', availableShardsResponse);
     }
-    logger.debug("========ShardMigration.runAvailableShardMigration Ended=======");
+    logger.debug('========ShardMigration.runAvailableShardMigration Ended=======');
     return availableShardsResponse;
   },
 
@@ -176,33 +155,32 @@ ShardMigration.prototype = {
    *
    * @return {Promise<void>}
    */
-  runManagedShardMigration: async function () {
-    const oThis = this
-    ;
+  runManagedShardMigration: async function() {
+    const oThis = this,
+      ddbServiceObj = oThis.ic().getDynamoDBService();
 
-    logger.debug("========ShardMigration.runManagedShardMigration Started=======");
+    logger.debug('========ShardMigration.runManagedShardMigration Started=======');
 
     let params = {};
     params.createTableConfig = await oThis.getManagedShardsCreateTableParams();
-    const tableName = params.createTableConfig.TableName
-      , resourceId = 'table/' + tableName
-      , arn = "ARN"
-    ;
+    const tableName = params.createTableConfig.TableName,
+      resourceId = 'table/' + tableName,
+      arn = 'ARN';
 
     //Check whether table already exists
     let hasTable = await oThis.tableExist(tableName);
     if (hasTable) {
-      logger.info("Migration Already done for", tableName);
+      logger.info('Migration Already done for', tableName);
       return responseHelper.successWithData({});
     }
 
     params.autoScalingConfig = oThis.getManagedShardsAutoScalingParams(tableName, arn, resourceId);
-    const managedShardsResponse = await oThis.ddbApiObject.createTableMigration(oThis.autoScalingApiObject, params);
+    const managedShardsResponse = await ddbServiceObj.createTableMigration(params);
     logger.debug(managedShardsResponse);
     if (managedShardsResponse.isFailure()) {
-      logger.error("Is Failure having err ", managedShardsResponse);
+      logger.error('Is Failure having err ', managedShardsResponse);
     }
-    logger.debug("========ShardMigration.runManagedShardMigration Ended=======");
+    logger.debug('========ShardMigration.runManagedShardMigration Ended=======');
     return managedShardsResponse;
   },
 
@@ -211,55 +189,59 @@ ShardMigration.prototype = {
    *
    * @return {Object}
    */
-  getAvailableShardsCreateTableParams: function () {
+  getAvailableShardsCreateTableParams: function() {
+    const oThis = this,
+      availableShardConst = oThis.ic().getLibAvailableShard();
+
     return {
       TableName: availableShardConst.getTableName(),
       AttributeDefinitions: [
         {
           AttributeName: availableShardConst.SHARD_NAME,
-          AttributeType: "S"
+          AttributeType: 'S'
         },
         {
           AttributeName: availableShardConst.ENTITY_TYPE,
-          AttributeType: "S"
+          AttributeType: 'S'
         },
         {
           AttributeName: availableShardConst.ALLOCATION_TYPE,
-          AttributeType: "N"
+          AttributeType: 'N'
         }
       ],
       KeySchema: [
         {
           AttributeName: availableShardConst.SHARD_NAME,
-          KeyType: "HASH"
+          KeyType: 'HASH'
         }
       ],
-      GlobalSecondaryIndexes: [{
-        IndexName: availableShardConst.getIndexNameByEntityAllocationType(),
-        KeySchema: [
-          {
-            AttributeName: availableShardConst.ENTITY_TYPE,
-            KeyType: 'HASH'
+      GlobalSecondaryIndexes: [
+        {
+          IndexName: availableShardConst.getIndexNameByEntityAllocationType(),
+          KeySchema: [
+            {
+              AttributeName: availableShardConst.ENTITY_TYPE,
+              KeyType: 'HASH'
+            },
+            {
+              AttributeName: availableShardConst.ALLOCATION_TYPE,
+              KeyType: 'RANGE'
+            }
+          ],
+          Projection: {
+            ProjectionType: 'ALL'
           },
-          {
-            AttributeName: availableShardConst.ALLOCATION_TYPE,
-            KeyType: 'RANGE'
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 3,
+            WriteCapacityUnits: 3
           }
-        ],
-        Projection: {
-          ProjectionType: 'ALL'
-        },
-        ProvisionedThroughput: {
-          ReadCapacityUnits: 3,
-          WriteCapacityUnits: 3
         }
-      }],
+      ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 3,
         WriteCapacityUnits: 3
       }
-    }
-
+    };
   },
 
   /**
@@ -267,38 +249,92 @@ ShardMigration.prototype = {
    *
    * @return {Object}
    */
-  getAvailableShardsAutoScalingParams: function (tableName, gsiArray) {
-    const oThis = this
-      , resourceId = autoScaleHelper.createResourceId(tableName)
-    ;
+  getAvailableShardsAutoScalingParams: function(tableName, gsiArray) {
+    const oThis = this,
+      autoScaleHelper = oThis.ic().getAutoScaleHelper(),
+      resourceId = autoScaleHelper.createResourceId(tableName);
 
     let autoScalingConfig = {};
 
-    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension, 3,50);
+    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(
+      resourceId,
+      autoScaleHelper.writeCapacityScalableDimension,
+      3,
+      50
+    );
 
-    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension, 3 ,50);
+    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(
+      resourceId,
+      autoScaleHelper.readCapacityScalableDimension,
+      3,
+      50
+    );
 
-    autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.writeCapacityScalableDimension, autoScaleHelper.writeMetricType, 1, 10, 50.0);
+    autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(
+      tableName,
+      resourceId,
+      autoScaleHelper.writeCapacityScalableDimension,
+      autoScaleHelper.writeMetricType,
+      1,
+      10,
+      50.0
+    );
 
-    autoScalingConfig.putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.readCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 10, 50.0);
+    autoScalingConfig.putScalingPolicyRead = autoScaleHelper.createPolicyParams(
+      tableName,
+      resourceId,
+      autoScaleHelper.readCapacityScalableDimension,
+      autoScaleHelper.readMetricType,
+      1,
+      10,
+      50.0
+    );
 
     autoScalingConfig.globalSecondaryIndex = {};
 
     for (let index = 0; index < gsiArray.length; index++) {
-      let gsiIndexName = gsiArray[index].IndexName
-        , indexResourceId = autoScaleHelper.createIndexResourceId(tableName, gsiIndexName)
-      ;
+      let gsiIndexName = gsiArray[index].IndexName,
+        indexResourceId = autoScaleHelper.createIndexResourceId(tableName, gsiIndexName);
 
       autoScalingConfig.globalSecondaryIndex[gsiIndexName] = {};
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, 3, 50);
+      autoScalingConfig.globalSecondaryIndex[
+        gsiIndexName
+      ].registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(
+        indexResourceId,
+        autoScaleHelper.indexWriteCapacityScalableDimenstion,
+        3,
+        50
+      );
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, 3, 50);
+      autoScalingConfig.globalSecondaryIndex[
+        gsiIndexName
+      ].registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(
+        indexResourceId,
+        autoScaleHelper.indexReadCapacityScalableDimension,
+        3,
+        50
+      );
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, indexResourceId, autoScaleHelper.indexWriteCapacityScalableDimenstion, autoScaleHelper.writeMetricType, 1, 10, 50.0);
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyWrite = autoScaleHelper.createPolicyParams(
+        tableName,
+        indexResourceId,
+        autoScaleHelper.indexWriteCapacityScalableDimenstion,
+        autoScaleHelper.writeMetricType,
+        1,
+        10,
+        50.0
+      );
 
-      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, indexResourceId, autoScaleHelper.indexReadCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 10, 50.0);
-
+      autoScalingConfig.globalSecondaryIndex[gsiIndexName].putScalingPolicyRead = autoScaleHelper.createPolicyParams(
+        tableName,
+        indexResourceId,
+        autoScaleHelper.indexReadCapacityScalableDimension,
+        autoScaleHelper.readMetricType,
+        1,
+        10,
+        50.0
+      );
     }
     return autoScalingConfig;
   },
@@ -308,34 +344,37 @@ ShardMigration.prototype = {
    *
    * @return {Object}
    */
-  getManagedShardsCreateTableParams: function () {
+  getManagedShardsCreateTableParams: function() {
+    const oThis = this,
+      managedShardConst = oThis.ic().getLibManagedShard();
+
     return {
       TableName: managedShardConst.getTableName(),
       AttributeDefinitions: [
         {
           AttributeName: managedShardConst.IDENTIFIER,
-          AttributeType: "S"
+          AttributeType: 'S'
         },
         {
           AttributeName: managedShardConst.ENTITY_TYPE,
-          AttributeType: "S"
+          AttributeType: 'S'
         }
       ],
       KeySchema: [
         {
           AttributeName: managedShardConst.IDENTIFIER,
-          KeyType: "HASH"
+          KeyType: 'HASH'
         },
         {
           AttributeName: managedShardConst.ENTITY_TYPE,
-          KeyType: "RANGE"
+          KeyType: 'RANGE'
         }
       ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 3,
         WriteCapacityUnits: 3
       }
-    }
+    };
   },
 
   /**
@@ -343,17 +382,17 @@ ShardMigration.prototype = {
    *
    * @param tableName Table Name to be checked
    */
-  tableExist: async function (tableName) {
-    const oThis = this
-    ;
+  tableExist: async function(tableName) {
+    const oThis = this,
+      ddbServiceObj = oThis.ic().getDynamoDBService();
 
-    let listTablesResponse = await oThis.ddbApiObject.listTables({});
+    let listTablesResponse = await ddbServiceObj.listTables({});
     if (listTablesResponse.isFailure()) {
-      logger.error("s_dy_sm tableExist api failure");
+      logger.error('s_dy_sm tableExist api failure');
       return false;
     }
-    logger.warn("Tables", listTablesResponse.data.TableNames, " for table", tableName);
-    return listTablesResponse.data.TableNames.find(function (tn) {
+    logger.warn('Tables', listTablesResponse.data.TableNames, ' for table', tableName);
+    return listTablesResponse.data.TableNames.find(function(tn) {
       return tn === tableName;
     });
   },
@@ -363,25 +402,53 @@ ShardMigration.prototype = {
    *
    * @return {Object}
    */
-  getManagedShardsAutoScalingParams: function (tableName) {
-    const oThis = this
-      , resourceId = autoScaleHelper.createResourceId(tableName)
-    ;
+  getManagedShardsAutoScalingParams: function(tableName) {
+    const oThis = this,
+      autoScaleHelper = oThis.ic().getAutoScaleHelper(),
+      resourceId = autoScaleHelper.createResourceId(tableName);
 
     let autoScalingConfig = {};
 
-    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.writeCapacityScalableDimension, 3, 50);
+    autoScalingConfig.registerScalableTargetWrite = autoScaleHelper.createScalableTargetParams(
+      resourceId,
+      autoScaleHelper.writeCapacityScalableDimension,
+      3,
+      50
+    );
 
-    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(resourceId, autoScaleHelper.readCapacityScalableDimension, 3, 50);
+    autoScalingConfig.registerScalableTargetRead = autoScaleHelper.createScalableTargetParams(
+      resourceId,
+      autoScaleHelper.readCapacityScalableDimension,
+      3,
+      50
+    );
 
-    autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.writeCapacityScalableDimension, autoScaleHelper.writeMetricType, 1, 10, 50.0);
+    autoScalingConfig.putScalingPolicyWrite = autoScaleHelper.createPolicyParams(
+      tableName,
+      resourceId,
+      autoScaleHelper.writeCapacityScalableDimension,
+      autoScaleHelper.writeMetricType,
+      1,
+      10,
+      50.0
+    );
 
-    autoScalingConfig.putScalingPolicyRead = autoScaleHelper.createPolicyParams(tableName, resourceId, autoScaleHelper.readCapacityScalableDimension, autoScaleHelper.readMetricType, 1, 10, 50.0);
+    autoScalingConfig.putScalingPolicyRead = autoScaleHelper.createPolicyParams(
+      tableName,
+      resourceId,
+      autoScaleHelper.readCapacityScalableDimension,
+      autoScaleHelper.readMetricType,
+      1,
+      10,
+      50.0
+    );
 
     autoScalingConfig.globalSecondaryIndex = {};
 
     return autoScalingConfig;
   }
 };
+
+InstanceComposer.registerShadowableClass(ShardMigration, 'getDDBServiceShardMigration');
 
 module.exports = ShardMigration;

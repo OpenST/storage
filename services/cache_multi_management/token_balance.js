@@ -1,13 +1,14 @@
-"use strict";
+'use strict';
 
-const rootPrefix = '../..'
-  , BaseCache = require(rootPrefix + '/services/cache_multi_management/base')
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , coreConstants = require(rootPrefix + '/config/core_constants')
-  , TokenBalanceModel = require(rootPrefix + '/lib/models/dynamodb/token_balance')
-  , logger = require( rootPrefix + '/lib/logger/custom_console_logger')
-  , BigNumber = require('bignumber.js')
-;
+const rootPrefix = '../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer'),
+  baseCache = require(rootPrefix + '/services/cache_multi_management/base'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  BigNumber = require('bignumber.js');
+
+require(rootPrefix + '/config/core_constants');
+require(rootPrefix + '/lib/models/dynamodb/token_balance');
 
 /**
  * GetBalanceCacheKlass
@@ -18,31 +19,28 @@ const rootPrefix = '../..'
  * @param {object} params.ddb_service
  * @param {object} params.auto_scaling
  *
- * @augments BaseCache
+ * @augments baseCache
  *
  * @constructor
  */
-const TokenBalanceCache = function (params) {
-  const oThis = this
-  ;
+const TokenBalanceCache = function(params) {
+  const oThis = this;
 
   oThis.erc20ContractAddress = params.erc20_contract_address;
   oThis.ethereumAddresses = JSON.parse(JSON.stringify(params.ethereum_addresses));
-  oThis.ddbServiceObj = params.ddb_service || {};
-  oThis.autoScalingObj = params.auto_scaling || {};
 
   // sanitize the params
-  if(oThis.erc20ContractAddress) oThis.erc20ContractAddress = oThis.erc20ContractAddress.toLowerCase();
-  if(oThis.ethereumAddresses) {
-    for(let index = 0; index < oThis.ethereumAddresses.length; index ++) {
+  if (oThis.erc20ContractAddress) oThis.erc20ContractAddress = oThis.erc20ContractAddress.toLowerCase();
+  if (oThis.ethereumAddresses) {
+    for (let index = 0; index < oThis.ethereumAddresses.length; index++) {
       oThis.ethereumAddresses[index] = oThis.ethereumAddresses[index].toLowerCase();
     }
   }
 
-  BaseCache.call(this, params);
+  baseCache.call(this, params);
 };
 
-TokenBalanceCache.prototype = Object.create(BaseCache.prototype);
+TokenBalanceCache.prototype = Object.create(baseCache.prototype);
 
 TokenBalanceCache.prototype.constructor = TokenBalanceCache;
 
@@ -54,9 +52,8 @@ const tokenBalanceCacheSpecificPrototype = {
    *
    * @return {Object}
    */
-  setCacheKeyToexternalIdMap: function () {
-    const oThis = this
-    ;
+  setCacheKeyToexternalIdMap: function() {
+    const oThis = this;
 
     oThis.cacheKeyToexternalIdMap = {};
     for (let i = 0; i < oThis.ethereumAddresses.length; i++) {
@@ -73,9 +70,8 @@ const tokenBalanceCacheSpecificPrototype = {
    *
    *  @return {Number}
    */
-  setCacheExpiry: function () {
-    const oThis = this
-    ;
+  setCacheExpiry: function() {
+    const oThis = this;
 
     oThis.cacheExpiry = 86400 * 3; // 3 days
 
@@ -90,39 +86,38 @@ const tokenBalanceCacheSpecificPrototype = {
    * @return {result}
    *
    */
-  fetchDataFromSource: async function (ethereumAddresses) {
-    const oThis = this
-    ;
+  fetchDataFromSource: async function(ethereumAddresses) {
+    const oThis = this,
+      coreConstants = oThis.ic().getCoreConstants(),
+      TokenBalanceModel = oThis.ic().getLibDDBTokenBalanceModel();
 
     if (!ethereumAddresses) {
       return responseHelper.error({
-        internal_error_identifier: "s_cmm_gb_1",
-        api_error_identifier: "invalid_cache_ids",
+        internal_error_identifier: 's_cmm_gb_1',
+        api_error_identifier: 'invalid_cache_ids',
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
-      })
+      });
     }
 
     if (!oThis.erc20ContractAddress) {
       return responseHelper.error({
-        internal_error_identifier: "s_cmm_gb_5",
-        api_error_identifier: "invalid_params",
+        internal_error_identifier: 's_cmm_gb_5',
+        api_error_identifier: 'invalid_params',
         params_error_identifiers: ['missing_contract_address'],
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
-      })
+      });
     }
 
     let getBalanceResponse = await new TokenBalanceModel({
-      ddb_service: oThis.ddbServiceObj,
-      auto_scaling: oThis.autoScalingObj,
       erc20_contract_address: oThis.erc20ContractAddress
     })
       .getBalance({
         ethereum_addresses: ethereumAddresses
-      }).catch(function(error) {
-
-        if (responseHelper.isCustomResult(error)){
+      })
+      .catch(function(error) {
+        if (responseHelper.isCustomResult(error)) {
           return error;
         } else {
           logger.error(`${__filename}::perform::catch`);
@@ -138,17 +133,16 @@ const tokenBalanceCacheSpecificPrototype = {
 
     if (getBalanceResponse.isFailure()) {
       return responseHelper.error({
-        internal_error_identifier: "s_cmm_gb_3",
-        api_error_identifier: "ddb_method_call_error",
+        internal_error_identifier: 's_cmm_gb_3',
+        api_error_identifier: 'ddb_method_call_error',
         debug_options: {},
         error_config: coreConstants.ERROR_CONFIG
-      })
+      });
     }
 
     let resultData = {};
 
     for (let i = 0; i < ethereumAddresses.length; i++) {
-
       let eth_address = ethereumAddresses[i];
       let defaultValues = {
         settled_balance: '0',
@@ -166,7 +160,8 @@ const tokenBalanceCacheSpecificPrototype = {
       }
 
       dataFromModel.available_balance = new BigNumber(dataFromModel.settled_balance)
-        .minus(unsettled_debits_bn).toString(10);
+        .minus(unsettled_debits_bn)
+        .toString(10);
 
       resultData[eth_address] = dataFromModel;
     }
@@ -181,16 +176,15 @@ const tokenBalanceCacheSpecificPrototype = {
    *
    * @return {Object}
    */
-  _cacheKeyFor: function (ethereumAddress) {
-    const oThis = this
-    ;
+  _cacheKeyFor: function(ethereumAddress) {
+    const oThis = this;
 
-    return oThis._cacheKeyPrefix() + 'bt_blnce' + '_ca_' +
-      oThis.erc20ContractAddress + '_ea_' + ethereumAddress;
+    return oThis._cacheKeyPrefix() + 'bt_blnce' + '_ca_' + oThis.erc20ContractAddress + '_ea_' + ethereumAddress;
   }
-
 };
 
 Object.assign(TokenBalanceCache.prototype, tokenBalanceCacheSpecificPrototype);
+
+InstanceComposer.registerShadowableClass(TokenBalanceCache, 'getDDBTokenBalanceCache');
 
 module.exports = TokenBalanceCache;

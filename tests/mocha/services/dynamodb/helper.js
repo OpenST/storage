@@ -1,14 +1,12 @@
-"use strict";
+'use strict';
 
-const chai = require('chai')
-  , assert = chai.assert;
+const chai = require('chai'),
+  assert = chai.assert;
 
-const rootPrefix = "../../../.."
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
-  , dynamodbApiKlass = require(rootPrefix + '/index').Dynamodb
-  , autoScaleHelper = require(rootPrefix + "/tests/mocha/services/auto_scale/helper")
-;
+const rootPrefix = '../../../..',
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
+  openStStorage = require(rootPrefix + '/index');
 
 /**
  * Constructor for helper class
@@ -18,49 +16,48 @@ const rootPrefix = "../../../.."
 const helper = function() {};
 
 helper.prototype = {
-
   /**
-   * Validate DynamoDB API Object
+   * Validate OpenST Storage Object
    *
-   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} configStrategy - configuration
    *
    * @return {result}
    *
    */
-  validateDynamodbApiObject: function(dynamoDBConfig) {
+  validateOpenStStorageObject: function(configStrategy) {
     // validate if the dynamodb configuration is available
-    assert.exists(dynamoDBConfig, 'dynamoDBConfig is neither `null` nor `undefined`');
+    assert.exists(configStrategy, 'configStrategy is neither `null` nor `undefined`');
 
     // create dynamoDBApi object
-    const dynamodbApiObject = new dynamodbApiKlass(dynamoDBConfig);
-    assert.exists(dynamodbApiObject, 'dynamodbApiObject is not created');
-    assert.equal(typeof dynamodbApiObject, "object");
-    assert.equal(dynamodbApiObject.constructor.name, "DynamoDBService");
+    const openStStorageObject = openStStorage.getInstance(configStrategy);
+    assert.exists(openStStorageObject, 'openStStorageObject is not created');
+    assert.equal(typeof openStStorageObject, 'object');
+    assert.equal(openStStorageObject.constructor.name, 'OpenSTStorage');
 
-    return dynamodbApiObject;
+    return openStStorageObject;
   },
 
   /**
    * Create Table Helper method
    *
-   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} openStStorageObject - DynamoDB Api object
    * @params {object} params - batch get params
    * @params {object} isResultSuccess - expected result
    *
    * @return {result}
    *
    */
-  createTable: async function(dynamodbApiObject, params, isResultSuccess) {
-    const createTableResponse = await dynamodbApiObject.createTable(params);
+  createTable: async function(openStStorageObject, params, isResultSuccess) {
+    const createTableResponse = await openStStorageObject.createTable(params);
 
     if (isResultSuccess) {
       assert.equal(createTableResponse.isSuccess(), true);
       assert.exists(createTableResponse.data.TableDescription, params.TableName);
       // logger.info("Waiting for table to get created.............");
-      // await autoScaleHelper.waitForTableToGetCreated(dynamodbApiObject, params);
+      // await autoScaleHelper.waitForTableToGetCreated(openStStorageObject, params);
       // logger.info("Table is active");
-    } else{
-      assert.equal(createTableResponse.isSuccess(), false, "createTable: successfull, should fail for this case");
+    } else {
+      assert.equal(createTableResponse.isSuccess(), false, 'createTable: successfull, should fail for this case');
     }
     return createTableResponse;
   },
@@ -68,45 +65,43 @@ helper.prototype = {
   /**
    * Delete Table Helper method
    *
-   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} openStStorageObject - DynamoDB Api object
    * @params {object} params - batch get params
    * @params {object} isResultSuccess - expected result
    *
    * @return {result}
    *
    */
-  deleteTable: async function(dynamodbApiObject, params, isResultSuccess) {
-    const deleteTableResponse = await dynamodbApiObject.deleteTable(params);
+  deleteTable: async function(openStStorageObject, params, isResultSuccess) {
+    const deleteTableResponse = await openStStorageObject.deleteTable(params);
 
-    if(isResultSuccess === true){
+    if (isResultSuccess === true) {
       assert.equal(deleteTableResponse.isSuccess(), true);
-      logger.debug("deleteTableResponse.data.TableDescription",deleteTableResponse.data.TableDescription);
+      logger.debug('deleteTableResponse.data.TableDescription', deleteTableResponse.data.TableDescription);
       assert.exists(deleteTableResponse.data.TableDescription, params.TableName);
       // logger.info("Waiting for table to get deleted");
-      // await autoScaleHelper.waitForTableToGetDeleted(dynamodbApiObject, params);
+      // await autoScaleHelper.waitForTableToGetDeleted(openStStorageObject, params);
       // logger.info("Table got deleted")
-
-    } else{
+    } else {
       assert.equal(deleteTableResponse.isSuccess(), false);
     }
 
     return deleteTableResponse;
-
   },
 
   /**
    * Update Continuous Backup Table Helper method
    *
-   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} openStStorageObject - DynamoDB Api object
    * @params {object} params - batch get params
    * @params {object} isResultSuccess - expected result
    *
    * @return {result}
    *
    */
-  updateContinuousBackup: async function(dynamodbApiObject, params, isResultSuccess) {
-    const enableContinousBackupResponse = await dynamodbApiObject.updateContinuousBackups(params);
-    if(isResultSuccess === true){
+  updateContinuousBackup: async function(openStStorageObject, params, isResultSuccess) {
+    const enableContinousBackupResponse = await openStStorageObject.updateContinuousBackups(params);
+    if (isResultSuccess === true) {
       assert.equal(enableContinousBackupResponse.isSuccess(), true);
       assert.equal(enableContinousBackupResponse.data.ContinuousBackupsStatus, 'ENABLED');
     } else {
@@ -118,16 +113,16 @@ helper.prototype = {
   /**
    * Update Table Helper method
    *
-   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} openStStorageObject - DynamoDB Api object
    * @params {object} params - batch get params
    * @params {object} isResultSuccess - expected result
    *
    * @return {result}
    *
    */
-  updateTable: async function(dynamodbApiObject, params, isResultSuccess) {
-    const updateTableResponse = await dynamodbApiObject.updateTable(params);
-    if(isResultSuccess === true){
+  updateTable: async function(openStStorageObject, params, isResultSuccess) {
+    const updateTableResponse = await openStStorageObject.updateTable(params);
+    if (isResultSuccess === true) {
       assert.equal(updateTableResponse.isSuccess(), true);
       assert.exists(updateTableResponse.data.TableDescription, params.TableName);
     } else {
@@ -139,16 +134,16 @@ helper.prototype = {
   /**
    * Describe Table Helper method
    *
-   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} openStStorageObject - DynamoDB Api object
    * @params {object} params - batch get params
    * @params {object} isResultSuccess - expected result
    *
    * @return {result}
    *
    */
-  describeTable: async function(dynamodbApiObject, params, isResultSuccess) {
-    const describeTableResponse = await dynamodbApiObject.describeTable(params);
-    if(isResultSuccess === true){
+  describeTable: async function(openStStorageObject, params, isResultSuccess) {
+    const describeTableResponse = await openStStorageObject.describeTable(params);
+    if (isResultSuccess === true) {
       assert.equal(describeTableResponse.isSuccess(), true);
       assert.exists(describeTableResponse.data.Table.TableName, params.TableName);
     } else {
@@ -161,16 +156,16 @@ helper.prototype = {
   /**
    * List Tables Helper method
    *
-   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} openStStorageObject - DynamoDB Api object
    * @params {object} params - batch get params
    * @params {object} isResultSuccess - expected result
    *
    * @return {result}
    *
    */
-  listTables: async function(dynamodbApiObject, params, isResultSuccess) {
-    const listTablesResponse = await dynamodbApiObject.listTables(params);
-    if(isResultSuccess === true){
+  listTables: async function(openStStorageObject, params, isResultSuccess) {
+    const listTablesResponse = await openStStorageObject.listTables(params);
+    if (isResultSuccess === true) {
       assert.equal(listTablesResponse.isSuccess(), true);
       assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogTableName);
     } else {
@@ -183,7 +178,7 @@ helper.prototype = {
   /**
    * Perform batch get
    *
-   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} openStStorageObject - DynamoDB Api object
    * @params {object} params - batch get params
    * @params {object} isResultSuccess - expected result
    * @params {number} resultCount - Result Count
@@ -191,19 +186,23 @@ helper.prototype = {
    * @return {result}
    *
    */
-  performBatchGetTest: async function (dynamodbApiObject, params, isResultSuccess, resultCount) {
-    assert.exists(dynamodbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+  performBatchGetTest: async function(openStStorageObject, params, isResultSuccess, resultCount) {
+    assert.exists(openStStorageObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     // call batch get
-    const batchGetResponse = await dynamodbApiObject.batchGetItem(params);
+    const batchGetResponse = await openStStorageObject.batchGetItem(params);
 
     // validate if the table is created
     assert.equal(batchGetResponse.isSuccess(), isResultSuccess, 'batch get failed');
 
     if (isResultSuccess) {
       // validate batchGet output count
-      assert.equal(batchGetResponse.data.Responses[testConstants.transactionLogTableName].length, resultCount, "Result count is not equal");
+      assert.equal(
+        batchGetResponse.data.Responses[testConstants.transactionLogTableName].length,
+        resultCount,
+        'Result count is not equal'
+      );
 
       // validate return output is object or not
       let returnObject = batchGetResponse.data.Responses[testConstants.transactionLogTableName];
@@ -219,19 +218,19 @@ helper.prototype = {
   /**
    * Perform batch write
    *
-   * @params {object} dynamodbApiObject - DynamoDB Api object
+   * @params {object} openStStorageObject - DynamoDB Api object
    * @params {object} params - batch write params
    * @params {object} isResultSuccess - expected result
    *
    * @return {result}
    *
    */
-  performBatchWriteTest: async function (dynamodbApiObject, params, isResultSuccess) {
-    assert.exists(dynamodbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+  performBatchWriteTest: async function(openStStorageObject, params, isResultSuccess) {
+    assert.exists(openStStorageObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     // call batch get
-    const batchWriteResponse = await dynamodbApiObject.batchWriteItem(params);
+    const batchWriteResponse = await openStStorageObject.batchWriteItem(params);
 
     // validate if the table is created
     assert.equal(batchWriteResponse.isSuccess(), isResultSuccess, 'batch write failed');
@@ -242,88 +241,85 @@ helper.prototype = {
 
   /**
    * put Item
-   * @param dynamoDbApiObject
+   * @param openStStorageObject
    * @param params
    * @param isResultSuccess
    * @return {Promise<*|result|DynamoDB.PutItemOutput>}
    */
-  putItem: async function(dynamoDbApiObject, params, isResultSuccess) {
-    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+  putItem: async function(openStStorageObject, params, isResultSuccess) {
+    assert.exists(openStStorageObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     //call put Item
-    const putItemResponse = await dynamoDbApiObject.putItem(params);
+    const putItemResponse = await openStStorageObject.putItem(params);
 
     // validate if the insertion is successful or not
     assert.equal(putItemResponse.isSuccess(), isResultSuccess, 'put item failed');
 
     return putItemResponse;
-
   },
 
   /**
    * Delete Item
-   * @param dynamoDbApiObject
+   * @param openStStorageObject
    * @param params
    * @param isResultSuccess
    * @return {Promise<*|result|DynamoDB.PutItemOutput>}
    */
-  deleteItem: async function(dynamoDbApiObject, params, isResultSuccess) {
-    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+  deleteItem: async function(openStStorageObject, params, isResultSuccess) {
+    assert.exists(openStStorageObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     //call put Item
-    const deleteItemResponse = await dynamoDbApiObject.deleteItem(params);
+    const deleteItemResponse = await openStStorageObject.deleteItem(params);
 
     // validate if the delete is successful or not
     assert.equal(deleteItemResponse.isSuccess(), isResultSuccess, 'delete item failed');
 
     return deleteItemResponse;
-
   },
 
   /**
    * Update Item
-   * @param dynamoDbApiObject
+   * @param openStStorageObject
    * @param params
    * @param isResultSuccess
    * @return {Promise<*|DynamoDB.DeleteItemOutput|result>}
    */
-  updateItem: async function(dynamoDbApiObject, params, isResultSuccess) {
-    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+  updateItem: async function(openStStorageObject, params, isResultSuccess) {
+    assert.exists(openStStorageObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     //call put Item
-    const updateItemResponse = await dynamoDbApiObject.updateItem(params);
+    const updateItemResponse = await openStStorageObject.updateItem(params);
 
     // validate if the update is successful or not
     assert.equal(updateItemResponse.isSuccess(), isResultSuccess, 'update item failed');
 
     return updateItemResponse;
-
   },
 
   /**
    * query test helper method
-   * @param dynamoDbApiObject
+   * @param openStStorageObject
    * @param params
    * @param isResultSuccess
    * @param resultCount
    * @return {Promise<*>}
    */
-  query: async function(dynamoDbApiObject, params, isResultSuccess, resultCount) {
-    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+  query: async function(openStStorageObject, params, isResultSuccess, resultCount) {
+    assert.exists(openStStorageObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     //call query
-    const queryResponse = await dynamoDbApiObject.query(params);
+    const queryResponse = await openStStorageObject.query(params);
 
     // validate if the query is successful or not
     assert.equal(queryResponse.isSuccess(), isResultSuccess, 'query failed');
 
     if (isResultSuccess) {
       // validate query output count
-      assert.equal(queryResponse.data.Count, resultCount, "Result count is not equal");
+      assert.equal(queryResponse.data.Count, resultCount, 'Result count is not equal');
 
       // validate return output is object or not
       if (resultCount) {
@@ -334,28 +330,27 @@ helper.prototype = {
     return queryResponse;
   },
 
-
   /**
    * scan test helper method
-   * @param dynamoDbApiObject
+   * @param openStStorageObject
    * @param params
    * @param isResultSuccess
    * @param resultCount
    * @return {Promise<*|DocumentClient.ScanOutput|result|DynamoDB.ScanOutput>}
    */
-  scan: async function(dynamoDbApiObject, params, isResultSuccess, resultCount) {
-    assert.exists(dynamoDbApiObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
+  scan: async function(openStStorageObject, params, isResultSuccess, resultCount) {
+    assert.exists(openStStorageObject, 'dynamoDBApiRef is neither `null` nor `undefined`');
     assert.exists(params, 'params is neither `null` nor `undefined`');
 
     //call scan
-    const scanResponse = await dynamoDbApiObject.scan(params);
+    const scanResponse = await openStStorageObject.scan(params);
 
     // validate if the scan is successful or not
     assert.equal(scanResponse.isSuccess(), isResultSuccess, 'scan failed');
 
     if (isResultSuccess) {
       // validate scan output count
-      assert.equal(scanResponse.data.Count, resultCount, "Result count is not equal");
+      assert.equal(scanResponse.data.Count, resultCount, 'Result count is not equal');
 
       // validate return output is object or not
       if (resultCount) {
@@ -368,32 +363,30 @@ helper.prototype = {
 
   /**
    * To wait till response
-   * @param dynamoDbApiObject
+   * @param openStStorageObject
    * @param func
    * @param params
    * @param toAssert
    * @param retries
    * @return {Promise<void>}
    */
-  waitTillTableStatusProvided: async function(dynamoDbApiObject, func, params, toAssert, retries) {
-    const oThis = this
-      , WAIT = retries ? retries: 30;
+  waitTillTableStatusProvided: async function(openStStorageObject, func, params, toAssert, retries) {
+    const oThis = this,
+      WAIT = retries ? retries : 30;
     let count = WAIT;
     let response = null;
     while (count > 0) {
-      response = await oThis.waitTillResponse(dynamoDbApiObject, func, params);
-      count-=1;
+      response = await oThis.waitTillResponse(openStStorageObject, func, params);
+      count -= 1;
     }
   },
 
-  waitTillResponse: async function(dynamodbApiObject, func, params) {
-    return new Promise(function (resolve){
+  waitTillResponse: async function(openStStorageObject, func, params) {
+    return new Promise(function(resolve) {
       setTimeout(async function() {
-
-        let response  = await func.call(dynamodbApiObject, params);
+        let response = await func.call(openStStorageObject, params);
         resolve(response);
-
-        }, 1000);
+      }, 1000);
     });
   }
 };
