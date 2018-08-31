@@ -17,7 +17,6 @@ require(rootPrefix + '/config/core_constants');
 /**
  * Constructor for base service class
  *
- * @param {object} autoScaleObject - Auto Scaling object
  * @param {string} methodName - AutoScale method name
  * @param {object} params - AutoScale method params
  *
@@ -35,7 +34,7 @@ Base.prototype = {
   /**
    * Perform method
    *
-   * @return {promise<result>}
+   * @return {Promise<result>}
    *
    */
   perform: async function() {
@@ -61,8 +60,7 @@ Base.prototype = {
   asyncPerform: async function() {
     const oThis = this;
 
-    let r = null;
-    r = oThis.validateParams();
+    let r = oThis.validateParams();
     logger.debug('=======AutoScale.Base.validateParams.result=======');
     logger.debug(r);
     if (r.isFailure()) return r;
