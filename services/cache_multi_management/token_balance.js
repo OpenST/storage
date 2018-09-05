@@ -27,6 +27,7 @@ const TokenBalanceCache = function(params) {
   const oThis = this;
 
   oThis.erc20ContractAddress = params.erc20_contract_address;
+  oThis.shardName = params.shard_name;
   oThis.ethereumAddresses = JSON.parse(JSON.stringify(params.ethereum_addresses));
 
   // sanitize the params
@@ -111,7 +112,8 @@ const tokenBalanceCacheSpecificPrototype = {
     }
 
     let getBalanceResponse = await new TokenBalanceModel({
-      erc20_contract_address: oThis.erc20ContractAddress
+      erc20_contract_address: oThis.erc20ContractAddress,
+      shard_name: oThis.shardName
     })
       .getBalance({
         ethereum_addresses: ethereumAddresses
