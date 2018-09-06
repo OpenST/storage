@@ -6,21 +6,20 @@
 
 const rootPrefix = '.',
   version = require(rootPrefix + '/package.json').version,
-  entityTypesConst = require(rootPrefix + '/lib/global_constant/entity_types'),
   InstanceComposer = require(rootPrefix + '/instance_composer');
 
 require(rootPrefix + '/lib/models/dynamodb/token_balance');
 require(rootPrefix + '/services/cache_multi_management/token_balance');
-require(rootPrefix + '/lib/models/dynamodb/shard_helper');
 require(rootPrefix + '/services/dynamodb/api');
 require(rootPrefix + '/services/auto_scale/api');
+require(rootPrefix + '/lib/models/dynamodb/base');
 
 const OpenSTStorage = function(configStrategy) {
   const oThis = this,
     instanceComposer = (oThis.ic = new InstanceComposer(configStrategy)),
     TokenBalanceModel = instanceComposer.getLibDDBTokenBalanceModel(),
     TokenBalanceCache = instanceComposer.getDDBTokenBalanceCache(),
-    ShardHelper = instanceComposer.getLibDDBShardHelper(),
+    DynamoModelBase = instanceComposer.getLibDDBBaseModel(),
     ddbServiceObj = instanceComposer.getDynamoDBService(),
     autoScalingObject = instanceComposer.getAutoScaleService();
 
@@ -32,12 +31,11 @@ const OpenSTStorage = function(configStrategy) {
 
   const model = (oThis.model = {});
   model.TokenBalance = TokenBalanceModel;
-  model.ShardHelper = ShardHelper;
+  model.DynamoBase = DynamoModelBase;
 
   const cache = (oThis.cache = {});
   cache.TokenBalance = TokenBalanceCache;
 
-  oThis.entityTypesConst = entityTypesConst;
   oThis.dynamoDBService = ddbServiceObj;
   oThis.autoScalingService = autoScalingObject;
 };

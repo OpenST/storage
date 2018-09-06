@@ -18,7 +18,6 @@ require(rootPrefix + '/services/dynamodb/create_table_migration');
 require(rootPrefix + '/services/dynamodb/batch_get');
 require(rootPrefix + '/services/dynamodb/batch_write');
 require(rootPrefix + '/services/dynamodb/update_item');
-require(rootPrefix + '/services/dynamodb/shard_management/shard_api');
 
 /**
  * Constructor for DynamoDB api service class
@@ -298,24 +297,6 @@ DynamoDBService.prototype = {
       TableExistServiceApiKlass = oThis.ic().getDDBServiceTableExist(),
       tableExistObject = new TableExistServiceApiKlass(params, 'raw');
     return tableExistObject.perform();
-  },
-
-  /**
-   * It returns Shard service object
-   *
-   * To run shard service apis
-   * runShardMigration()
-   * addShard()
-   * configureShard()
-   * assignShard()
-   * hasShard()
-   * getShardsByType()
-   * getManagedShard()
-   */
-  shardManagement: function() {
-    const oThis = this,
-      ShardServiceApi = oThis.ic().getShardServiceApi();
-    return ShardServiceApi;
   }
 };
 
