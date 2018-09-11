@@ -12,14 +12,14 @@ require(rootPrefix + '/lib/models/dynamodb/token_balance');
 require(rootPrefix + '/services/cache_multi_management/token_balance');
 require(rootPrefix + '/services/dynamodb/api');
 require(rootPrefix + '/services/auto_scale/api');
-require(rootPrefix + '/lib/models/dynamodb/base');
+require(rootPrefix + '/lib/models/shard_helper');
 
 const OpenSTStorage = function(configStrategy) {
   const oThis = this,
     instanceComposer = (oThis.ic = new InstanceComposer(configStrategy)),
     TokenBalanceModel = instanceComposer.getLibDDBTokenBalanceModel(),
     TokenBalanceCache = instanceComposer.getDDBTokenBalanceCache(),
-    DynamoModelBase = instanceComposer.getLibDDBBaseModel(),
+    ShardHelper = instanceComposer.getShardHelperKlass(),
     ddbServiceObj = instanceComposer.getDynamoDBService(),
     autoScalingObject = instanceComposer.getAutoScaleService();
 
@@ -31,7 +31,7 @@ const OpenSTStorage = function(configStrategy) {
 
   const model = (oThis.model = {});
   model.TokenBalance = TokenBalanceModel;
-  model.DynamoBase = DynamoModelBase;
+  model.ShardHelper = ShardHelper;
 
   const cache = (oThis.cache = {});
   cache.TokenBalance = TokenBalanceCache;
