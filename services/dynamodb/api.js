@@ -27,9 +27,7 @@ require(rootPrefix + '/services/dynamodb/shard_management/shard_api');
  *
  * @constructor
  */
-const DynamoDBService = function() {
-  const oThis = this;
-};
+const DynamoDBService = function() {};
 
 DynamoDBService.prototype = {
   /**

@@ -45,7 +45,7 @@ GetShardListCacheKlass.prototype.setCacheKeyToexternalIdMap = function() {
         'dy_sm_gsl_' +
         'et_' +
         oThis.identifiers[i].entity_type +
-        'st_' +
+        '_st_' +
         oThis.identifiers[i].shard_type
     ] = key;
     oThis.idToValueMap[key] = oThis.identifiers[i];

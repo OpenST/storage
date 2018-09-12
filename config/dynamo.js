@@ -40,7 +40,7 @@ DynamoConfigFactory.prototype = {
    * Get provider
    *
    * @param {string} preferredEndpoint - type of service, either raw or dax
-   * @returns <object> - DynamoDB/Dax connection object
+   * @returns {object} - DynamoDB/Dax connection object
    *
    */
   getProvider: async function(preferredEndpoint) {

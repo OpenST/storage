@@ -20,6 +20,7 @@ require(rootPrefix + '/config/core_constants');
  *
  * @param {String} methodName - DDB method name
  * @param {Object} params - DDB method params
+ * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
@@ -35,7 +36,7 @@ Base.prototype = {
   /**
    * Perform method
    *
-   * @return {promise<result>}
+   * @return {Promise<result>}
    *
    */
   perform: async function() {
@@ -60,8 +61,7 @@ Base.prototype = {
   asyncPerform: async function() {
     const oThis = this;
 
-    let r = null;
-    r = oThis.validateParams();
+    let r = oThis.validateParams();
     logger.debug('=======Base.validateParams.result=======');
     logger.debug(r);
     if (r.isFailure()) return r;

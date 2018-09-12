@@ -71,7 +71,7 @@ const batchGetPrototype = {
         unprocessedKeysLength;
 
       while (true) {
-        logger.info('executeDdbRequest batch_get attempNo ', attemptNo);
+        logger.info('executeDdbRequest batch_get attemptNo ', attemptNo);
 
         localResponse = await oThis.batchGetItemAfterWait(batchGetParams, waitTime);
 
@@ -92,7 +92,7 @@ const batchGetPrototype = {
         if (!globalResponse) {
           globalResponse = localResponse;
         } else {
-          // append response of each succesful (partial/complete) attempt to globalresponse
+          // append response of each successful (partial/complete) attempt to globalresponse
           let localResponses = localResponse.data.Responses,
             globalResponses = globalResponse.data.Responses;
           for (let tableName in localResponses) {
