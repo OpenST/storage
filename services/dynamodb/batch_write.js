@@ -68,7 +68,7 @@ const batchWritePrototype = {
         unprocessedItemsLength;
 
       while (true) {
-        logger.info('executeDdbRequest attempNo ', attemptNo);
+        logger.info('executeDdbRequest attemptNo ', attemptNo);
 
         response = await oThis.batchWriteItemAfterWait(batchWriteParams, waitTime);
 

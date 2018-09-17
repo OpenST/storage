@@ -129,10 +129,8 @@ BaseCache.prototype = {
       configStrategy = oThis.ic().configStrategy,
       openSTCache = openStCache.getInstance(configStrategy),
       cacheImplementer = openSTCache.cacheInstance;
-    let cacheFetchResponse = null,
-      cacheKeys = Object.keys(oThis.cacheKeyToexternalIdMap);
-
-    cacheFetchResponse = await cacheImplementer.multiGet(cacheKeys);
+    let cacheKeys = Object.keys(oThis.cacheKeyToexternalIdMap),
+      cacheFetchResponse = await cacheImplementer.multiGet(cacheKeys);
     let cacheMiss = [],
       cachedResponse = {};
 
@@ -189,7 +187,6 @@ BaseCache.prototype = {
    * @return {String}
    */
   _cacheKeyPrefix: function() {
-    const oThis = this;
     return 'ost_base_';
   }
 };

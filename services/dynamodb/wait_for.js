@@ -19,6 +19,7 @@ require(rootPrefix + '/config/core_constants');
  * Constructor for wait for service class
  * @param {Object} params - Parameters
  * @param {String} waitForMethod - wait for method
+ * @param {String} serviceType - type of service supported
  *
  * @constructor
  */

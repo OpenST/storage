@@ -26,9 +26,7 @@ require(rootPrefix + '/services/dynamodb/update_item');
  *
  * @constructor
  */
-const DynamoDBService = function() {
-  const oThis = this;
-};
+const DynamoDBService = function() {};
 
 DynamoDBService.prototype = {
   /**
