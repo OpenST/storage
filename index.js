@@ -2,33 +2,88 @@
  * Index File for openst-storage
  */
 
-"use strict";
+'use strict';
 
-const rootPrefix    = '.'
-  , DynamodbApi  = require(rootPrefix + '/services/dynamodb/api')
-  , AutoScalingApi  = require(rootPrefix + '/services/auto_scale/api')
-  , TokenBalanceModel = require(rootPrefix + '/lib/models/token_balance')
-  , TokenBalanceCache = require(rootPrefix + '/services/cache_multi_management/token_balance')
-  , TransactionLogModel = require(rootPrefix + '/lib/models/transaction_log')
-  , TransactionLogConst = require(rootPrefix + '/lib/global_constant/transaction_log')
-  , EntityTypesConst = require(rootPrefix + '/lib/global_constant/entity_types')
-;
+const rootPrefix = '.',
+  version = require(rootPrefix + '/package.json').version,
+  InstanceComposer = require(rootPrefix + '/instance_composer');
 
-// Expose all libs here.
-// All classes should begin with Capital letter.
-// All instances/objects should begin with small letter.
-module.exports = {
-  Dynamodb : DynamodbApi
-  , AutoScaling : AutoScalingApi
-  , TokenBalanceModel: TokenBalanceModel
-  , TokenBalanceCache: TokenBalanceCache
-  , TransactionLogModel: TransactionLogModel
-  , TransactionLogConst: TransactionLogConst
-  , StorageEntityTypesConst: EntityTypesConst
+require(rootPrefix + '/lib/models/dynamodb/token_balance');
+require(rootPrefix + '/services/cache_multi_management/token_balance');
+require(rootPrefix + '/services/dynamodb/api');
+require(rootPrefix + '/services/auto_scale/api');
+require(rootPrefix + '/lib/models/shard_helper');
+
+const OpenSTStorage = function(configStrategy) {
+  const oThis = this,
+    instanceComposer = (oThis.ic = new InstanceComposer(configStrategy)),
+    TokenBalanceModel = instanceComposer.getLibDDBTokenBalanceModel(),
+    TokenBalanceCache = instanceComposer.getDDBTokenBalanceCache(),
+    ShardHelper = instanceComposer.getShardHelperKlass(),
+    ddbServiceObj = instanceComposer.getDynamoDBService(),
+    autoScalingObject = instanceComposer.getAutoScaleService();
+
+  if (!configStrategy) {
+    throw 'Mandatory argument configStrategy missing';
+  }
+
+  oThis.version = version;
+
+  const model = (oThis.model = {});
+  model.TokenBalance = TokenBalanceModel;
+  model.ShardHelper = ShardHelper;
+
+  const cache = (oThis.cache = {});
+  cache.TokenBalance = TokenBalanceCache;
+
+  oThis.dynamoDBService = ddbServiceObj;
+  oThis.autoScalingService = autoScalingObject;
 };
 
-/*
-  Usage:
+const getInstanceKey = function(configStrategy) {
+  return [
+    configStrategy.OS_DAX_API_VERSION,
+    configStrategy.OS_DAX_ACCESS_KEY_ID,
+    configStrategy.OS_DAX_REGION,
+    configStrategy.OS_DAX_ENDPOINT,
+    configStrategy.OS_DAX_SSL_ENABLED,
 
-  OSTStorage = require("./index");
-*/
+    configStrategy.OS_DYNAMODB_API_VERSION,
+    configStrategy.OS_DYNAMODB_ACCESS_KEY_ID,
+    configStrategy.OS_DYNAMODB_REGION,
+    configStrategy.OS_DYNAMODB_ENDPOINT,
+    configStrategy.OS_DYNAMODB_SSL_ENABLED,
+
+    configStrategy.OS_AUTOSCALING_API_VERSION,
+    configStrategy.OS_AUTOSCALING_ACCESS_KEY_ID,
+    configStrategy.OS_AUTOSCALING_REGION,
+    configStrategy.OS_AUTOSCALING_ENDPOINT,
+    configStrategy.OS_AUTOSCALING_SSL_ENABLED
+  ].join('-');
+};
+
+const instanceMap = {};
+
+const Factory = function() {};
+
+Factory.prototype = {
+  getInstance: function(configStrategy) {
+    // check if instance already present
+    let instanceKey = getInstanceKey(configStrategy),
+      _instance = instanceMap[instanceKey];
+
+    if (!_instance) {
+      _instance = new OpenSTStorage(configStrategy);
+      instanceMap[instanceKey] = _instance;
+    }
+
+    return _instance;
+  }
+};
+
+const factory = new Factory();
+OpenSTStorage.getInstance = function() {
+  return factory.getInstance.apply(factory, arguments);
+};
+
+module.exports = OpenSTStorage;

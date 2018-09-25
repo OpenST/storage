@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /**
  * AutoScale service api
@@ -7,10 +7,9 @@
  *
  */
 
-const rootPrefix  = "../.."
-  , ASBase = require(rootPrefix+'/lib/auto_scale/base')
-  , ASServiceBaseKlass = require(rootPrefix + "/services/auto_scale/base")
-;
+const rootPrefix = '../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer');
+require(rootPrefix + '/services/auto_scale/base');
 
 /**
  * Constructor for AutoScale api service class
@@ -19,15 +18,9 @@ const rootPrefix  = "../.."
  *
  * @constructor
  */
-const AutoScaleService = function(params) {
-  const oThis = this
-  ;
-
-  oThis.autoScaleObject = new ASBase(params);
-};
+const AutoScaleService = function() {};
 
 AutoScaleService.prototype = {
-
   /**
    * Register scalable Target
    *
@@ -36,9 +29,9 @@ AutoScaleService.prototype = {
    * @return {*}
    */
   registerScalableTarget: function(params) {
-    const oThis = this
-      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'registerScalableTarget', params)
-    ;
+    const oThis = this,
+      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      createAutoScalingGroup = new ASServiceBaseKlass('registerScalableTarget', params);
     return createAutoScalingGroup.perform();
   },
 
@@ -49,10 +42,10 @@ AutoScaleService.prototype = {
    *
    * @return {*}
    */
-  putScalingPolicy:function(params) {
-    const oThis = this
-      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'putScalingPolicy', params)
-    ;
+  putScalingPolicy: function(params) {
+    const oThis = this,
+      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      createAutoScalingGroup = new ASServiceBaseKlass('putScalingPolicy', params);
     return createAutoScalingGroup.perform();
   },
 
@@ -64,9 +57,9 @@ AutoScaleService.prototype = {
    * @return {*}
    */
   deleteScalingPolicy: function(params) {
-    const oThis = this
-      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'deleteScalingPolicy', params)
-    ;
+    const oThis = this,
+      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      createAutoScalingGroup = new ASServiceBaseKlass('deleteScalingPolicy', params);
     return createAutoScalingGroup.perform();
   },
 
@@ -78,9 +71,9 @@ AutoScaleService.prototype = {
    * @return {*}
    */
   deregisterScalableTarget: function(params) {
-    const oThis = this
-      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'deregisterScalableTarget', params)
-    ;
+    const oThis = this,
+      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      createAutoScalingGroup = new ASServiceBaseKlass('deregisterScalableTarget', params);
     return createAutoScalingGroup.perform();
   },
 
@@ -92,9 +85,9 @@ AutoScaleService.prototype = {
    * @return {*}
    */
   describeScalableTargets: function(params) {
-    const oThis = this
-      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'describeScalableTargets', params)
-    ;
+    const oThis = this,
+      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      createAutoScalingGroup = new ASServiceBaseKlass('describeScalableTargets', params);
     return createAutoScalingGroup.perform();
   },
 
@@ -106,12 +99,14 @@ AutoScaleService.prototype = {
    * @return {*}
    */
   describeScalingPolicies: function(params) {
-    const oThis = this
-      , createAutoScalingGroup = new ASServiceBaseKlass(oThis.autoScaleObject, 'describeScalingPolicies', params)
-    ;
+    const oThis = this,
+      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      createAutoScalingGroup = new ASServiceBaseKlass('describeScalingPolicies', params);
     return createAutoScalingGroup.perform();
   }
 };
 
 AutoScaleService.prototype.constructor = AutoScaleService;
+
+InstanceComposer.register(AutoScaleService, 'getAutoScaleService', true);
 module.exports = AutoScaleService;
