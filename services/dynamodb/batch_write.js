@@ -88,7 +88,7 @@ const batchWritePrototype = {
         for (let tableName in unprocessedItems) {
           if (unprocessedItems.hasOwnProperty(tableName)) {
             unprocessedItemsLength += unprocessedItems[tableName].length;
-            logger.error(
+            logger.warn(
               'dynamodb BATCH_WRITE ATTEMPT_FAILED TableName :',
               tableName,
               ' unprocessedItemsCount: ',
@@ -98,6 +98,9 @@ const batchWritePrototype = {
               ' attemptNo ',
               attemptNo
             );
+            if (oThis.unprocessedItemsRetryCount) {
+              logger.step('Retry will be attempted.');
+            }
           }
         }
 

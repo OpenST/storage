@@ -110,7 +110,7 @@ const batchGetPrototype = {
         for (let tableName in unprocessedKeys) {
           if (unprocessedKeys.hasOwnProperty(tableName)) {
             unprocessedKeysLength += unprocessedKeys[tableName]['Keys'].length;
-            logger.error(
+            logger.warn(
               'dynamodb BATCH_GET ATTEMPT_FAILED TableName :',
               tableName,
               ' unprocessedItemsCount: ',
@@ -120,6 +120,9 @@ const batchGetPrototype = {
               ' attemptNo ',
               attemptNo
             );
+            if (oThis.unprocessedKeysRetryCount) {
+              logger.step('Retry will be attempted.');
+            }
           }
         }
 
