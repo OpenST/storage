@@ -99,7 +99,7 @@ const batchWritePrototype = {
               attemptNo
             );
             if (oThis.unprocessedItemsRetryCount) {
-              logger.step('Retry will be attempted.');
+              logger.info('Retry will be attempted.');
             }
           }
         }

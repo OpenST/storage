@@ -121,7 +121,7 @@ const batchGetPrototype = {
               attemptNo
             );
             if (oThis.unprocessedKeysRetryCount) {
-              logger.step('Retry will be attempted.');
+              logger.info('Retry will be attempted.');
             }
           }
         }
