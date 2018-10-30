@@ -1,18 +1,13 @@
-"use strict";
+'use strict';
 
 //External Libraries
 const openStCache = require('@openstfoundation/openst-cache');
 
-
-const rootPrefix = '../..'
-  , coreConstants = require(rootPrefix + '/config/core_constants')
-  , responseHelper = require(rootPrefix + '/lib/formatter/response')
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-  , utils = require(rootPrefix + '/lib/utils')
-;
-
-const cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, true)
-;
+const rootPrefix = '../..',
+  InstanceComposer = require(rootPrefix + '/instance_composer'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  utils = require(rootPrefix + '/lib/utils');
 
 /**
  * constructor
@@ -21,8 +16,7 @@ const cacheImplementer = new openStCache.cache(coreConstants.CACHING_ENGINE, tru
  *
  * @constructor
  */
-const BaseCache = function (params) {
-
+const BaseCache = function(params) {
   const oThis = this;
 
   if (!params) {
@@ -38,18 +32,16 @@ const BaseCache = function (params) {
 };
 
 BaseCache.prototype = {
-
   /**
    * Fetch data from cache, in case of cache miss calls sub class method to fetch data from source
    *
    * @return {Promise<Result>} - On success, data.value has value. On failure, error details returned.
    */
-  fetch: async function () {
-    const oThis = this
-    ;
+  fetch: async function() {
+    const oThis = this;
 
-    let data = await oThis._fetchFromCache()
-      , fetchDataRsp = null;
+    let data = await oThis._fetchFromCache(),
+      fetchDataRsp = null;
 
     // if there are any cache misses then fetch that data from source.
     if (data['cacheMiss'].length > 0) {
@@ -79,14 +71,19 @@ BaseCache.prototype = {
    *
    * @return {Promise<Result>}
    */
-  clear: function () {
-    const oThis = this
-    ;
+  clear: function() {
+    const oThis = this,
+      promiseArray = [],
+      configStrategy = oThis.ic().configStrategy,
+      openSTCache = openStCache.getInstance(configStrategy),
+      cacheImplementer = openSTCache.cacheInstance;
 
     for (let i = 0; i < Object.keys(oThis.cacheKeyToexternalIdMap).length; i++) {
       let cacheKey = Object.keys(oThis.cacheKeyToexternalIdMap)[i];
-      cacheImplementer.del(cacheKey);
+      promiseArray.push(cacheImplementer.del(cacheKey));
     }
+
+    return Promise.all(promiseArray);
   },
 
   // methods which sub class would have to implement
@@ -96,7 +93,7 @@ BaseCache.prototype = {
    *
    * @return {String}
    */
-  setCacheKeyToexternalIdMap: function () {
+  setCacheKeyToexternalIdMap: function() {
     throw 'sub class to implement';
   },
 
@@ -105,7 +102,7 @@ BaseCache.prototype = {
    *
    * @return {Number}
    */
-  setCacheExpiry: function () {
+  setCacheExpiry: function() {
     throw 'sub class to implement';
   },
 
@@ -116,7 +113,7 @@ BaseCache.prototype = {
    *
    * @return {Result}
    */
-  fetchDataFromSource: async function (cacheIds) {
+  fetchDataFromSource: async function(cacheIds) {
     throw 'sub class to implement';
   },
 
@@ -127,16 +124,15 @@ BaseCache.prototype = {
    *
    * @return {Object}
    */
-  _fetchFromCache: async function () {
-
-    const oThis = this;
-    let cacheFetchResponse = null
-      , cacheKeys = Object.keys(oThis.cacheKeyToexternalIdMap);
-
-    cacheFetchResponse = await cacheImplementer.multiGet(cacheKeys);
-    let cacheMiss = []
-      , cachedResponse = {}
-    ;
+  _fetchFromCache: async function() {
+    const oThis = this,
+      configStrategy = oThis.ic().configStrategy,
+      openSTCache = openStCache.getInstance(configStrategy),
+      cacheImplementer = openSTCache.cacheInstance;
+    let cacheKeys = Object.keys(oThis.cacheKeyToexternalIdMap),
+      cacheFetchResponse = await cacheImplementer.multiGet(cacheKeys);
+    let cacheMiss = [],
+      cachedResponse = {};
 
     if (cacheFetchResponse.isSuccess()) {
       let cachedData = cacheFetchResponse.data.response;
@@ -149,14 +145,14 @@ BaseCache.prototype = {
         }
       }
     } else {
-      logger.error("==>Error while getting from cache: ", cacheFetchResponse);
+      logger.error('==>Error while getting from cache: ', cacheFetchResponse);
       for (let i = 0; i < cacheKeys.length; i++) {
         let cacheKey = cacheKeys[i];
         cacheMiss.push(oThis.cacheKeyToexternalIdMap[cacheKey]);
       }
     }
 
-    return {cacheMiss: cacheMiss, cachedData: cachedResponse};
+    return { cacheMiss: cacheMiss, cachedData: cachedResponse };
   },
 
   /**
@@ -167,17 +163,18 @@ BaseCache.prototype = {
    *
    * @return {result}
    */
-  _setCache: function (key, dataToSet) {
+  _setCache: function(key, dataToSet) {
+    const oThis = this,
+      configStrategy = oThis.ic().configStrategy,
+      openSTCache = openStCache.getInstance(configStrategy),
+      cacheImplementer = openSTCache.cacheInstance;
 
-    const oThis = this;
-
-    var setCacheFunction = function (k, v) {
-      var cacheKey = utils.invert(oThis.cacheKeyToexternalIdMap)[k];
+    let setCacheFunction = function(k, v) {
+      const cacheKey = utils.invert(oThis.cacheKeyToexternalIdMap)[k];
       return cacheImplementer.set(cacheKey, JSON.stringify(v), oThis.cacheExpiry);
     };
 
-    setCacheFunction(key, dataToSet).then(function (cacheSetResponse) {
-
+    setCacheFunction(key, dataToSet).then(function(cacheSetResponse) {
       if (cacheSetResponse.isFailure()) {
         logger.error('cmm_b_2', 'Something Went Wrong', cacheSetResponse);
       }
@@ -189,11 +186,10 @@ BaseCache.prototype = {
    *
    * @return {String}
    */
-  _cacheKeyPrefix: function () {
-    const oThis = this;
+  _cacheKeyPrefix: function() {
     return 'ost_base_';
   }
-
 };
 
+InstanceComposer.registerShadowableClass(BaseCache, 'getDDBCacheBaseCache');
 module.exports = BaseCache;

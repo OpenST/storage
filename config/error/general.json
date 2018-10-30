@@ -168,5 +168,10 @@
     "http_code": "422",
     "code": "UNPROCESSABLE_ENTITY",
     "message": "DDB Batch GET failed for some or all entries."
+  },
+  "invalid_balance": {
+    "http_code": "422",
+    "code": "UNPROCESSABLE_ENTITY",
+    "message": "Invalid balance was obtained."
   }
 }

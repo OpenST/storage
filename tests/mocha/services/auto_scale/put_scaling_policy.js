@@ -1,61 +1,57 @@
-"use strict";
+'use strict';
 
 // Load external packages
-const Chai = require('chai')
-  , assert = Chai.assert
-;
+const Chai = require('chai'),
+  assert = Chai.assert;
 
 // Load dependencies package
-const rootPrefix = "../../../.."
-  , ApplicationAutoScalingKlass = require(rootPrefix + "/index").AutoScaling
-  , DdbApiKlass = require(rootPrefix + "/index").Dynamodb
-  , testConstants = require(rootPrefix + '/tests/mocha/services/constants')
-  , helper = require(rootPrefix + "/tests/mocha/services/auto_scale/helper")
-  , logger = require(rootPrefix + "/lib/logger/custom_console_logger")
-;
+const rootPrefix = '../../../..',
+  openStStorage = require(rootPrefix + '/index'),
+  testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
+  helper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper'),
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
-const autoScaleObj = new ApplicationAutoScalingKlass(testConstants.AUTO_SCALE_CONFIGURATIONS_REMOTE)
-  , dynamodbApiObject = new DdbApiKlass(testConstants.DYNAMODB_CONFIGURATIONS_REMOTE)
-;
+const openStStorageObject = openStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
+  autoScaleObj = openStStorageObject.ic.getAutoScaleService(),
+  dynamodbApiObject = openStStorageObject.dynamoDBService;
 
-let resourceId = 'table/' + testConstants.transactionLogTableName
-  , roleARN = null;
+let resourceId = 'table/' + testConstants.transactionLogTableName,
+  roleARN = null;
 
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
-  optionsDesc = optionsDesc || "";
+  optionsDesc = optionsDesc || '';
 
-  options = options || {invalidResId : false};
+  options = options || { invalidResId: false };
 
-  it(optionsDesc, async function () {
+  it(optionsDesc, async function() {
     this.timeout(100000);
 
-    let resId = "table/" + testConstants.transactionLogTableName;
+    let resId = 'table/' + testConstants.transactionLogTableName;
     if (options.invalidResId) {
-      resId = "invalidResId"
+      resId = 'invalidResId';
     }
 
     const scalableTargetParams = {
-      ResourceId: resourceId, /* required */
+      ResourceId: resourceId /* required */,
       ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
-      ServiceNamespace: 'dynamodb', /* required */
+      ServiceNamespace: 'dynamodb' /* required */,
       MaxCapacity: 15,
       MinCapacity: 1,
       RoleARN: roleARN
-
     };
     const registerScalableTargetResponse = await autoScaleObj.registerScalableTarget(scalableTargetParams);
     assert.equal(registerScalableTargetResponse.isSuccess(), true, 'registerScalableTarget failed');
 
     let scalingPolicy = null;
     if (options.stepScaling) {
-       scalingPolicy = {
-        PolicyName: testConstants.transactionLogTableName + "-scaling-policy",
-        PolicyType: "StepScaling",
+      scalingPolicy = {
+        PolicyName: testConstants.transactionLogTableName + '-scaling-policy',
+        PolicyType: 'StepScaling',
         ResourceId: resId,
-        ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-        ServiceNamespace: "dynamodb",
+        ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
+        ServiceNamespace: 'dynamodb',
         StepScalingPolicyConfiguration: {
-          AdjustmentType: "PercentChangeInCapacity",
+          AdjustmentType: 'PercentChangeInCapacity',
           Cooldown: 60,
           StepAdjustments: [
             {
@@ -67,14 +63,14 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
       };
     } else {
       scalingPolicy = {
-        ServiceNamespace: "dynamodb",
+        ServiceNamespace: 'dynamodb',
         ResourceId: resId,
-        ScalableDimension: "dynamodb:table:WriteCapacityUnits",
-        PolicyName: testConstants.transactionLogTableName + "-scaling-policy",
-        PolicyType: "TargetTrackingScaling",
+        ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
+        PolicyName: testConstants.transactionLogTableName + '-scaling-policy',
+        PolicyType: 'TargetTrackingScaling',
         TargetTrackingScalingPolicyConfiguration: {
           PredefinedMetricSpecification: {
-            PredefinedMetricType: "DynamoDBWriteCapacityUtilization"
+            PredefinedMetricType: 'DynamoDBWriteCapacityUtilization'
           },
           ScaleOutCooldown: 60,
           ScaleInCooldown: 60,
@@ -89,19 +85,17 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   });
 };
 
-describe('services/auto_scale/api#putScalingPolicy', function () {
-
+describe('services/auto_scale/api#putScalingPolicy', function() {
   before(async function() {
     this.timeout(1000000);
 
     const returnObject = await helper.createTestCaseEnvironment(dynamodbApiObject, autoScaleObj);
     roleARN = returnObject.role_arn;
-
   });
 
-  createTestCasesForOptions("Put scaling policy happy case", null, true);
+  createTestCasesForOptions('Put scaling policy happy case', null, true);
 
-  createTestCasesForOptions("Put scaling policy invalid resource Id case", {invalidResId : true}, false);
+  createTestCasesForOptions('Put scaling policy invalid resource Id case', { invalidResId: true }, false);
 
   // TODO test case for step scaling
   //createTestCasesForOptions("Put scaling policy having step scaling ", {stepScaling : true}, true);
@@ -110,5 +104,4 @@ describe('services/auto_scale/api#putScalingPolicy', function () {
     this.timeout(1000000);
     await helper.cleanTestCaseEnvironment(dynamodbApiObject, autoScaleObj);
   });
-
 });
