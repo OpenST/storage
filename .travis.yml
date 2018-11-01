@@ -5,6 +5,7 @@ branches:
   only:
   - master
   - develop
+  - review-changes-2805
 notifications:
   email:
     recipients:
