@@ -216,8 +216,8 @@ DynamoDBService.prototype = {
    */
   putItem: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
-      putItemObject = new DDBServiceBaseKlass('putItem', params, 'dax');
+      modifyItemKlass = oThis.ic().getDDBServiceModifyItem(),
+      putItemObject = new modifyItemKlass(params, 'putItem', retryCount, 'dax');
     return putItemObject.perform();
   },
 
@@ -232,8 +232,8 @@ DynamoDBService.prototype = {
    */
   updateItem: function(params, retryCount) {
     const oThis = this,
-      UpdateItemKlass = oThis.ic().getDDBServiceModifyItem(),
-      updateItemObject = new UpdateItemKlass(params, 'updateItem', retryCount, 'dax');
+      modifyItemKlass = oThis.ic().getDDBServiceModifyItem(),
+      updateItemObject = new modifyItemKlass(params, 'updateItem', retryCount, 'dax');
     return updateItemObject.perform();
   },
 
@@ -247,8 +247,8 @@ DynamoDBService.prototype = {
    */
   deleteItem: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
-      deleteItemObject = new DDBServiceBaseKlass('deleteItem', params, 'dax');
+      modifyItemKlass = oThis.ic().getDDBServiceModifyItem(),
+      deleteItemObject = new modifyItemKlass(params, 'deleteItem', retryCount, 'dax');
     return deleteItemObject.perform();
   },
 

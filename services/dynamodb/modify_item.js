@@ -63,8 +63,10 @@ const modifyItemPrototype = {
 
         response = await oThis.modifyItemAfterWait(oThis.params, waitTime);
 
-        // if success or if error was any other than was ProvisionedThroughputExceededException return
-        if (response.isSuccess() || !response.internalErrorCode.includes('ProvisionedThroughputExceededException')) {
+        // if success or if error was any other than was ProvisionedThroughputExceededException or ResourceNotFoundException return
+        if (response.isSuccess() ||
+          !response.internalErrorCode.includes('ProvisionedThroughputExceededException') ||
+          !response.internalErrorCode.includes('ResourceNotFoundException')) {
           return response;
         }
 
