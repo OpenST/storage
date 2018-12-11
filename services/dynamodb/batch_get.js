@@ -71,7 +71,7 @@ const batchGetPrototype = {
         unprocessedKeysLength;
 
       while (true) {
-        logger.info('executeDdbRequest batch_get attemptNo ', attemptNo);
+        logger.debug('executeDdbRequest batch_get attemptNo ', attemptNo);
 
         localResponse = await oThis.batchGetItemAfterWait(batchGetParams, waitTime);
 
