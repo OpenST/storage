@@ -214,7 +214,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  putItem: function(params) {
+  putItem: function(params, retryCount) {
     const oThis = this,
       modifyItemKlass = oThis.ic().getDDBServiceModifyItem(),
       putItemObject = new modifyItemKlass(params, 'putItem', retryCount, 'dax');
@@ -245,7 +245,7 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  deleteItem: function(params) {
+  deleteItem: function(params, retryCount) {
     const oThis = this,
       modifyItemKlass = oThis.ic().getDDBServiceModifyItem(),
       deleteItemObject = new modifyItemKlass(params, 'deleteItem', retryCount, 'dax');
