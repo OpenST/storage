@@ -19,26 +19,28 @@ require(rootPrefix + '/config/core_constants');
  * Constructor for updateItem service class
  *
  * @param {Object} params - Parameters
- * @param {Integer} retryCount - Retry count for ProvisionedThroughputExceededException exception (optional)
+ * @param {String} modifyType - Type of modification required on item (Put, Update, Delete)
+ * @param {Number} retryCount - Retry count for ProvisionedThroughputExceededException exception (optional)
  * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
-const UpdateItem = function(params, retryCount, serviceType) {
+const ModifyItem = function(params, modifyType, retryCount, serviceType) {
   const oThis = this;
   oThis.serviceType = serviceType;
   if (retryCount) {
     oThis.attemptToPerformCount = retryCount + 1;
   } else {
-    oThis.attemptToPerformCount = 1;
+    oThis.attemptToPerformCount = 5;
   }
+  oThis.modifyType = modifyType;
 
-  base.call(oThis, 'updateItem', params, serviceType);
+  base.call(oThis, oThis.modifyType, params, serviceType);
 };
 
-UpdateItem.prototype = Object.create(base.prototype);
+ModifyItem.prototype = Object.create(base.prototype);
 
-const updateItemPrototype = {
+const modifyItemPrototype = {
   /**
    * Execute dynamoDB request
    *
@@ -57,9 +59,9 @@ const updateItemPrototype = {
         attemptNo = 1;
 
       while (attemptNo <= oThis.attemptToPerformCount) {
-        logger.debug('updateItem attemptNo ', attemptNo);
+        logger.debug(`dynamodb ${oThis.modifyType} attemptNo : ${attemptNo}`);
 
-        response = await oThis.updateItemAfterWait(oThis.params, waitTime);
+        response = await oThis.modifyItemAfterWait(oThis.params, waitTime);
 
         // if success or if error was any other than was ProvisionedThroughputExceededException return
         if (response.isSuccess() || !response.internalErrorCode.includes('ProvisionedThroughputExceededException')) {
@@ -67,7 +69,7 @@ const updateItemPrototype = {
         }
 
         logger.error(
-          `dynamodb UPDATE_ITEM ATTEMPT_FAILED TableName : ${oThis.params.TableName} attemptNo : ${attemptNo}`
+          `dynamodb ${oThis.modifyType} ATTEMPT_FAILED TableName : ${oThis.params.TableName} attemptNo : ${attemptNo}`
         );
 
         //adjust retry variables
@@ -77,13 +79,13 @@ const updateItemPrototype = {
       }
 
       logger.error(
-        `dynamodb UPDATE_ITEM ALL_ATTEMPTS_FAILED TableName : ${oThis.params.TableName} attemptToPerformCount : ${
+        `dynamodb ${oThis.modifyType} ALL_ATTEMPTS_FAILED TableName : ${oThis.params.TableName} attemptToPerformCount : ${
           oThis.attemptToPerformCount
         }`
       );
       return response;
     } catch (err) {
-      logger.error('services/dynamodb/update_item.js:executeDdbRequest inside catch ', err);
+      logger.error('services/dynamodb/modify_item.js:executeDdbRequest inside catch ', err);
       return responseHelper.error({
         internal_error_identifier: 's_dy_ui_executeDdbRequest_1',
         api_error_identifier: 'exception',
@@ -94,14 +96,14 @@ const updateItemPrototype = {
   },
 
   /**
-   * Update Item after wait time
+   * Modify Item after wait time
    *
-   * @param {Object} updateItemParams - Update Item params
-   * @param {Integer} waitTime - wait time in milliseconds
+   * @param {Object} itemParams - Item params
+   * @param {Number} waitTime - wait time in milliseconds
    *
    * @return {Promise<any>}
    */
-  updateItemAfterWait: async function(updateItemParams, waitTime) {
+  modifyItemAfterWait: async function(itemParams, waitTime) {
     const oThis = this;
 
     return new Promise(function(resolve) {
@@ -109,16 +111,16 @@ const updateItemPrototype = {
         let r = await oThis
           .ic()
           .getLibDynamoDBBase()
-          .queryDdb(oThis.methodName, oThis.serviceType, updateItemParams);
+          .queryDdb(oThis.methodName, oThis.serviceType, itemParams);
         resolve(r);
       }, waitTime);
     });
   }
 };
 
-Object.assign(UpdateItem.prototype, updateItemPrototype);
-UpdateItem.prototype.constructor = updateItemPrototype;
+Object.assign(ModifyItem.prototype, modifyItemPrototype);
+ModifyItem.prototype.constructor = modifyItemPrototype;
 
-InstanceComposer.registerShadowableClass(UpdateItem, 'getDDBServiceUpdateItem');
+InstanceComposer.registerShadowableClass(ModifyItem, 'getDDBServiceModifyItem');
 
-module.exports = UpdateItem;
+module.exports = ModifyItem;

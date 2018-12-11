@@ -17,7 +17,7 @@ require(rootPrefix + '/services/dynamodb/wait_for');
 require(rootPrefix + '/services/dynamodb/create_table_migration');
 require(rootPrefix + '/services/dynamodb/batch_get');
 require(rootPrefix + '/services/dynamodb/batch_write');
-require(rootPrefix + '/services/dynamodb/update_item');
+require(rootPrefix + '/services/dynamodb/modify_item');
 
 /**
  * Constructor for DynamoDB api service class
@@ -232,8 +232,8 @@ DynamoDBService.prototype = {
    */
   updateItem: function(params, retryCount) {
     const oThis = this,
-      UpdateItemKlass = oThis.ic().getDDBServiceUpdateItem(),
-      updateItemObject = new UpdateItemKlass(params, retryCount, 'dax');
+      UpdateItemKlass = oThis.ic().getDDBServiceModifyItem(),
+      updateItemObject = new UpdateItemKlass(params, 'updateItem', retryCount, 'dax');
     return updateItemObject.perform();
   },
 
