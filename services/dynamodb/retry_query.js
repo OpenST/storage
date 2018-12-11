@@ -63,18 +63,20 @@ const retryQueryPrototype = {
 
         response = await oThis.queryAfterWait(oThis.params, waitTime);
 
-        // if success or if error was any other than was ProvisionedThroughputExceededException or ResourceNotFoundException return
+        // if success or if error was any other than was ResourceNotFoundException return
+        // NOTE: Except batch requests, all other retries are already handled by AWS SDK
         if (response.isSuccess() ||
-          //RequestLimitExceeded
-          //Internal Server Error (HTTP 500)
-          //Service Unavailable (HTTP 503)
-          !response.internalErrorCode.includes('ProvisionedThroughputExceededException') ||
-          !response.internalErrorCode.includes('ResourceNotFoundException')) {
+          !response.toHash().err.internal_id.includes('ResourceNotFoundException')){
           return response;
         }
 
-        logger.error(
-          `dynamodb ${oThis.queryType} ATTEMPT_FAILED TableName : ${oThis.params.TableName} attemptNo : ${attemptNo}`
+        logger.warn(
+          'DynamoDB ATTEMPT_FAILED TableName: ',
+          oThis.params.TableName,
+          'Query Type: ',
+          oThis.queryType,
+          'attemptNo: ',
+          attemptNo
         );
 
         //adjust retry variables
@@ -84,10 +86,14 @@ const retryQueryPrototype = {
       }
 
       logger.error(
-        `dynamodb ${oThis.queryType} ALL_ATTEMPTS_FAILED TableName : ${oThis.params.TableName} attemptToPerformCount : ${
-          oThis.attemptToPerformCount
-        }`
+        'DynamoDB ALL_ATTEMPTS_FAILED TableName: ',
+        oThis.params.TableName,
+        'Query Type: ',
+        oThis.queryType,
+        'attemptToPerformCount: ',
+        oThis.attemptToPerformCount
       );
+
       return response;
     } catch (err) {
       logger.error('services/dynamodb/retry_query.js:executeDdbRequest inside catch ', err);

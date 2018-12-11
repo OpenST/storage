@@ -111,7 +111,7 @@ const batchGetPrototype = {
           if (unprocessedKeys.hasOwnProperty(tableName)) {
             unprocessedKeysLength += unprocessedKeys[tableName]['Keys'].length;
             logger.warn(
-              'dynamodb BATCH_GET ATTEMPT_FAILED TableName :',
+              'DynamoDB BATCH_GET ATTEMPT_FAILED TableName :',
               tableName,
               ' unprocessedItemsCount: ',
               unprocessedKeysLength,
@@ -145,7 +145,7 @@ const batchGetPrototype = {
       for (let tableName in unprocessedKeys) {
         if (unprocessedKeys.hasOwnProperty(tableName)) {
           logger.error(
-            'dynamodb BATCH_GET ALL_ATTEMPTS_FAILED TableName :',
+            'DynamoDB BATCH_GET ALL_ATTEMPTS_FAILED TableName :',
             tableName,
             ' unprocessedItemsCount: ',
             unprocessedKeysLength,

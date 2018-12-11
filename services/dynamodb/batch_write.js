@@ -89,7 +89,7 @@ const batchWritePrototype = {
           if (unprocessedItems.hasOwnProperty(tableName)) {
             unprocessedItemsLength += unprocessedItems[tableName].length;
             logger.warn(
-              'dynamodb BATCH_WRITE ATTEMPT_FAILED TableName :',
+              'DynamoDB BATCH_WRITE ATTEMPT_FAILED TableName :',
               tableName,
               ' unprocessedItemsCount: ',
               unprocessedItemsLength,
@@ -122,7 +122,7 @@ const batchWritePrototype = {
       for (let tableName in unprocessedItems) {
         if (unprocessedItems.hasOwnProperty(tableName)) {
           logger.error(
-            'dynamodb BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :',
+            'DynamoDB BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :',
             tableName,
             ' unprocessedItemsCount: ',
             unprocessedItemsLength,
