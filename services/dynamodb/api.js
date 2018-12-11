@@ -17,7 +17,7 @@ require(rootPrefix + '/services/dynamodb/wait_for');
 require(rootPrefix + '/services/dynamodb/create_table_migration');
 require(rootPrefix + '/services/dynamodb/batch_get');
 require(rootPrefix + '/services/dynamodb/batch_write');
-require(rootPrefix + '/services/dynamodb/modify_item');
+require(rootPrefix + '/services/dynamodb/retry_query');
 
 /**
  * Constructor for DynamoDB api service class
@@ -184,10 +184,10 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  query: function(params) {
+  query: function(params, retryCount) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
-      queryObject = new DDBServiceBaseKlass('query', params, 'dax');
+      retryQueryKlass = oThis.ic().getDDBServiceRetryQuery(),
+      queryObject = new retryQueryKlass(params, 'query', retryCount, 'dax');
     return queryObject.perform();
   },
 
@@ -199,10 +199,10 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  scan: function(params) {
+  scan: function(params, retryCount) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
-      scanObject = new DDBServiceBaseKlass('scan', params, 'dax');
+      retryQueryKlass = oThis.ic().getDDBServiceRetryQuery(),
+      scanObject = new retryQueryKlass(params, 'scan', retryCount, 'dax');
     return scanObject.perform();
   },
 
@@ -216,8 +216,8 @@ DynamoDBService.prototype = {
    */
   putItem: function(params, retryCount) {
     const oThis = this,
-      modifyItemKlass = oThis.ic().getDDBServiceModifyItem(),
-      putItemObject = new modifyItemKlass(params, 'putItem', retryCount, 'dax');
+      retryQueryKlass = oThis.ic().getDDBServiceRetryQuery(),
+      putItemObject = new retryQueryKlass(params, 'putItem', retryCount, 'dax');
     return putItemObject.perform();
   },
 
@@ -232,8 +232,8 @@ DynamoDBService.prototype = {
    */
   updateItem: function(params, retryCount) {
     const oThis = this,
-      modifyItemKlass = oThis.ic().getDDBServiceModifyItem(),
-      updateItemObject = new modifyItemKlass(params, 'updateItem', retryCount, 'dax');
+      retryQueryKlass = oThis.ic().getDDBServiceRetryQuery(),
+      updateItemObject = new retryQueryKlass(params, 'updateItem', retryCount, 'dax');
     return updateItemObject.perform();
   },
 
@@ -247,8 +247,8 @@ DynamoDBService.prototype = {
    */
   deleteItem: function(params, retryCount) {
     const oThis = this,
-      modifyItemKlass = oThis.ic().getDDBServiceModifyItem(),
-      deleteItemObject = new modifyItemKlass(params, 'deleteItem', retryCount, 'dax');
+      retryQueryKlass = oThis.ic().getDDBServiceRetryQuery(),
+      deleteItemObject = new retryQueryKlass(params, 'deleteItem', retryCount, 'dax');
     return deleteItemObject.perform();
   },
 

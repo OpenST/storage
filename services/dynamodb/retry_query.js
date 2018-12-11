@@ -16,16 +16,16 @@ const rootPrefix = '../..',
 require(rootPrefix + '/config/core_constants');
 
 /**
- * Constructor for updateItem service class
+ * Constructor for RetryQuery service class
  *
  * @param {Object} params - Parameters
- * @param {String} modifyType - Type of modification required on item (Put, Update, Delete)
+ * @param {String} queryType - Type of Query (PutItem, UpdateItem, DeleteItem, Query, Scan)
  * @param {Number} retryCount - Retry count for ProvisionedThroughputExceededException exception (optional)
  * @param {String} serviceType - type of service supported
  *
  * @constructor
  */
-const ModifyItem = function(params, modifyType, retryCount, serviceType) {
+const RetryQuery = function(params, queryType, retryCount, serviceType) {
   const oThis = this;
   oThis.serviceType = serviceType;
   if (retryCount) {
@@ -33,14 +33,14 @@ const ModifyItem = function(params, modifyType, retryCount, serviceType) {
   } else {
     oThis.attemptToPerformCount = 5;
   }
-  oThis.modifyType = modifyType;
+  oThis.queryType = queryType;
 
-  base.call(oThis, oThis.modifyType, params, serviceType);
+  base.call(oThis, oThis.queryType, params, serviceType);
 };
 
-ModifyItem.prototype = Object.create(base.prototype);
+RetryQuery.prototype = Object.create(base.prototype);
 
-const modifyItemPrototype = {
+const retryQueryPrototype = {
   /**
    * Execute dynamoDB request
    *
@@ -59,19 +59,22 @@ const modifyItemPrototype = {
         attemptNo = 1;
 
       while (attemptNo <= oThis.attemptToPerformCount) {
-        logger.debug(`dynamodb ${oThis.modifyType} attemptNo : ${attemptNo}`);
+        logger.debug(`dynamodb ${oThis.queryType} attemptNo : ${attemptNo}`);
 
-        response = await oThis.modifyItemAfterWait(oThis.params, waitTime);
+        response = await oThis.queryAfterWait(oThis.params, waitTime);
 
         // if success or if error was any other than was ProvisionedThroughputExceededException or ResourceNotFoundException return
         if (response.isSuccess() ||
+          //RequestLimitExceeded
+          //Internal Server Error (HTTP 500)
+          //Service Unavailable (HTTP 503)
           !response.internalErrorCode.includes('ProvisionedThroughputExceededException') ||
           !response.internalErrorCode.includes('ResourceNotFoundException')) {
           return response;
         }
 
         logger.error(
-          `dynamodb ${oThis.modifyType} ATTEMPT_FAILED TableName : ${oThis.params.TableName} attemptNo : ${attemptNo}`
+          `dynamodb ${oThis.queryType} ATTEMPT_FAILED TableName : ${oThis.params.TableName} attemptNo : ${attemptNo}`
         );
 
         //adjust retry variables
@@ -81,13 +84,13 @@ const modifyItemPrototype = {
       }
 
       logger.error(
-        `dynamodb ${oThis.modifyType} ALL_ATTEMPTS_FAILED TableName : ${oThis.params.TableName} attemptToPerformCount : ${
+        `dynamodb ${oThis.queryType} ALL_ATTEMPTS_FAILED TableName : ${oThis.params.TableName} attemptToPerformCount : ${
           oThis.attemptToPerformCount
         }`
       );
       return response;
     } catch (err) {
-      logger.error('services/dynamodb/modify_item.js:executeDdbRequest inside catch ', err);
+      logger.error('services/dynamodb/retry_query.js:executeDdbRequest inside catch ', err);
       return responseHelper.error({
         internal_error_identifier: 's_dy_ui_executeDdbRequest_1',
         api_error_identifier: 'exception',
@@ -98,14 +101,14 @@ const modifyItemPrototype = {
   },
 
   /**
-   * Modify Item after wait time
+   * Query DDB after wait time
    *
-   * @param {Object} itemParams - Item params
+   * @param {Object} queryParams - Query params
    * @param {Number} waitTime - wait time in milliseconds
    *
    * @return {Promise<any>}
    */
-  modifyItemAfterWait: async function(itemParams, waitTime) {
+  queryAfterWait: async function(queryParams, waitTime) {
     const oThis = this;
 
     return new Promise(function(resolve) {
@@ -113,16 +116,16 @@ const modifyItemPrototype = {
         let r = await oThis
           .ic()
           .getLibDynamoDBBase()
-          .queryDdb(oThis.methodName, oThis.serviceType, itemParams);
+          .queryDdb(oThis.methodName, oThis.serviceType, queryParams);
         resolve(r);
       }, waitTime);
     });
   }
 };
 
-Object.assign(ModifyItem.prototype, modifyItemPrototype);
-ModifyItem.prototype.constructor = modifyItemPrototype;
+Object.assign(RetryQuery.prototype, retryQueryPrototype);
+RetryQuery.prototype.constructor = retryQueryPrototype;
 
-InstanceComposer.registerShadowableClass(ModifyItem, 'getDDBServiceModifyItem');
+InstanceComposer.registerShadowableClass(RetryQuery, 'getDDBServiceRetryQuery');
 
-module.exports = ModifyItem;
+module.exports = RetryQuery;
