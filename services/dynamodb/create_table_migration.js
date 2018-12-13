@@ -12,12 +12,14 @@
  */
 
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer'),
   DDBServiceBaseKlass = require(rootPrefix + '/services/dynamodb/base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
 
-require(rootPrefix + '/config/core_constants');
+const InstanceComposer = OSTBase.InstanceComposer;
+
 require(rootPrefix + '/services/auto_scale/api');
 
 /**
@@ -37,7 +39,7 @@ require(rootPrefix + '/services/auto_scale/api');
  */
 const CreateTableMigration = function(params, serviceType) {
   const oThis = this;
-  oThis.autoScalingObject = oThis.ic().getAutoScaleService();
+  oThis.autoScalingObject = oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getAutoScaleService');
   oThis.createTableConfig = params.createTableConfig;
   //oThis.updateContinuousBackupConfig = params.updateContinuousBackupConfig;
   oThis.autoScalingConfig = params.autoScalingConfig;
@@ -64,7 +66,7 @@ const CreateTableMigrationPrototype = {
    */
   validateParams: function() {
     const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants(),
+      configStrategy = oThis.ic().configStrategy,
       baseValidationResponse = DDBServiceBaseKlass.prototype.validateParams.call(oThis);
     if (baseValidationResponse.isFailure()) return baseValidationResponse;
 
@@ -81,7 +83,7 @@ const CreateTableMigrationPrototype = {
     //   return responseHelper.error('l_dy_ctm_validateParams_3', 'updateContinuousBackupConfig config is mandatory');
     // }
 
-    if (coreConstants.AUTO_SCALE_DYNAMO) {
+    if (configStrategy.storage.enableAutoscaling) {
       if (oThis.autoScalingObject.constructor.name !== 'AutoScaleService') {
         return responseHelper.error({
           internal_error_identifier: 'l_dy_ctm_validateParams_1',
@@ -153,8 +155,9 @@ const CreateTableMigrationPrototype = {
   // TODO Refactor to small methods
   executeDdbRequest: function() {
     const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants(),
-      ddbObject = oThis.ic().getLibDynamoDBBase();
+      ddbObject = oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase'),
+      configStrategy = oThis.ic().configStrategy;
+    
     return new Promise(async function(onResolve) {
       logger.info('Creating table..');
       const createTableResponse = await ddbObject.queryDdb('createTable', oThis.serviceType, oThis.createTableConfig);
@@ -180,7 +183,7 @@ const CreateTableMigrationPrototype = {
       }
       logger.info(tableName + ' Table created..');
 
-      if (coreConstants.AUTO_SCALE_DYNAMO) {
+      if (configStrategy.storage.enableAutoscaling) {
         oThis.autoScalingConfig.registerScalableTargetWrite.RoleARN = roleARN;
         oThis.autoScalingConfig.registerScalableTargetRead.RoleARN = roleARN;
 
@@ -271,6 +274,10 @@ const CreateTableMigrationPrototype = {
 Object.assign(CreateTableMigration.prototype, CreateTableMigrationPrototype);
 CreateTableMigration.prototype.constructor = CreateTableMigration;
 
-InstanceComposer.registerShadowableClass(CreateTableMigration, 'getDDBServiceCreateTableMigration');
+InstanceComposer.registerAsShadowableClass(
+  CreateTableMigration,
+  coreConstants.icNameSpace,
+  'getDDBServiceCreateTableMigration'
+);
 
 module.exports = CreateTableMigration;

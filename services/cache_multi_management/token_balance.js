@@ -1,13 +1,15 @@
 'use strict';
 
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer'),
   baseCache = require(rootPrefix + '/services/cache_multi_management/base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  BigNumber = require('bignumber.js');
+  BigNumber = require('bignumber.js'),
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
 
-require(rootPrefix + '/config/core_constants');
+const InstanceComposer = OSTBase.InstanceComposer;
+
 require(rootPrefix + '/lib/models/dynamodb/token_balance');
 
 /**
@@ -89,8 +91,7 @@ const tokenBalanceCacheSpecificPrototype = {
    */
   fetchDataFromSource: async function(ethereumAddresses) {
     const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants(),
-      TokenBalanceModel = oThis.ic().getLibDDBTokenBalanceModel();
+      TokenBalanceModel = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getLibDDBTokenBalanceModel');
 
     if (!ethereumAddresses) {
       return responseHelper.error({
@@ -187,6 +188,10 @@ const tokenBalanceCacheSpecificPrototype = {
 
 Object.assign(TokenBalanceCache.prototype, tokenBalanceCacheSpecificPrototype);
 
-InstanceComposer.registerShadowableClass(TokenBalanceCache, 'getDDBTokenBalanceCache');
+InstanceComposer.registerAsShadowableClass(
+  TokenBalanceCache,
+  coreConstants.icNameSpace,
+  'getDDBTokenBalanceCache'
+);
 
 module.exports = TokenBalanceCache;

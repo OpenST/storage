@@ -8,7 +8,11 @@
  */
 
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer');
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
+
+const InstanceComposer = OSTBase.InstanceComposer;
+
 require(rootPrefix + '/services/auto_scale/base');
 
 /**
@@ -30,7 +34,7 @@ AutoScaleService.prototype = {
    */
   registerScalableTarget: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('registerScalableTarget', params);
     return createAutoScalingGroup.perform();
   },
@@ -44,7 +48,7 @@ AutoScaleService.prototype = {
    */
   putScalingPolicy: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('putScalingPolicy', params);
     return createAutoScalingGroup.perform();
   },
@@ -58,7 +62,7 @@ AutoScaleService.prototype = {
    */
   deleteScalingPolicy: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('deleteScalingPolicy', params);
     return createAutoScalingGroup.perform();
   },
@@ -72,7 +76,7 @@ AutoScaleService.prototype = {
    */
   deregisterScalableTarget: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('deregisterScalableTarget', params);
     return createAutoScalingGroup.perform();
   },
@@ -86,7 +90,7 @@ AutoScaleService.prototype = {
    */
   describeScalableTargets: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('describeScalableTargets', params);
     return createAutoScalingGroup.perform();
   },
@@ -100,7 +104,7 @@ AutoScaleService.prototype = {
    */
   describeScalingPolicies: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getServicesAutoScaleBase(),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('describeScalingPolicies', params);
     return createAutoScalingGroup.perform();
   }
@@ -108,5 +112,6 @@ AutoScaleService.prototype = {
 
 AutoScaleService.prototype.constructor = AutoScaleService;
 
-InstanceComposer.register(AutoScaleService, 'getAutoScaleService', true);
+InstanceComposer.registerAsObject(AutoScaleService, coreConstants.icNameSpace, 'getAutoScaleService', true);
+
 module.exports = AutoScaleService;
