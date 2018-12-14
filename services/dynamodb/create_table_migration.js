@@ -39,7 +39,7 @@ require(rootPrefix + '/services/auto_scale/api');
  */
 const CreateTableMigration = function(params, serviceType) {
   const oThis = this;
-  oThis.autoScalingObject = oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getAutoScaleService');
+  oThis.autoScalingObject = oThis.ic().getInstanceFor(coreConstants.icNameSpace, 'getAutoScaleService');
   oThis.createTableConfig = params.createTableConfig;
   //oThis.updateContinuousBackupConfig = params.updateContinuousBackupConfig;
   oThis.autoScalingConfig = params.autoScalingConfig;
@@ -83,7 +83,7 @@ const CreateTableMigrationPrototype = {
     //   return responseHelper.error('l_dy_ctm_validateParams_3', 'updateContinuousBackupConfig config is mandatory');
     // }
 
-    if (configStrategy.storage.enableAutoscaling) {
+    if (configStrategy.storage.enableAutoscaling == 1) {
       if (oThis.autoScalingObject.constructor.name !== 'AutoScaleService') {
         return responseHelper.error({
           internal_error_identifier: 'l_dy_ctm_validateParams_1',
@@ -155,9 +155,9 @@ const CreateTableMigrationPrototype = {
   // TODO Refactor to small methods
   executeDdbRequest: function() {
     const oThis = this,
-      ddbObject = oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase'),
+      ddbObject = oThis.ic().getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase'),
       configStrategy = oThis.ic().configStrategy;
-    
+
     return new Promise(async function(onResolve) {
       logger.info('Creating table..');
       const createTableResponse = await ddbObject.queryDdb('createTable', oThis.serviceType, oThis.createTableConfig);
@@ -183,7 +183,7 @@ const CreateTableMigrationPrototype = {
       }
       logger.info(tableName + ' Table created..');
 
-      if (configStrategy.storage.enableAutoscaling) {
+      if (configStrategy.storage.enableAutoscaling == 1) {
         oThis.autoScalingConfig.registerScalableTargetWrite.RoleARN = roleARN;
         oThis.autoScalingConfig.registerScalableTargetRead.RoleARN = roleARN;
 
