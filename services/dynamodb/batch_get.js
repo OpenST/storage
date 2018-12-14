@@ -27,7 +27,7 @@ require(rootPrefix + '/config/core_constants');
 const BatchGetItem = function(params, unprocessed_keys_retry_count, serviceType) {
   const oThis = this;
   oThis.serviceType = serviceType;
-  oThis.unprocessedKeysRetryCount = unprocessed_keys_retry_count || 0;
+  oThis.unprocessedKeysRetryCount = unprocessed_keys_retry_count || 10;
 
   base.call(oThis, 'batchGetItem', params, oThis.serviceType);
 };
@@ -62,7 +62,7 @@ const batchGetPrototype = {
     try {
       let batchGetParams = oThis.params,
         waitTime = 0,
-        constantTimeFactor = 90,
+        constantTimeFactor = 20,
         variableTimeFactor = 10,
         localResponse,
         globalResponse,
@@ -76,17 +76,20 @@ const batchGetPrototype = {
         localResponse = await oThis.batchGetItemAfterWait(batchGetParams, waitTime);
 
         if (!localResponse.isSuccess()) {
-          logger.error(
-            'services/dynamodb/batch_get.js:executeDdbRequest, attemptNo: ',
-            attemptNo,
-            localResponse.toHash()
-          );
-          return responseHelper.error({
-            internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
-            api_error_identifier: 'exception',
-            debug_options: { error: localResponse.toHash() },
-            error_config: coreConstants.ERROR_CONFIG
-          });
+          if (localResponse.internalErrorCode.includes('ResourceNotFoundException')) {
+            logger.error(
+              'services/dynamodb/batch_get.js:executeDdbRequest, ResourceNotFoundException : attemptNo: ',
+              attemptNo
+            );
+            localResponse.data['UnprocessedKeys'] = batchGetParams['RequestItems'];
+          } else {
+            return responseHelper.error({
+              internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
+              api_error_identifier: 'exception',
+              debug_options: { error: localResponse.toHash() },
+              error_config: coreConstants.ERROR_CONFIG
+            });
+          }
         }
 
         if (!globalResponse) {

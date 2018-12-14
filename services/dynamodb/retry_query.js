@@ -53,8 +53,8 @@ const retryQueryPrototype = {
 
     try {
       let waitTime = 0,
-        constantTimeFactor = 25,
-        variableTimeFactor = 3,
+        constantTimeFactor = 20,
+        variableTimeFactor = 10,
         response,
         attemptNo = 1;
 
@@ -65,8 +65,7 @@ const retryQueryPrototype = {
 
         // if success or if error was any other than was ResourceNotFoundException return
         // NOTE: Except batch requests, all other retries are already handled by AWS SDK
-        if (response.isSuccess() ||
-          !response.toHash().err.internal_id.includes('ResourceNotFoundException')){
+        if (response.isSuccess() || !response.internalErrorCode.includes('ResourceNotFoundException')) {
           return response;
         }
 
