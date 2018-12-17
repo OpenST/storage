@@ -27,7 +27,7 @@ const InstanceComposer = OSTBase.InstanceComposer;
 const BatchWriteItem = function(params, unprocessed_items_retry_count, serviceType) {
   const oThis = this;
   oThis.serviceType = serviceType;
-  oThis.unprocessedItemsRetryCount = unprocessed_items_retry_count || 0;
+  oThis.unprocessedItemsRetryCount = unprocessed_items_retry_count || 10;
 
   base.call(oThis, 'batchWriteItem', params, oThis.serviceType);
 };
@@ -60,7 +60,7 @@ const batchWritePrototype = {
     try {
       let batchWriteParams = oThis.params,
         waitTime = 0,
-        constantTimeFactor = 90,
+        constantTimeFactor = 20,
         variableTimeFactor = 10,
         response,
         attemptNo = 1,
@@ -73,13 +73,20 @@ const batchWritePrototype = {
         response = await oThis.batchWriteItemAfterWait(batchWriteParams, waitTime);
 
         if (!response.isSuccess()) {
-          logger.error('services/dynamodb/batch_write.js:executeDdbRequest, attemptNo: ', attemptNo, response.toHash());
-          return responseHelper.error({
-            internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
-            api_error_identifier: 'exception',
-            debug_options: { error: response.toHash() },
-            error_config: coreConstants.ERROR_CONFIG
-          });
+          if (response.internalErrorCode.includes('ResourceNotFoundException')) {
+            logger.error(
+              'services/dynamodb/batch_write.js:executeDdbRequest, ResourceNotFoundException : attemptNo: ',
+              attemptNo
+            );
+            response.data['UnprocessedItems'] = batchWriteParams['RequestItems'];
+          } else {
+            return responseHelper.error({
+              internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
+              api_error_identifier: 'exception',
+              debug_options: { error: response.toHash() },
+              error_config: coreConstants.ERROR_CONFIG
+            });
+          }
         }
 
         unprocessedItems = response.data['UnprocessedItems'];

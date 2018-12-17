@@ -6,7 +6,8 @@ const rootPrefix = '..';
 const AWS = require('aws-sdk'),
   AWSDaxClient = require('amazon-dax-client'),
   OSTBase = require('@openstfoundation/openst-base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstants = require(rootPrefix + '/config/core_constants'),
+  util = require(rootPrefix + '/lib/utils');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
@@ -69,7 +70,13 @@ DynamoConfigFactory.prototype = {
         region: configStrategies.storage.region,
         endpoint: configStrategies.storage.endpoint,
         sslEnabled: configStrategies.storage.enableSsl == 1,
-        logger: configStrategies.storage.enableLogging == 1 ? console : ''
+        logger: configStrategies.storage.enableLogging == 1 ? console : '',
+        retryDelayOptions: {
+          customBackoff: function(retryCount) {
+            return 25 + retryCount * 3;
+          }
+        },
+        maxRetries: util.isVarNull(configStrategies.storage.maxRetryCount) ? 20 : configStrategies.storage.maxRetryCount
       });
     }
   },
