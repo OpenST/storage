@@ -9,7 +9,6 @@ There is 1 parameter required while creating the storage implementer.
 ```js
 configStrategy = 
 {
-  "ddbTablePrefix": "de_ma_",
   "cache": {
     "engine": "memcached",
     "servers": [
@@ -26,7 +25,8 @@ configStrategy =
     "enableSsl": "0",
     "enableLogging": "0",
     "enableAutoscaling": "0",
-    "enableDax": "0",
+    "tablePrefix":"X",
+    "maxRetryCount":"1",
     "autoScaling": {
       "endpoint": "http://localhost:8000",
       "region": "localhost",
