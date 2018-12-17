@@ -6,7 +6,10 @@
 
 const rootPrefix = '.',
   version = require(rootPrefix + '/package.json').version,
-  InstanceComposer = require(rootPrefix + '/instance_composer');
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
+
+const InstanceComposer = OSTBase.InstanceComposer;
 
 require(rootPrefix + '/lib/models/dynamodb/token_balance');
 require(rootPrefix + '/services/cache_multi_management/token_balance');
@@ -17,11 +20,11 @@ require(rootPrefix + '/lib/models/shard_helper');
 const OpenSTStorage = function(configStrategy) {
   const oThis = this,
     instanceComposer = (oThis.ic = new InstanceComposer(configStrategy)),
-    TokenBalanceModel = instanceComposer.getLibDDBTokenBalanceModel(),
-    TokenBalanceCache = instanceComposer.getDDBTokenBalanceCache(),
-    ShardHelper = instanceComposer.getShardHelperKlass(),
-    ddbServiceObj = instanceComposer.getDynamoDBService(),
-    autoScalingObject = instanceComposer.getAutoScaleService();
+    TokenBalanceModel = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace,'getLibDDBTokenBalanceModel'),
+    TokenBalanceCache = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace,'getDDBTokenBalanceCache'),
+    ShardHelper = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace,'getShardHelperKlass'),
+    ddbServiceObj = instanceComposer.getInstanceFor(coreConstants.icNameSpace,'getDynamoDBService'),
+    autoScalingObject = instanceComposer.getInstanceFor(coreConstants.icNameSpace,'getAutoScaleService');
 
   if (!configStrategy) {
     throw 'Mandatory argument configStrategy missing';
@@ -42,23 +45,17 @@ const OpenSTStorage = function(configStrategy) {
 
 const getInstanceKey = function(configStrategy) {
   return [
-    configStrategy.OS_DAX_API_VERSION,
-    configStrategy.OS_DAX_ACCESS_KEY_ID,
-    configStrategy.OS_DAX_REGION,
-    configStrategy.OS_DAX_ENDPOINT,
-    configStrategy.OS_DAX_SSL_ENABLED,
+    configStrategy.storage.apiVersion,
+    configStrategy.storage.apiKey,
+    configStrategy.storage.region,
+    configStrategy.storage.endpoint,
+    configStrategy.storage.enableSsl,
 
-    configStrategy.OS_DYNAMODB_API_VERSION,
-    configStrategy.OS_DYNAMODB_ACCESS_KEY_ID,
-    configStrategy.OS_DYNAMODB_REGION,
-    configStrategy.OS_DYNAMODB_ENDPOINT,
-    configStrategy.OS_DYNAMODB_SSL_ENABLED,
-
-    configStrategy.OS_AUTOSCALING_API_VERSION,
-    configStrategy.OS_AUTOSCALING_ACCESS_KEY_ID,
-    configStrategy.OS_AUTOSCALING_REGION,
-    configStrategy.OS_AUTOSCALING_ENDPOINT,
-    configStrategy.OS_AUTOSCALING_SSL_ENABLED
+    configStrategy.storage.autoScaling.apiVersion,
+    configStrategy.storage.autoScaling.apiKey,
+    configStrategy.storage.autoScaling.region,
+    configStrategy.storage.autoScaling.endpoint,
+    configStrategy.storage.autoScaling.enableSsl
   ].join('-');
 };
 

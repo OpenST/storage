@@ -8,12 +8,13 @@
  */
 
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer'),
   base = require(rootPrefix + '/services/dynamodb/base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
 
-require(rootPrefix + '/config/core_constants');
+const InstanceComposer = OSTBase.InstanceComposer;
 
 /**
  * Constructor for batch write item service class
@@ -54,8 +55,7 @@ const batchWritePrototype = {
    *
    */
   executeDdbRequest: async function() {
-    const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants();
+    const oThis = this;
 
     try {
       let batchWriteParams = oThis.params,
@@ -68,7 +68,7 @@ const batchWritePrototype = {
         unprocessedItemsLength;
 
       while (true) {
-        logger.info('executeDdbRequest attemptNo ', attemptNo);
+        logger.debug('executeDdbRequest attemptNo ', attemptNo);
 
         response = await oThis.batchWriteItemAfterWait(batchWriteParams, waitTime);
 
@@ -89,7 +89,7 @@ const batchWritePrototype = {
           if (unprocessedItems.hasOwnProperty(tableName)) {
             unprocessedItemsLength += unprocessedItems[tableName].length;
             logger.warn(
-              'dynamodb BATCH_WRITE ATTEMPT_FAILED TableName :',
+              'DynamoDB BATCH_WRITE ATTEMPT_FAILED TableName :',
               tableName,
               ' unprocessedItemsCount: ',
               unprocessedItemsLength,
@@ -122,7 +122,7 @@ const batchWritePrototype = {
       for (let tableName in unprocessedItems) {
         if (unprocessedItems.hasOwnProperty(tableName)) {
           logger.error(
-            'dynamodb BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :',
+            'DynamoDB BATCH_WRITE ALL_ATTEMPTS_FAILED TableName :',
             tableName,
             ' unprocessedItemsCount: ',
             unprocessedItemsLength,
@@ -157,10 +157,7 @@ const batchWritePrototype = {
 
     return new Promise(function(resolve) {
       setTimeout(async function() {
-        let r = await oThis
-          .ic()
-          .getLibDynamoDBBase()
-          .queryDdb(oThis.methodName, oThis.serviceType, batchWriteParams);
+        let r = await oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase').queryDdb(oThis.methodName, oThis.serviceType, batchWriteParams);
         resolve(r);
       }, waitTime);
     });
@@ -170,6 +167,10 @@ const batchWritePrototype = {
 Object.assign(BatchWriteItem.prototype, batchWritePrototype);
 BatchWriteItem.prototype.constructor = batchWritePrototype;
 
-InstanceComposer.registerShadowableClass(BatchWriteItem, 'getDDBServiceBatchWriteItem');
+InstanceComposer.registerAsShadowableClass(
+  BatchWriteItem,
+  coreConstants.icNameSpace,
+  'getDDBServiceBatchWriteItem'
+);
 
 module.exports = BatchWriteItem;

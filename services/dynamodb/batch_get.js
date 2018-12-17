@@ -8,13 +8,15 @@
  */
 
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer'),
   base = require(rootPrefix + '/services/dynamodb/base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
+
+const InstanceComposer = OSTBase.InstanceComposer;
 
 require(rootPrefix + '/lib/dynamodb/base');
-require(rootPrefix + '/config/core_constants');
 
 /**
  * Constructor for batch write item service class
@@ -56,8 +58,7 @@ const batchGetPrototype = {
    *
    */
   executeDdbRequest: async function() {
-    const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants();
+    const oThis = this;
 
     try {
       let batchGetParams = oThis.params,
@@ -71,7 +72,7 @@ const batchGetPrototype = {
         unprocessedKeysLength;
 
       while (true) {
-        logger.info('executeDdbRequest batch_get attemptNo ', attemptNo);
+        logger.debug('executeDdbRequest batch_get attemptNo ', attemptNo);
 
         localResponse = await oThis.batchGetItemAfterWait(batchGetParams, waitTime);
 
@@ -111,7 +112,7 @@ const batchGetPrototype = {
           if (unprocessedKeys.hasOwnProperty(tableName)) {
             unprocessedKeysLength += unprocessedKeys[tableName]['Keys'].length;
             logger.warn(
-              'dynamodb BATCH_GET ATTEMPT_FAILED TableName :',
+              'DynamoDB BATCH_GET ATTEMPT_FAILED TableName :',
               tableName,
               ' unprocessedItemsCount: ',
               unprocessedKeysLength,
@@ -145,7 +146,7 @@ const batchGetPrototype = {
       for (let tableName in unprocessedKeys) {
         if (unprocessedKeys.hasOwnProperty(tableName)) {
           logger.error(
-            'dynamodb BATCH_GET ALL_ATTEMPTS_FAILED TableName :',
+            'DynamoDB BATCH_GET ALL_ATTEMPTS_FAILED TableName :',
             tableName,
             ' unprocessedItemsCount: ',
             unprocessedKeysLength,
@@ -181,10 +182,7 @@ const batchGetPrototype = {
 
     return new Promise(function(resolve) {
       setTimeout(async function() {
-        let r = await oThis
-          .ic()
-          .getLibDynamoDBBase()
-          .queryDdb(oThis.methodName, oThis.serviceType, batchGetKeys);
+        let r = await oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase').queryDdb(oThis.methodName, oThis.serviceType, batchGetKeys);
         resolve(r);
       }, waitTime);
     });
@@ -194,6 +192,10 @@ const batchGetPrototype = {
 Object.assign(BatchGetItem.prototype, batchGetPrototype);
 BatchGetItem.prototype.constructor = batchGetPrototype;
 
-InstanceComposer.registerShadowableClass(BatchGetItem, 'getDDBServiceBatchGetItem');
+InstanceComposer.registerAsShadowableClass(
+  BatchGetItem,
+  coreConstants.icNameSpace,
+  'getDDBServiceBatchGetItem'
+);
 
 module.exports = BatchGetItem;

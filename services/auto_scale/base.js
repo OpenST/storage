@@ -7,12 +7,14 @@
  *
  */
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  responseHelper = require(rootPrefix + '/lib/formatter/response');
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
+
+const InstanceComposer = OSTBase.InstanceComposer;
 
 require(rootPrefix + '/lib/auto_scale/base');
-require(rootPrefix + '/config/core_constants');
 
 /**
  * Constructor for base service class
@@ -38,8 +40,7 @@ Base.prototype = {
    *
    */
   perform: async function() {
-    const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants();
+    const oThis = this;
 
     return oThis.asyncPerform().catch(function(err) {
       logger.error('services/auto_scale/base.js:perform inside catch ', err);
@@ -78,8 +79,8 @@ Base.prototype = {
    *
    */
   validateParams: function() {
-    const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants();
+    const oThis = this;
+    
     // validate if the method is available
     if (!oThis.methodName)
       return responseHelper.error({
@@ -108,7 +109,7 @@ Base.prototype = {
    */
   executeAutoScaleRequest: async function() {
     const oThis = this,
-      ASBase = oThis.ic().getLibAutoScaleBase(),
+      ASBase = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getLibAutoScaleBase'),
       autoScaleObject = new ASBase(),
       r = await autoScaleObject.call(oThis.methodName, oThis.params);
 
@@ -118,6 +119,10 @@ Base.prototype = {
   }
 };
 
-InstanceComposer.registerShadowableClass(Base, 'getServicesAutoScaleBase');
+InstanceComposer.registerAsShadowableClass(
+  Base,
+  coreConstants.icNameSpace,
+  'getServicesAutoScaleBase'
+);
 
 module.exports = Base;

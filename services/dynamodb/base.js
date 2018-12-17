@@ -8,12 +8,14 @@
  */
 
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  responseHelper = require(rootPrefix + '/lib/formatter/response');
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
+
+const InstanceComposer = OSTBase.InstanceComposer;
 
 require(rootPrefix + '/lib/dynamodb/base');
-require(rootPrefix + '/config/core_constants');
 
 /**
  * Constructor for base service class
@@ -40,8 +42,8 @@ Base.prototype = {
    *
    */
   perform: async function() {
-    const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants();
+    const oThis = this;
+    
     return oThis.asyncPerform().catch(function(err) {
       logger.error('services/dynamodb/base.js:perform inside catch ', err);
       return responseHelper.error({
@@ -79,8 +81,7 @@ Base.prototype = {
    *
    */
   validateParams: function() {
-    const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants();
+    const oThis = this;
 
     if (!oThis.methodName) {
       return responseHelper.error({
@@ -112,13 +113,14 @@ Base.prototype = {
   executeDdbRequest: async function() {
     const oThis = this;
     // Last parameter is service type (dax or dynamoDB)
-    return await oThis
-      .ic()
-      .getLibDynamoDBBase()
-      .queryDdb(oThis.methodName, oThis.serviceType, oThis.params);
+    return await oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase').queryDdb(oThis.methodName, oThis.serviceType, oThis.params);
   }
 };
 
-InstanceComposer.registerShadowableClass(Base, 'getDDBServiceBaseKlass');
+InstanceComposer.registerAsShadowableClass(
+  Base,
+  coreConstants.icNameSpace,
+  'getDDBServiceBaseKlass'
+);
 
 module.exports = Base;

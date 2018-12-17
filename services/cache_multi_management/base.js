@@ -4,10 +4,12 @@
 const openStCache = require('@openstfoundation/openst-cache');
 
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  utils = require(rootPrefix + '/lib/utils');
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
+
+const InstanceComposer = OSTBase.InstanceComposer;
 
 /**
  * constructor
@@ -191,5 +193,9 @@ BaseCache.prototype = {
   }
 };
 
-InstanceComposer.registerShadowableClass(BaseCache, 'getDDBCacheBaseCache');
+InstanceComposer.registerAsShadowableClass(
+  BaseCache,
+  coreConstants.icNameSpace,
+  'getDDBCacheBaseCache'
+);
 module.exports = BaseCache;

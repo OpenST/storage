@@ -7,36 +7,36 @@ While OpenST Storage is available as-is for anyone to use, we caution that this 
 There is 1 parameter required while creating the storage implementer.
 * First parameter is mandatory and it specifies the configuration strategy to be used. An example of the configStrategy is: 
 ```js
-configStrategy = {
-  OST_DEBUG_ENABLED:'1',
-  OS_DYNAMODB_API_VERSION: '2012-08-10',
-  OS_DYNAMODB_ACCESS_KEY_ID: 'x',
-  OS_DYNAMODB_SECRET_ACCESS_KEY: 'x',
-  OS_DYNAMODB_REGION: 'localhost',
-  OS_DYNAMODB_ENDPOINT: 'http://localhost:8000',
-  OS_DYNAMODB_SSL_ENABLED: '0',
-  OS_DYNAMODB_LOGGING_ENABLED: '1',
-  AUTO_SCALE_DYNAMO: '0',
-
-  OS_AUTOSCALING_API_VERSION: '2016-02-06' ,
-  OS_AUTOSCALING_ACCESS_KEY_ID: 'x' ,
-  OS_AUTOSCALING_SECRET_ACCESS_KEY: 'x' ,
-  OS_AUTOSCALING_REGION: 'localhost',
-  OS_AUTOSCALING_ENDPOINT: 'http://localhost:8000',
-  OS_AUTOSCALING_SSL_ENABLED: '0',
-  OS_AUTOSCALING_LOGGING_ENABLED: '1',
-
-  OS_DYNAMODB_TABLE_NAME_PREFIX: 'd_pk_',
-  OST_CACHING_ENGINE: 'memcached',
-  OST_CACHE_CONSISTENT_BEHAVIOR: 1,
-  OST_REDIS_HOST: '127.0.0.1',
-  OST_REDIS_PORT: 6379,  
-  OST_REDIS_PASS: 'st123',
-  OST_REDIS_TLS_ENABLED: 0,
-  OST_DEFAULT_TTL: '36000',
-  OST_CACHE_ENDPOINT: '127.0.0.1:6379',
-  OST_MEMCACHE_SERVERS: '127.0.0.1:11211'
-};
+configStrategy = 
+{
+  "cache": {
+    "engine": "memcached",
+    "servers": [
+      "127.0.0.1:11211"
+    ],
+    "defaultTtl": 36000
+  },
+  "storage": {
+    "endpoint": "http://localhost:8000",
+    "region": "localhost",
+    "apiVersion": "2012-08-10",
+    "apiKey": "X",
+    "apiSecret": "X",
+    "enableSsl": "0",
+    "enableLogging": "0",
+    "enableAutoscaling": "0",
+    "tablePrefix":"X",
+    "maxRetryCount":"1",
+    "autoScaling": {
+      "endpoint": "http://localhost:8000",
+      "region": "localhost",
+      "apiKey": "X",
+      "apiSecret": "X",
+      "apiVersion": "2012-08-10",
+      "enableSsl": "0"
+    }
+  }
+}
 ```
 
 ## DynamoDB Apis

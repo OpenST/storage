@@ -8,11 +8,12 @@
  */
 
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer'),
   DDBServiceBaseKlass = require(rootPrefix + '/services/dynamodb/base'),
-  responseHelper = require(rootPrefix + '/lib/formatter/response');
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  OSTBase = require('@openstfoundation/openst-base'),
+  coreConstants = require(rootPrefix + '/config/core_constants');
 
-require(rootPrefix + '/config/core_constants');
+const InstanceComposer = OSTBase.InstanceComposer;
 
 /**
  * Constructor for TableExist service class
@@ -39,7 +40,6 @@ const TableExistPrototype = {
    */
   validateParams: function() {
     const oThis = this,
-      coreConstants = oThis.ic().getCoreConstants(),
       baseValidationResponse = DDBServiceBaseKlass.prototype.validateParams.call(oThis);
     if (baseValidationResponse.isFailure()) return baseValidationResponse;
 
@@ -65,10 +65,7 @@ const TableExistPrototype = {
   executeDdbRequest: function() {
     const oThis = this;
     return new Promise(async function(onResolve) {
-      const describeTableResponse = await oThis
-        .ic()
-        .getLibDynamoDBBase()
-        .queryDdb('describeTable', 'raw', oThis.params);
+      const describeTableResponse = await oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase').queryDdb('describeTable', 'raw', oThis.params);
       if (describeTableResponse.isFailure()) {
         return onResolve(responseHelper.successWithData({ response: false, status: 'DELETED' }));
       }
@@ -81,6 +78,10 @@ const TableExistPrototype = {
 Object.assign(TableExist.prototype, TableExistPrototype);
 TableExist.prototype.constructor = TableExist;
 
-InstanceComposer.registerShadowableClass(TableExist, 'getDDBServiceTableExist');
+InstanceComposer.registerAsShadowableClass(
+  TableExist,
+  coreConstants.icNameSpace,
+  'getDDBServiceTableExist'
+);
 
 module.exports = TableExist;

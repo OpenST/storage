@@ -8,11 +8,12 @@ const Chai = require('chai'),
 const rootPrefix = '../../../..',
   openStStorage = require(rootPrefix + '/index'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
+  coreConstants = require(rootPrefix + '/config/core_constants'),
   helper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
 const openStStorageObject = openStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
-  autoScaleObj = openStStorageObject.ic.getAutoScaleService(),
+  autoScaleObj = openStStorageObject.ic.getInstanceFor(coreConstants.icNameSpace,'getAutoScaleService'),
   dynamodbApiObject = openStStorageObject.dynamoDBService;
 
 let resourceId = 'table/' + testConstants.transactionLogTableName,
