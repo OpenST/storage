@@ -44,4 +44,4 @@ CoreConstants.prototype = {
   }
 };
 
-module.exports = CoreConstants;
+module.exports = new CoreConstants();
