@@ -31,7 +31,6 @@ const CoreConstants = function() {
 };
 
 CoreConstants.prototype = {
-
   // Generic env variable across NPM packages
   DEBUG_ENABLED: null,
 
@@ -39,9 +38,8 @@ CoreConstants.prototype = {
     param_error_config: paramErrorConfig,
     api_error_config: apiErrorConfig
   },
-  
-  icNameSpace: function () {
-    
+
+  get icNameSpace() {
     return 'openSTStorage';
   }
 };
