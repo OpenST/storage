@@ -32,7 +32,8 @@ const RetryQuery = function(params, queryType, retryCount, serviceType) {
   if (retryCount) {
     oThis.attemptToPerformCount = retryCount + 1;
   } else {
-    oThis.attemptToPerformCount = 5;
+    let configStrategies = oThis.ic().configStrategy;
+    oThis.attemptToPerformCount = configStrategies.storage.maxRetryCount || coreConstants.defaultRetryCount();
   }
   oThis.queryType = queryType;
 
@@ -53,8 +54,8 @@ const retryQueryPrototype = {
 
     try {
       let waitTime = 0,
-        constantTimeFactor = 20,
-        variableTimeFactor = 10,
+        constantTimeFactor = coreConstants.fixedRetryAfterTime(),
+        variableTimeFactor = coreConstants.variableRetryAfterTime(),
         response,
         attemptNo = 1;
 
@@ -118,7 +119,10 @@ const retryQueryPrototype = {
 
     return new Promise(function(resolve) {
       setTimeout(async function() {
-        let r = await oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase').queryDdb(oThis.methodName, oThis.serviceType, queryParams);
+        let r = await oThis
+          .ic()
+          .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+          .queryDdb(oThis.methodName, oThis.serviceType, queryParams);
         resolve(r);
       }, waitTime);
     });
@@ -128,10 +132,6 @@ const retryQueryPrototype = {
 Object.assign(RetryQuery.prototype, retryQueryPrototype);
 RetryQuery.prototype.constructor = retryQueryPrototype;
 
-InstanceComposer.registerAsShadowableClass(
-  RetryQuery,
-  coreConstants.icNameSpace,
-  'getDDBServiceRetryQuery'
-);
+InstanceComposer.registerAsShadowableClass(RetryQuery, coreConstants.icNameSpace, 'getDDBServiceRetryQuery');
 
 module.exports = RetryQuery;

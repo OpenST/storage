@@ -41,6 +41,21 @@ CoreConstants.prototype = {
 
   get icNameSpace() {
     return 'openSTStorage';
+  },
+
+  // in ms fixed time after which we would retry
+  fixedRetryAfterTime: function() {
+    return 25;
+  },
+
+  // in ms variable time (which is incremented after every iteration) which we would retry
+  variableRetryAfterTime: function() {
+    return 25;
+  },
+
+  // default retry count
+  defaultRetryCount: function() {
+    return 50;
   }
 };
 

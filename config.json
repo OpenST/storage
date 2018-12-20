@@ -17,7 +17,7 @@
     "enableLogging": "0",
     "enableAutoscaling": "0",
     "enableDax": "0",
-    "maxRetryCount": 20,
+    "maxRetryCount": 100,
     "autoScaling": {
       "endpoint": "http://localhost:8000",
       "region": "localhost",

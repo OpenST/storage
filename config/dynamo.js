@@ -73,10 +73,12 @@ DynamoConfigFactory.prototype = {
         logger: configStrategies.storage.enableLogging == 1 ? console : '',
         retryDelayOptions: {
           customBackoff: function(retryCount) {
-            return 25 + retryCount * 3;
+            return coreConstants.fixedRetryAfterTime() + retryCount * coreConstants.variableRetryAfterTime();
           }
         },
-        maxRetries: util.isVarNull(configStrategies.storage.maxRetryCount) ? 20 : configStrategies.storage.maxRetryCount
+        maxRetries: util.isVarNull(configStrategies.storage.maxRetryCount)
+          ? coreConstants.defaultRetryCount()
+          : configStrategies.storage.maxRetryCount
       });
     }
   },
