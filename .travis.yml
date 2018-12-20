@@ -37,3 +37,4 @@ script:
 after_script:
   - kill $(ps aux | grep 'DynamoDBLocal.jar' | awk '{print $2}')
   - rm -rf dynamodb
+  - rm -rf dynamodb_instance_2
