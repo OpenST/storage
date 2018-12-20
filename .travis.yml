@@ -32,8 +32,10 @@ before_script:
   - mkdir -p dynamodb_instance_2
   - nohup java -Djava.library.path=./dynamodb/DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb &
   - nohup java -Djava.library.path=./dynamodb/DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb -dbPath ./dynamodb_instance_2 -port 8001 &
+  - sleep 30
 script:
   - node_modules/mocha/bin/mocha tests/mocha/services/dynamodb/* --timeout 10000 --exit
 after_script:
   - kill $(ps aux | grep 'DynamoDBLocal.jar' | awk '{print $2}')
   - rm -rf dynamodb
+  - rm -rf dynamodb_instance_2

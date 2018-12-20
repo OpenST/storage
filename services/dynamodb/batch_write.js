@@ -26,8 +26,12 @@ const InstanceComposer = OSTBase.InstanceComposer;
  */
 const BatchWriteItem = function(params, unprocessed_items_retry_count, serviceType) {
   const oThis = this;
+
   oThis.serviceType = serviceType;
-  oThis.unprocessedItemsRetryCount = unprocessed_items_retry_count || 10;
+
+  let configStrategies = oThis.ic().configStrategy;
+  oThis.unprocessedItemsRetryCount =
+    unprocessed_items_retry_count || configStrategies.storage.maxRetryCount || coreConstants.defaultRetryCount();
 
   base.call(oThis, 'batchWriteItem', params, oThis.serviceType);
 };
@@ -60,8 +64,8 @@ const batchWritePrototype = {
     try {
       let batchWriteParams = oThis.params,
         waitTime = 0,
-        constantTimeFactor = 20,
-        variableTimeFactor = 10,
+        constantTimeFactor = coreConstants.fixedRetryAfterTime(),
+        variableTimeFactor = coreConstants.variableRetryAfterTime(),
         response,
         attemptNo = 1,
         unprocessedItems,
@@ -164,7 +168,10 @@ const batchWritePrototype = {
 
     return new Promise(function(resolve) {
       setTimeout(async function() {
-        let r = await oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase').queryDdb(oThis.methodName, oThis.serviceType, batchWriteParams);
+        let r = await oThis
+          .ic()
+          .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+          .queryDdb(oThis.methodName, oThis.serviceType, batchWriteParams);
         resolve(r);
       }, waitTime);
     });
@@ -174,10 +181,6 @@ const batchWritePrototype = {
 Object.assign(BatchWriteItem.prototype, batchWritePrototype);
 BatchWriteItem.prototype.constructor = batchWritePrototype;
 
-InstanceComposer.registerAsShadowableClass(
-  BatchWriteItem,
-  coreConstants.icNameSpace,
-  'getDDBServiceBatchWriteItem'
-);
+InstanceComposer.registerAsShadowableClass(BatchWriteItem, coreConstants.icNameSpace, 'getDDBServiceBatchWriteItem');
 
 module.exports = BatchWriteItem;

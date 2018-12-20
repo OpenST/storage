@@ -29,7 +29,10 @@ require(rootPrefix + '/lib/dynamodb/base');
 const BatchGetItem = function(params, unprocessed_keys_retry_count, serviceType) {
   const oThis = this;
   oThis.serviceType = serviceType;
-  oThis.unprocessedKeysRetryCount = unprocessed_keys_retry_count || 10;
+
+  let configStrategies = oThis.ic().configStrategy;
+  oThis.unprocessedKeysRetryCount =
+    unprocessed_keys_retry_count || configStrategies.storage.maxRetryCount || coreConstants.defaultRetryCount();
 
   base.call(oThis, 'batchGetItem', params, oThis.serviceType);
 };
@@ -63,8 +66,8 @@ const batchGetPrototype = {
     try {
       let batchGetParams = oThis.params,
         waitTime = 0,
-        constantTimeFactor = 20,
-        variableTimeFactor = 10,
+        constantTimeFactor = coreConstants.fixedRetryAfterTime(),
+        variableTimeFactor = coreConstants.variableRetryAfterTime(),
         localResponse,
         globalResponse,
         attemptNo = 1,
@@ -185,7 +188,10 @@ const batchGetPrototype = {
 
     return new Promise(function(resolve) {
       setTimeout(async function() {
-        let r = await oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase').queryDdb(oThis.methodName, oThis.serviceType, batchGetKeys);
+        let r = await oThis
+          .ic()
+          .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+          .queryDdb(oThis.methodName, oThis.serviceType, batchGetKeys);
         resolve(r);
       }, waitTime);
     });
@@ -195,10 +201,6 @@ const batchGetPrototype = {
 Object.assign(BatchGetItem.prototype, batchGetPrototype);
 BatchGetItem.prototype.constructor = batchGetPrototype;
 
-InstanceComposer.registerAsShadowableClass(
-  BatchGetItem,
-  coreConstants.icNameSpace,
-  'getDDBServiceBatchGetItem'
-);
+InstanceComposer.registerAsShadowableClass(BatchGetItem, coreConstants.icNameSpace, 'getDDBServiceBatchGetItem');
 
 module.exports = BatchGetItem;
