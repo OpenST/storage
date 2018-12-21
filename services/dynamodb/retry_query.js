@@ -80,9 +80,8 @@ const retryQueryPrototype = {
         );
 
         //adjust retry variables
+        waitTime = constantTimeFactor + attemptNo * variableTimeFactor;
         attemptNo += 1;
-        waitTime = constantTimeFactor + variableTimeFactor;
-        variableTimeFactor += variableTimeFactor;
       }
 
       logger.error(

@@ -143,9 +143,8 @@ const batchGetPrototype = {
         batchGetParams = { RequestItems: unprocessedKeys };
 
         //adjust retry variables
+        waitTime = constantTimeFactor + attemptNo * variableTimeFactor;
         attemptNo += 1;
-        waitTime = constantTimeFactor + variableTimeFactor;
-        variableTimeFactor += variableTimeFactor;
         oThis.unprocessedKeysRetryCount -= 1;
       }
 

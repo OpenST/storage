@@ -124,9 +124,8 @@ const batchWritePrototype = {
         batchWriteParams = { RequestItems: unprocessedItems };
 
         //adjust retry variables
+        waitTime = constantTimeFactor + attemptNo * variableTimeFactor;
         attemptNo += 1;
-        waitTime = constantTimeFactor + variableTimeFactor;
-        variableTimeFactor += variableTimeFactor;
         oThis.unprocessedItemsRetryCount -= 1;
       }
 
