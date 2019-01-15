@@ -1,20 +1,17 @@
 'use strict';
-
 /**
  * DynamoDB Batch Write with retry count
  *
  * @module services/dynamodb/batch_write
- *
  */
+const OSTBase = require('@openstfoundation/openst-base'),
+  InstanceComposer = OSTBase.InstanceComposer;
 
 const rootPrefix = '../..',
   base = require(rootPrefix + '/services/dynamodb/base'),
+  coreConstants = require(rootPrefix + '/config/core_constants'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  OSTBase = require('@openstfoundation/openst-base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
-
-const InstanceComposer = OSTBase.InstanceComposer;
+  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
 
 /**
  * Constructor for batch write item service class
