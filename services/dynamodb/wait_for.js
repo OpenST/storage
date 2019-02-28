@@ -11,7 +11,7 @@ const rootPrefix = '../..',
   base = require(rootPrefix + '/services/dynamodb/base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants');
 
 const InstanceComposer = OSTBase.InstanceComposer;
@@ -64,7 +64,10 @@ const waitForPrototype = {
     const oThis = this;
 
     try {
-      const r = await oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase').queryDdb(oThis.methodName, 'raw', oThis.waitForMethod, oThis.params);
+      const r = await oThis
+        .ic()
+        .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+        .queryDdb(oThis.methodName, 'raw', oThis.waitForMethod, oThis.params);
       logger.debug('=======Base.perform.result=======');
       logger.debug(r);
       return r;
@@ -83,10 +86,6 @@ const waitForPrototype = {
 Object.assign(WaitFor.prototype, waitForPrototype);
 WaitFor.prototype.constructor = waitForPrototype;
 
-InstanceComposer.registerAsShadowableClass(
-  WaitFor,
-  coreConstants.icNameSpace,
-  'getDDBServiceWaitFor'
-);
+InstanceComposer.registerAsShadowableClass(WaitFor, coreConstants.icNameSpace, 'getDDBServiceWaitFor');
 
 module.exports = WaitFor;

@@ -8,7 +8,7 @@
  */
 
 const rootPrefix = '../..',
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants');
 
 const InstanceComposer = OSTBase.InstanceComposer;

@@ -15,7 +15,7 @@ const rootPrefix = '../..',
   DDBServiceBaseKlass = require(rootPrefix + '/services/dynamodb/base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants');
 
 const InstanceComposer = OSTBase.InstanceComposer;

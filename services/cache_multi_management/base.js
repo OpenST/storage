@@ -1,12 +1,12 @@
 'use strict';
 
 //External Libraries
-const openStCache = require('@openstfoundation/openst-cache');
+const openStCache = require('@ostdotcom/cache');
 
 const rootPrefix = '../..',
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants');
 
 const InstanceComposer = OSTBase.InstanceComposer;
@@ -193,9 +193,5 @@ BaseCache.prototype = {
   }
 };
 
-InstanceComposer.registerAsShadowableClass(
-  BaseCache,
-  coreConstants.icNameSpace,
-  'getDDBCacheBaseCache'
-);
+InstanceComposer.registerAsShadowableClass(BaseCache, coreConstants.icNameSpace, 'getDDBCacheBaseCache');
 module.exports = BaseCache;

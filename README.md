@@ -48,7 +48,7 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 #### DynamoDB constructor 
 &nbsp; params [dynamodbConnectionParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#constructor-property)
 ```js
-  const OpenSTStorage = require('@openstfoundation/openst-storage');
+  const OpenSTStorage = require('@ostdotcom/storage');
   let storage = OpenSTStorage.getInstance( configStrategy );
   let ddbServiceObj = storage.dynamoDBService;
 ```
@@ -262,7 +262,7 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 &nbsp; AutoScaling params [autoScalingConnectionParams](#autoscaling-constructor)<br/>
 
 ```js
-  const OpenSTStorage = require('@openstfoundation/openst-storage');
+  const OpenSTStorage = require('@ostdotcom/storage');
   let storage = OpenSTStorage.getInstance( configStrategy );
   let ddbServiceObj = storage.dynamoDBService;
   let shardManagementObj = ddbServiceObj.shardManagement();
@@ -354,7 +354,7 @@ For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.ama
 &nbsp; params [autoScalingConnectionParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#constructor-property)
 
 ```js
-  const OpenSTStorage = require('@openstfoundation/openst-storage');
+  const OpenSTStorage = require('@ostdotcom/storage');
   let storage = OpenSTStorage.getInstance( configStrategy );
   let autoScalingObj = storage.autoScalingService;
 ```

@@ -5,7 +5,7 @@ const rootPrefix = '../..',
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
   BigNumber = require('bignumber.js'),
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants');
 
 const InstanceComposer = OSTBase.InstanceComposer;
@@ -188,10 +188,6 @@ const tokenBalanceCacheSpecificPrototype = {
 
 Object.assign(TokenBalanceCache.prototype, tokenBalanceCacheSpecificPrototype);
 
-InstanceComposer.registerAsShadowableClass(
-  TokenBalanceCache,
-  coreConstants.icNameSpace,
-  'getDDBTokenBalanceCache'
-);
+InstanceComposer.registerAsShadowableClass(TokenBalanceCache, coreConstants.icNameSpace, 'getDDBTokenBalanceCache');
 
 module.exports = TokenBalanceCache;

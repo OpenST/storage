@@ -6,7 +6,7 @@
 
 const rootPrefix = '.',
   version = require(rootPrefix + '/package.json').version,
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants');
 
 const InstanceComposer = OSTBase.InstanceComposer;
@@ -20,11 +20,11 @@ require(rootPrefix + '/lib/models/shard_helper');
 const OpenSTStorage = function(configStrategy) {
   const oThis = this,
     instanceComposer = (oThis.ic = new InstanceComposer(configStrategy)),
-    TokenBalanceModel = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace,'getLibDDBTokenBalanceModel'),
-    TokenBalanceCache = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace,'getDDBTokenBalanceCache'),
-    ShardHelper = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace,'getShardHelperKlass'),
-    ddbServiceObj = instanceComposer.getInstanceFor(coreConstants.icNameSpace,'getDynamoDBService'),
-    autoScalingObject = instanceComposer.getInstanceFor(coreConstants.icNameSpace,'getAutoScaleService');
+    TokenBalanceModel = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace, 'getLibDDBTokenBalanceModel'),
+    TokenBalanceCache = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace, 'getDDBTokenBalanceCache'),
+    ShardHelper = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace, 'getShardHelperKlass'),
+    ddbServiceObj = instanceComposer.getInstanceFor(coreConstants.icNameSpace, 'getDynamoDBService'),
+    autoScalingObject = instanceComposer.getInstanceFor(coreConstants.icNameSpace, 'getAutoScaleService');
 
   if (!configStrategy) {
     throw 'Mandatory argument configStrategy missing';

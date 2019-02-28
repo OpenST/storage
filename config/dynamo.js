@@ -5,7 +5,7 @@ require('http').globalAgent.keepAlive = true;
 const rootPrefix = '..';
 const AWS = require('aws-sdk'),
   AWSDaxClient = require('amazon-dax-client'),
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants'),
   util = require(rootPrefix + '/lib/utils');
 

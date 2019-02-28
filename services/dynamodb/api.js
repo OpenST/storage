@@ -8,7 +8,7 @@
  */
 
 const rootPrefix = '../..',
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants');
 
 const InstanceComposer = OSTBase.InstanceComposer;
@@ -42,7 +42,7 @@ DynamoDBService.prototype = {
    */
   createTable: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceBaseKlass'),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceBaseKlass'),
       createTableObject = new DDBServiceBaseKlass('createTable', params, 'raw');
     return createTableObject.perform();
   },
@@ -67,7 +67,9 @@ DynamoDBService.prototype = {
    */
   createTableMigration: function(params) {
     const oThis = this,
-      CreateTableMigrationServiceKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceCreateTableMigration'),
+      CreateTableMigrationServiceKlass = oThis
+        .ic()
+        .getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceCreateTableMigration'),
       createTableMigrationObject = new CreateTableMigrationServiceKlass(params, 'raw');
     return createTableMigrationObject.perform();
   },
@@ -82,7 +84,7 @@ DynamoDBService.prototype = {
    */
   updateTable: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceBaseKlass'),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceBaseKlass'),
       updateTableObject = new DDBServiceBaseKlass('updateTable', params, 'raw');
     return updateTableObject.perform();
   },
@@ -97,7 +99,7 @@ DynamoDBService.prototype = {
    */
   describeTable: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceBaseKlass'),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceBaseKlass'),
       describeTableObject = new DDBServiceBaseKlass('describeTable', params, 'raw');
     return describeTableObject.perform();
   },
@@ -112,7 +114,7 @@ DynamoDBService.prototype = {
    */
   listTables: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceBaseKlass'),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceBaseKlass'),
       listTablesObject = new DDBServiceBaseKlass('listTables', params, 'raw');
     return listTablesObject.perform();
   },
@@ -127,7 +129,7 @@ DynamoDBService.prototype = {
    */
   updateContinuousBackups: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceBaseKlass'),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceBaseKlass'),
       updateContinuousBackupObject = new DDBServiceBaseKlass('updateContinuousBackups', params, 'raw');
     return updateContinuousBackupObject.perform();
   },
@@ -142,7 +144,7 @@ DynamoDBService.prototype = {
    */
   deleteTable: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceBaseKlass'),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceBaseKlass'),
       deleteTableObject = new DDBServiceBaseKlass('deleteTable', params, 'raw');
     return deleteTableObject.perform();
   },
@@ -158,7 +160,7 @@ DynamoDBService.prototype = {
    */
   batchGetItem: function(params, unprocessedKeysRetryCount) {
     const oThis = this,
-      BatchGetItemKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceBatchGetItem'),
+      BatchGetItemKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceBatchGetItem'),
       bathGetObject = new BatchGetItemKlass(params, unprocessedKeysRetryCount, 'dax');
     return bathGetObject.perform();
   },
@@ -174,7 +176,7 @@ DynamoDBService.prototype = {
    */
   batchWriteItem: function(params, unprocessedItemsRetryCount) {
     const oThis = this,
-      BatchWriteItemKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceBatchWriteItem'),
+      BatchWriteItemKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceBatchWriteItem'),
       batchWriteObject = new BatchWriteItemKlass(params, unprocessedItemsRetryCount, 'dax');
     return batchWriteObject.perform();
   },
@@ -189,7 +191,7 @@ DynamoDBService.prototype = {
    */
   query: function(params, retryCount) {
     const oThis = this,
-      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceRetryQuery'),
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceRetryQuery'),
       queryObject = new retryQueryKlass(params, 'query', retryCount, 'dax');
     return queryObject.perform();
   },
@@ -204,7 +206,7 @@ DynamoDBService.prototype = {
    */
   scan: function(params, retryCount) {
     const oThis = this,
-      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceRetryQuery'),
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceRetryQuery'),
       scanObject = new retryQueryKlass(params, 'scan', retryCount, 'dax');
     return scanObject.perform();
   },
@@ -219,7 +221,7 @@ DynamoDBService.prototype = {
    */
   putItem: function(params, retryCount) {
     const oThis = this,
-      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceRetryQuery'),
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceRetryQuery'),
       putItemObject = new retryQueryKlass(params, 'putItem', retryCount, 'dax');
     return putItemObject.perform();
   },
@@ -235,7 +237,7 @@ DynamoDBService.prototype = {
    */
   updateItem: function(params, retryCount) {
     const oThis = this,
-      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceRetryQuery'),
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceRetryQuery'),
       updateItemObject = new retryQueryKlass(params, 'updateItem', retryCount, 'dax');
     return updateItemObject.perform();
   },
@@ -250,7 +252,7 @@ DynamoDBService.prototype = {
    */
   deleteItem: function(params, retryCount) {
     const oThis = this,
-      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceRetryQuery'),
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceRetryQuery'),
       deleteItemObject = new retryQueryKlass(params, 'deleteItem', retryCount, 'dax');
     return deleteItemObject.perform();
   },
@@ -265,7 +267,7 @@ DynamoDBService.prototype = {
    */
   tableExistsUsingWaitFor: function(params) {
     const oThis = this,
-      WaitForServiceKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceWaitFor'),
+      WaitForServiceKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceWaitFor'),
       tableExistsObject = new WaitForServiceKlass('tableExists', params, 'raw');
     return tableExistsObject.perform();
   },
@@ -280,7 +282,7 @@ DynamoDBService.prototype = {
    */
   tableNotExistsUsingWaitFor: function(params) {
     const oThis = this,
-      WaitForServiceKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceWaitFor'),
+      WaitForServiceKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceWaitFor'),
       tableExistsObject = new WaitForServiceKlass('tableNotExists', params, 'raw');
     return tableExistsObject.perform();
   },
@@ -295,7 +297,7 @@ DynamoDBService.prototype = {
    */
   checkTableExist: function(params) {
     const oThis = this,
-      TableExistServiceApiKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace,'getDDBServiceTableExist'),
+      TableExistServiceApiKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getDDBServiceTableExist'),
       tableExistObject = new TableExistServiceApiKlass(params, 'raw');
     return tableExistObject.perform();
   }

@@ -9,7 +9,7 @@
 const rootPrefix = '../..',
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants');
 
 const InstanceComposer = OSTBase.InstanceComposer;
@@ -80,7 +80,7 @@ Base.prototype = {
    */
   validateParams: function() {
     const oThis = this;
-    
+
     // validate if the method is available
     if (!oThis.methodName)
       return responseHelper.error({
@@ -119,10 +119,6 @@ Base.prototype = {
   }
 };
 
-InstanceComposer.registerAsShadowableClass(
-  Base,
-  coreConstants.icNameSpace,
-  'getServicesAutoScaleBase'
-);
+InstanceComposer.registerAsShadowableClass(Base, coreConstants.icNameSpace, 'getServicesAutoScaleBase');
 
 module.exports = Base;

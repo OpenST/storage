@@ -10,7 +10,7 @@
 const rootPrefix = '../..',
   DDBServiceBaseKlass = require(rootPrefix + '/services/dynamodb/base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  OSTBase = require('@openstfoundation/openst-base'),
+  OSTBase = require('@ostdotcom/base'),
   coreConstants = require(rootPrefix + '/config/core_constants');
 
 const InstanceComposer = OSTBase.InstanceComposer;
@@ -65,7 +65,10 @@ const TableExistPrototype = {
   executeDdbRequest: function() {
     const oThis = this;
     return new Promise(async function(onResolve) {
-      const describeTableResponse = await oThis.ic().getInstanceFor(coreConstants.icNameSpace,'getLibDynamoDBBase').queryDdb('describeTable', 'raw', oThis.params);
+      const describeTableResponse = await oThis
+        .ic()
+        .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+        .queryDdb('describeTable', 'raw', oThis.params);
       if (describeTableResponse.isFailure()) {
         return onResolve(responseHelper.successWithData({ response: false, status: 'DELETED' }));
       }
@@ -78,10 +81,6 @@ const TableExistPrototype = {
 Object.assign(TableExist.prototype, TableExistPrototype);
 TableExist.prototype.constructor = TableExist;
 
-InstanceComposer.registerAsShadowableClass(
-  TableExist,
-  coreConstants.icNameSpace,
-  'getDDBServiceTableExist'
-);
+InstanceComposer.registerAsShadowableClass(TableExist, coreConstants.icNameSpace, 'getDDBServiceTableExist');
 
 module.exports = TableExist;
