@@ -1,9 +1,9 @@
-# Storage
+Storage
+============
+[![Latest version](https://img.shields.io/npm/v/@ostdotcom/cache.svg?maxAge=3600)][npm]
+[![Travis](https://img.shields.io/travis/ostdotcom/cache.svg?maxAge=600)][travis]
+[![Downloads per month](https://img.shields.io/npm/dm/@ostdotcom/cache.svg?maxAge=3600)][npm]
 
-
-![Latest version](https://img.shields.io/npm/v/@ostdotcom/storage.svg?maxAge=3600)
-![Travis](https://img.shields.io/travis/ostdotcom/storage.svg?maxAge=600)
-![Downloads per month](https://img.shields.io/npm/dm/@ostdotcom/storage.svg?maxAge=3600)
 
 OST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
 
