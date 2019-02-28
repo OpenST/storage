@@ -1,5 +1,5 @@
 /**
- * Index File for openst-storage
+ * Index File for OST Storage
  */
 
 'use strict';
@@ -11,17 +11,13 @@ const rootPrefix = '.',
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
-require(rootPrefix + '/lib/models/dynamodb/token_balance');
-require(rootPrefix + '/services/cache_multi_management/token_balance');
 require(rootPrefix + '/services/dynamodb/api');
 require(rootPrefix + '/services/auto_scale/api');
 require(rootPrefix + '/lib/models/shard_helper');
 
-const OpenSTStorage = function(configStrategy) {
+const OSTStorage = function(configStrategy) {
   const oThis = this,
     instanceComposer = (oThis.ic = new InstanceComposer(configStrategy)),
-    TokenBalanceModel = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace, 'getLibDDBTokenBalanceModel'),
-    TokenBalanceCache = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace, 'getDDBTokenBalanceCache'),
     ShardHelper = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace, 'getShardHelperKlass'),
     ddbServiceObj = instanceComposer.getInstanceFor(coreConstants.icNameSpace, 'getDynamoDBService'),
     autoScalingObject = instanceComposer.getInstanceFor(coreConstants.icNameSpace, 'getAutoScaleService');
@@ -33,11 +29,7 @@ const OpenSTStorage = function(configStrategy) {
   oThis.version = version;
 
   const model = (oThis.model = {});
-  model.TokenBalance = TokenBalanceModel;
   model.ShardHelper = ShardHelper;
-
-  const cache = (oThis.cache = {});
-  cache.TokenBalance = TokenBalanceCache;
 
   oThis.dynamoDBService = ddbServiceObj;
   oThis.autoScalingService = autoScalingObject;
@@ -70,7 +62,7 @@ Factory.prototype = {
       _instance = instanceMap[instanceKey];
 
     if (!_instance) {
-      _instance = new OpenSTStorage(configStrategy);
+      _instance = new OSTStorage(configStrategy);
       instanceMap[instanceKey] = _instance;
     }
 
@@ -79,8 +71,8 @@ Factory.prototype = {
 };
 
 const factory = new Factory();
-OpenSTStorage.getInstance = function() {
+OSTStorage.getInstance = function() {
   return factory.getInstance.apply(factory, arguments);
 };
 
-module.exports = OpenSTStorage;
+module.exports = OSTStorage;

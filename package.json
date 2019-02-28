@@ -1,6 +1,6 @@
 {
   "name": "@ostdotcom/storage",
-  "version": "1.0.2-beta.29",
+  "version": "1.0.3-beta.1",
   "description": "OST storage provides data storage and sharding services.",
   "main": "index.js",
   "scripts": {
@@ -11,21 +11,20 @@
     "url": "https://github.com/ostdotcom/storage.git"
   },
   "keywords": [
+    "OpenST",
     "OST",
-    "openst",
-    "simpletoken",
-    "storage",
+    "Simple Token",
+    "OST Storage",
     "DynamoDB"
   ],
-  "author": "OpenST Foundation Ltd.",
+  "author": "OST.COM LTD",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/OpenSTFoundation/openst-storage/issues"
+    "url": "https://github.com/ostdotcom/storage/issues"
   },
-  "homepage": "https://openst.org",
+  "homepage": "https://github.com/ostdotcom/storage#readme",
   "dependencies": {
     "@ostdotcom/base": "1.0.0-beta.1",
-    "@ostdotcom/cache": "1.0.6-beta.14",
     "aws-sdk": "2.263.1",
     "amazon-dax-client": "1.1.3",
     "bignumber.js": "4.1.0"

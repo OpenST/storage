@@ -40,7 +40,7 @@ CoreConstants.prototype = {
   },
 
   get icNameSpace() {
-    return 'openSTStorage';
+    return 'OSTStorage';
   },
 
   // in ms fixed time after which we would retry

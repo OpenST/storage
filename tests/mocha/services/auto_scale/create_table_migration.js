@@ -2,7 +2,7 @@ const chai = require('chai'),
   assert = chai.assert;
 
 const rootPrefix = '../../../..',
-  openStStorage = require(rootPrefix + '/index'),
+  OStStorage = require(rootPrefix + '/index'),
   coreConstants = require(rootPrefix + '/config/core_constants'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
   logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
@@ -14,10 +14,10 @@ describe('Create Table', function() {
 
   before(async function() {
     this.timeout(1000000);
-    // create openStStorageObject
-    const openStStorageObject = openStStorage.getInstance(testConstants.CONFIG_STRATEGIES);
-    dynamodbApiObject = openStStorageObject.dynamoDBService;
-    autoScaleObj = openStStorageObject.ic.getInstanceFor(coreConstants.icNameSpace,'getAutoScaleService');
+    // create ostStorage
+    const ostStorage = OStStorage.getInstance(testConstants.CONFIG_STRATEGIES);
+    dynamodbApiObject = ostStorage.dynamoDBService;
+    autoScaleObj = ostStorage.ic.getInstanceFor(coreConstants.icNameSpace,'getAutoScaleService');
 
     const params = {
       TableName: testConstants.transactionLogTableName

@@ -7,13 +7,13 @@ const rootPrefix = '../../../..',
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('Delete Table', function() {
-  let openStStorageObject = null;
+  let ostStorage = null;
 
   before(async function() {
-    // get openStStorageObject
-    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    // get ostStorage
+    ostStorage = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
 
-    ddb_service = openStStorageObject.dynamoDBService;
+    ddb_service = ostStorage.dynamoDBService;
   });
 
   it('should create table successfully', async function() {

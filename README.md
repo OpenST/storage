@@ -1,7 +1,6 @@
-# OpenST Storage
+# Storage
 
-OpenST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
-While OpenST Storage is available as-is for anyone to use, we caution that this is early stage software and under heavy ongoing development and improvement. Please report bugs and suggested improvements.
+OST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
 
 ##### Constructor parameters:
 There is 1 parameter required while creating the storage implementer.
@@ -43,13 +42,11 @@ configStrategy =
 
 For all DynamoDB methods parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)  
 
-Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTFoundation/openst-base/blob/master/lib/formatter/response_helper.js) object wrapped in Promise.
-
 #### DynamoDB constructor 
 &nbsp; params [dynamodbConnectionParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#constructor-property)
 ```js
-  const OpenSTStorage = require('@ostdotcom/storage');
-  let storage = OpenSTStorage.getInstance( configStrategy );
+  const OSTStorage = require('@ostdotcom/storage');
+  let storage = OSTStorage.getInstance( configStrategy );
   let ddbServiceObj = storage.dynamoDBService;
 ```
     
@@ -262,8 +259,8 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 &nbsp; AutoScaling params [autoScalingConnectionParams](#autoscaling-constructor)<br/>
 
 ```js
-  const OpenSTStorage = require('@ostdotcom/storage');
-  let storage = OpenSTStorage.getInstance( configStrategy );
+  const OSTStorage = require('@ostdotcom/storage');
+  let storage = OSTStorage.getInstance( configStrategy );
   let ddbServiceObj = storage.dynamoDBService;
   let shardManagementObj = ddbServiceObj.shardManagement();
   let autoScalingObj = storage.autoScalingService;
@@ -354,8 +351,8 @@ For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.ama
 &nbsp; params [autoScalingConnectionParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#constructor-property)
 
 ```js
-  const OpenSTStorage = require('@ostdotcom/storage');
-  let storage = OpenSTStorage.getInstance( configStrategy );
+  const OSTStorage = require('@ostdotcom/storage');
+  let storage = OSTStorage.getInstance( configStrategy );
   let autoScalingObj = storage.autoScalingService;
 ```
       
