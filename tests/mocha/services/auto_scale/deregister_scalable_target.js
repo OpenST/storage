@@ -6,15 +6,15 @@ const Chai = require('chai'),
 
 // Load dependencies package
 const rootPrefix = '../../../..',
-  openStStorage = require(rootPrefix + '/index'),
-  coreConstants = require(rootPrefix + '/config/core_constants'),
+  OSTStorage = require(rootPrefix + '/index'),
+  coreConstant = require(rootPrefix + '/config/coreConstant'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
   helper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger');
 
-const openStStorageObject = openStStorage.getInstance(testConstants.CONFIG_STRATEGIES),
-  autoScaleObj = openStStorageObject.ic.getInstanceFor(coreConstants.icNameSpace,'getAutoScaleService'),
-  dynamodbApiObject = openStStorageObject.dynamoDBService;
+const ostStorage = OSTStorage.getInstance(testConstants.CONFIG_STRATEGIES),
+  autoScaleObj = ostStorage.ic.getInstanceFor(coreConstant.icNameSpace,'autoScaleApiService'),
+  dynamodbApiObject = ostStorage.dynamoDBService;
 
 let resourceId = 'table/' + testConstants.transactionLogTableName,
   roleARN = null;
@@ -54,7 +54,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   });
 };
 
-describe('services/auto_scale/api#deregisterScalableTarget', function() {
+describe('services/autoScale/api#deregisterScalableTarget', function() {
   before(async function() {
     this.timeout(1000000);
 

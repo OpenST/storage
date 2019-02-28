@@ -3,16 +3,16 @@ const chai = require('chai'),
 
 const rootPrefix = '../../../..',
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('Create Table', function() {
-  let openStStorageObject = null;
+  let ostStorage = null;
 
   before(async function() {
-    // get openStStorageObject
-    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-    ddb_service = openStStorageObject.dynamoDBService;
+    // get ostStorage
+    ostStorage = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = ostStorage.dynamoDBService;
   });
 
   it('should delete table successfully if exists', async function() {

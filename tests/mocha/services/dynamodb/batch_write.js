@@ -8,14 +8,14 @@ const rootPrefix = '../../../..',
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper'),
   testDataSource = require(rootPrefix + '/tests/mocha/services/dynamodb/testdata/batch_get_write_data');
 
-let openStStorageObject = null;
+let ostStorage = null;
 
 function performTest(ddbServiceObject) {
   describe('Batch write', function() {
     before(async function() {
       this.timeout(100000);
       // get dynamoDB API object
-      openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+      ostStorage = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
 
       ddb_service = ddbServiceObject;
 
@@ -410,11 +410,11 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
   });
 }
 
-openStStorageObject1 = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-ddb_service1 = openStStorageObject1.dynamoDBService;
+ostStorage1 = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
+ddb_service1 = ostStorage1.dynamoDBService;
 
-openStStorageObject2 = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES_2);
-ddb_service2 = openStStorageObject2.dynamoDBService;
+ostStorage2 = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES_2);
+ddb_service2 = ostStorage2.dynamoDBService;
 
 performTest(ddb_service1);
 performMultipleTest(ddb_service1, ddb_service2);
