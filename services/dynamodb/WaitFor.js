@@ -3,16 +3,16 @@
 /**
  * DynamoDB wait for service
  *
- * @module services/dynamodb/wait_for
+ * @module services/dynamodb/WaitFor
  *
  */
 
 const rootPrefix = '../..',
-  base = require(rootPrefix + '/services/dynamodb/base'),
+  base = require(rootPrefix + '/services/dynamodb/Base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
@@ -48,7 +48,7 @@ const waitForPrototype = {
         internal_error_identifier: 'l_dy_wf_validateParams_1',
         api_error_identifier: 'invalid_wait_for_method',
         debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
 
     return responseHelper.successWithData({});
@@ -66,18 +66,18 @@ const waitForPrototype = {
     try {
       const r = await oThis
         .ic()
-        .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+        .getInstanceFor(coreConstant.icNameSpace, 'libDynamoDBBase')
         .queryDdb(oThis.methodName, 'raw', oThis.waitForMethod, oThis.params);
       logger.debug('=======Base.perform.result=======');
       logger.debug(r);
       return r;
     } catch (err) {
-      logger.error('services/dynamodb/base.js:executeDdbRequest inside catch ', err);
+      logger.error('services/dynamodb/Base.js:executeDdbRequest inside catch ', err);
       return responseHelper.error({
         internal_error_identifier: 's_dy_b_executeDdbRequest_1',
         api_error_identifier: 'exception',
         debug_options: { error: err.message },
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
     }
   }
@@ -86,6 +86,6 @@ const waitForPrototype = {
 Object.assign(WaitFor.prototype, waitForPrototype);
 WaitFor.prototype.constructor = waitForPrototype;
 
-InstanceComposer.registerAsShadowableClass(WaitFor, coreConstants.icNameSpace, 'getDDBServiceWaitFor');
+InstanceComposer.registerAsShadowableClass(WaitFor, coreConstant.icNameSpace, 'DDBServiceWaitFor');
 
 module.exports = WaitFor;

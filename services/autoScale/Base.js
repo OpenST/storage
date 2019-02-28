@@ -3,18 +3,18 @@
 /**
  * AutoScale service base class
  *
- * @module services/auto_scale/base
+ * @module services/autoScale/Base
  *
  */
 const rootPrefix = '../..',
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
-require(rootPrefix + '/lib/auto_scale/base');
+require(rootPrefix + '/lib/autoScale/Base');
 
 /**
  * Constructor for base service class
@@ -24,7 +24,7 @@ require(rootPrefix + '/lib/auto_scale/base');
  *
  * @constructor
  */
-const Base = function(methodName, params) {
+const AutoScaleServicesBase = function(methodName, params) {
   const oThis = this;
   logger.debug('=======AutoScale.Base.params=======');
   logger.debug('\nmethodName: ' + methodName, '\nparams: ' + params);
@@ -32,7 +32,7 @@ const Base = function(methodName, params) {
   oThis.methodName = methodName;
 };
 
-Base.prototype = {
+AutoScaleServicesBase.prototype = {
   /**
    * Perform method
    *
@@ -43,12 +43,12 @@ Base.prototype = {
     const oThis = this;
 
     return oThis.asyncPerform().catch(function(err) {
-      logger.error('services/auto_scale/base.js:perform inside catch ', err);
+      logger.error('services/autoScale/Base.js:perform inside catch ', err);
       return responseHelper.error({
         internal_error_identifier: 's_as_b_perform_1',
         api_error_identifier: 'exception',
         debug_options: { message: err.message },
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
     });
   },
@@ -87,7 +87,7 @@ Base.prototype = {
         internal_error_identifier: 'l_as_b_validateParams_1',
         api_error_identifier: 'invalid_method_name',
         debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
 
     if (!oThis.params)
@@ -95,7 +95,7 @@ Base.prototype = {
         internal_error_identifier: 'l_as_b_validateParams_3',
         api_error_identifier: 'invalid_params',
         debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
 
     return responseHelper.successWithData({});
@@ -109,7 +109,7 @@ Base.prototype = {
    */
   executeAutoScaleRequest: async function() {
     const oThis = this,
-      ASBase = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getLibAutoScaleBase'),
+      ASBase = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'LibAutoScaleBase'),
       autoScaleObject = new ASBase(),
       r = await autoScaleObject.call(oThis.methodName, oThis.params);
 
@@ -119,6 +119,6 @@ Base.prototype = {
   }
 };
 
-InstanceComposer.registerAsShadowableClass(Base, coreConstants.icNameSpace, 'getServicesAutoScaleBase');
+InstanceComposer.registerAsShadowableClass(AutoScaleServicesBase, coreConstant.icNameSpace, 'AutoScaleServicesBase');
 
-module.exports = Base;
+module.exports = AutoScaleServicesBase;

@@ -4,7 +4,7 @@ const chai = require('chai'),
   assert = chai.assert;
 
 const rootPrefix = '../../../..',
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
   OSTStorage = require(rootPrefix + '/index');
 

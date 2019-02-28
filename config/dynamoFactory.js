@@ -2,12 +2,13 @@
 
 //Load external files
 require('http').globalAgent.keepAlive = true;
+
 const rootPrefix = '..';
 const AWS = require('aws-sdk'),
   AWSDaxClient = require('amazon-dax-client'),
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants'),
-  util = require(rootPrefix + '/lib/utils');
+  coreConstant = require(rootPrefix + '/config/coreConstant'),
+  util = require(rootPrefix + '/lib/util');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
@@ -73,11 +74,11 @@ DynamoConfigFactory.prototype = {
         logger: configStrategies.storage.enableLogging == 1 ? console : '',
         retryDelayOptions: {
           customBackoff: function(retryCount) {
-            return coreConstants.fixedRetryAfterTime() + retryCount * coreConstants.variableRetryAfterTime();
+            return coreConstant.fixedRetryAfterTime() + retryCount * coreConstant.variableRetryAfterTime();
           }
         },
         maxRetries: util.isVarNull(configStrategies.storage.maxRetryCount)
-          ? coreConstants.defaultRetryCount()
+          ? coreConstant.defaultRetryCount()
           : configStrategies.storage.maxRetryCount
       });
     }
@@ -94,6 +95,6 @@ DynamoConfigFactory.prototype = {
   }
 };
 
-InstanceComposer.registerAsObject(DynamoConfigFactory, coreConstants.icNameSpace, 'getDynamoConfigFactory', true);
+InstanceComposer.registerAsObject(DynamoConfigFactory, coreConstant.icNameSpace, 'dynamoConfigFactory', true);
 
-module.exports = DynamoConfigFactory;
+module.exports = {};

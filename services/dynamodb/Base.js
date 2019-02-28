@@ -3,15 +3,15 @@
 /**
  * DynamoDB service base class
  *
- * @module services/dynamodb/base
+ * @module services/dynamodb/Base
  *
  */
 
 const rootPrefix = '../..',
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
@@ -26,7 +26,7 @@ require(rootPrefix + '/lib/dynamodb/base');
  *
  * @constructor
  */
-const Base = function(methodName, params, serviceType) {
+const DDBServiceBase = function(methodName, params, serviceType) {
   const oThis = this;
 
   oThis.params = params;
@@ -34,7 +34,7 @@ const Base = function(methodName, params, serviceType) {
   oThis.serviceType = serviceType;
 };
 
-Base.prototype = {
+DDBServiceBase.prototype = {
   /**
    * Perform method
    *
@@ -45,12 +45,12 @@ Base.prototype = {
     const oThis = this;
 
     return oThis.asyncPerform().catch(function(err) {
-      logger.error('services/dynamodb/base.js:perform inside catch ', err);
+      logger.error('services/dynamodb/Base.js:perform inside catch ', err);
       return responseHelper.error({
         internal_error_identifier: 's_dy_b_perform_1',
         api_error_identifier: 'exception',
         debug_options: { error: err.stack },
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
     });
   },
@@ -88,7 +88,7 @@ Base.prototype = {
         internal_error_identifier: 'l_dy_b_validateParams_1',
         api_error_identifier: 'invalid_method_name',
         debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
     }
 
@@ -97,7 +97,7 @@ Base.prototype = {
         internal_error_identifier: 'l_dy_b_validateParams_3',
         api_error_identifier: 'invalid_params',
         debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
     }
 
@@ -115,11 +115,11 @@ Base.prototype = {
     // Last parameter is service type (dax or dynamoDB)
     return await oThis
       .ic()
-      .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+      .getInstanceFor(coreConstant.icNameSpace, 'libDynamoDBBase')
       .queryDdb(oThis.methodName, oThis.serviceType, oThis.params);
   }
 };
 
-InstanceComposer.registerAsShadowableClass(Base, coreConstants.icNameSpace, 'getDDBServiceBaseKlass');
+InstanceComposer.registerAsShadowableClass(DDBServiceBase, coreConstant.icNameSpace, 'DDBServiceBase');
 
-module.exports = Base;
+module.exports = DDBServiceBase;

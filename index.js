@@ -7,20 +7,20 @@
 const rootPrefix = '.',
   version = require(rootPrefix + '/package.json').version,
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
 require(rootPrefix + '/services/dynamodb/api');
-require(rootPrefix + '/services/auto_scale/api');
-require(rootPrefix + '/lib/models/shard_helper');
+require(rootPrefix + '/services/autoScale/api');
+require(rootPrefix + '/lib/models/shardHelper');
 
 const OSTStorage = function(configStrategy) {
   const oThis = this,
     instanceComposer = (oThis.ic = new InstanceComposer(configStrategy)),
-    ShardHelper = instanceComposer.getShadowedClassFor(coreConstants.icNameSpace, 'getShardHelperKlass'),
-    ddbServiceObj = instanceComposer.getInstanceFor(coreConstants.icNameSpace, 'getDynamoDBService'),
-    autoScalingObject = instanceComposer.getInstanceFor(coreConstants.icNameSpace, 'getAutoScaleService');
+    DynamodbShardHelper = instanceComposer.getShadowedClassFor(coreConstant.icNameSpace, 'DynamodbShardHelper'),
+    dynamoDBApiService = instanceComposer.getInstanceFor(coreConstant.icNameSpace, 'dynamoDBApiService'),
+    autoScaleApiService = instanceComposer.getInstanceFor(coreConstant.icNameSpace, 'autoScaleApiService');
 
   if (!configStrategy) {
     throw 'Mandatory argument configStrategy missing';
@@ -29,10 +29,10 @@ const OSTStorage = function(configStrategy) {
   oThis.version = version;
 
   const model = (oThis.model = {});
-  model.ShardHelper = ShardHelper;
+  model.DynamodbShardHelper = DynamodbShardHelper;
 
-  oThis.dynamoDBService = ddbServiceObj;
-  oThis.autoScalingService = autoScalingObject;
+  oThis.dynamoDBService = dynamoDBApiService;
+  oThis.autoScalingService = autoScaleApiService;
 };
 
 const getInstanceKey = function(configStrategy) {

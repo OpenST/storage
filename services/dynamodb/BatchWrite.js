@@ -2,16 +2,16 @@
 /**
  * DynamoDB Batch Write with retry count
  *
- * @module services/dynamodb/batch_write
+ * @module services/dynamodb/BatchWrite
  */
 const OSTBase = require('@ostdotcom/base'),
   InstanceComposer = OSTBase.InstanceComposer;
 
 const rootPrefix = '../..',
-  base = require(rootPrefix + '/services/dynamodb/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants'),
+  base = require(rootPrefix + '/services/dynamodb/Base'),
+  coreConstant = require(rootPrefix + '/config/coreConstant'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger');
 
 /**
  * Constructor for batch write item service class
@@ -28,7 +28,7 @@ const BatchWriteItem = function(params, unprocessed_items_retry_count, serviceTy
 
   let configStrategies = oThis.ic().configStrategy;
   oThis.unprocessedItemsRetryCount =
-    unprocessed_items_retry_count || configStrategies.storage.maxRetryCount || coreConstants.defaultRetryCount();
+    unprocessed_items_retry_count || configStrategies.storage.maxRetryCount || coreConstant.defaultRetryCount();
 
   base.call(oThis, 'batchWriteItem', params, oThis.serviceType);
 };
@@ -61,8 +61,8 @@ const batchWritePrototype = {
     try {
       let batchWriteParams = oThis.params,
         waitTime = 0,
-        constantTimeFactor = coreConstants.fixedRetryAfterTime(),
-        variableTimeFactor = coreConstants.variableRetryAfterTime(),
+        constantTimeFactor = coreConstant.fixedRetryAfterTime(),
+        variableTimeFactor = coreConstant.variableRetryAfterTime(),
         response,
         attemptNo = 1,
         unprocessedItems,
@@ -76,7 +76,7 @@ const batchWritePrototype = {
         if (!response.isSuccess()) {
           if (response.internalErrorCode.includes('ResourceNotFoundException')) {
             logger.error(
-              'services/dynamodb/batch_write.js:executeDdbRequest, ResourceNotFoundException : attemptNo: ',
+              'services/dynamodb/BatchWrite.js:executeDdbRequest, ResourceNotFoundException : attemptNo: ',
               attemptNo
             );
             response.data['UnprocessedItems'] = batchWriteParams['RequestItems'];
@@ -85,7 +85,7 @@ const batchWritePrototype = {
               internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
               api_error_identifier: 'exception',
               debug_options: { error: response.toHash() },
-              error_config: coreConstants.ERROR_CONFIG
+              error_config: coreConstant.ERROR_CONFIG
             });
           }
         }
@@ -143,12 +143,12 @@ const batchWritePrototype = {
       logger.debug(response);
       return response;
     } catch (err) {
-      logger.error('services/dynamodb/batch_write.js:executeDdbRequest inside catch ', err);
+      logger.error('services/dynamodb/BatchWrite.js:executeDdbRequest inside catch ', err);
       return responseHelper.error({
         internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
         api_error_identifier: 'exception',
         debug_options: { error: err.message },
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
     }
   },
@@ -166,7 +166,7 @@ const batchWritePrototype = {
       setTimeout(async function() {
         let r = await oThis
           .ic()
-          .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+          .getInstanceFor(coreConstant.icNameSpace, 'libDynamoDBBase')
           .queryDdb(oThis.methodName, oThis.serviceType, batchWriteParams);
         resolve(r);
       }, waitTime);
@@ -177,6 +177,6 @@ const batchWritePrototype = {
 Object.assign(BatchWriteItem.prototype, batchWritePrototype);
 BatchWriteItem.prototype.constructor = batchWritePrototype;
 
-InstanceComposer.registerAsShadowableClass(BatchWriteItem, coreConstants.icNameSpace, 'getDDBServiceBatchWriteItem');
+InstanceComposer.registerAsShadowableClass(BatchWriteItem, coreConstant.icNameSpace, 'DDBServiceBatchWriteItem');
 
 module.exports = BatchWriteItem;

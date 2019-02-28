@@ -3,16 +3,16 @@
 /**
  * DynamoDB Batch Write with retry count
  *
- * @module services/dynamodb/batch_get
+ * @module services/dynamodb/BatchGet
  *
  */
 
 const rootPrefix = '../..',
-  base = require(rootPrefix + '/services/dynamodb/base'),
+  base = require(rootPrefix + '/services/dynamodb/Base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
@@ -26,18 +26,18 @@ require(rootPrefix + '/lib/dynamodb/base');
  *
  * @constructor
  */
-const BatchGetItem = function(params, unprocessed_keys_retry_count, serviceType) {
+const DDBServiceBatchGetItem = function(params, unprocessed_keys_retry_count, serviceType) {
   const oThis = this;
   oThis.serviceType = serviceType;
 
   let configStrategies = oThis.ic().configStrategy;
   oThis.unprocessedKeysRetryCount =
-    unprocessed_keys_retry_count || configStrategies.storage.maxRetryCount || coreConstants.defaultRetryCount();
+    unprocessed_keys_retry_count || configStrategies.storage.maxRetryCount || coreConstant.defaultRetryCount();
 
   base.call(oThis, 'batchGetItem', params, oThis.serviceType);
 };
 
-BatchGetItem.prototype = Object.create(base.prototype);
+DDBServiceBatchGetItem.prototype = Object.create(base.prototype);
 
 const batchGetPrototype = {
   /**
@@ -66,8 +66,8 @@ const batchGetPrototype = {
     try {
       let batchGetParams = oThis.params,
         waitTime = 0,
-        constantTimeFactor = coreConstants.fixedRetryAfterTime(),
-        variableTimeFactor = coreConstants.variableRetryAfterTime(),
+        constantTimeFactor = coreConstant.fixedRetryAfterTime(),
+        variableTimeFactor = coreConstant.variableRetryAfterTime(),
         localResponse,
         globalResponse,
         attemptNo = 1,
@@ -82,7 +82,7 @@ const batchGetPrototype = {
         if (!localResponse.isSuccess()) {
           if (localResponse.internalErrorCode.includes('ResourceNotFoundException')) {
             logger.error(
-              'services/dynamodb/batch_get.js:executeDdbRequest, ResourceNotFoundException : attemptNo: ',
+              'services/dynamodb/BatchGet.js:executeDdbRequest, ResourceNotFoundException : attemptNo: ',
               attemptNo
             );
             localResponse.data['UnprocessedKeys'] = batchGetParams['RequestItems'];
@@ -91,7 +91,7 @@ const batchGetPrototype = {
               internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
               api_error_identifier: 'exception',
               debug_options: { error: localResponse.toHash() },
-              error_config: coreConstants.ERROR_CONFIG
+              error_config: coreConstant.ERROR_CONFIG
             });
           }
         }
@@ -166,12 +166,12 @@ const batchGetPrototype = {
 
       return globalResponse;
     } catch (err) {
-      logger.error('services/dynamodb/batch_get.js:executeDdbRequest inside catch ', err);
+      logger.error('services/dynamodb/BatchGet.js:executeDdbRequest inside catch ', err);
       return responseHelper.error({
         internal_error_identifier: 's_dy_bw_executeDdbRequest_1',
         api_error_identifier: 'exception',
         debug_options: { error: err.message },
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
     }
   },
@@ -189,7 +189,7 @@ const batchGetPrototype = {
       setTimeout(async function() {
         let r = await oThis
           .ic()
-          .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+          .getInstanceFor(coreConstant.icNameSpace, 'libDynamoDBBase')
           .queryDdb(oThis.methodName, oThis.serviceType, batchGetKeys);
         resolve(r);
       }, waitTime);
@@ -197,9 +197,9 @@ const batchGetPrototype = {
   }
 };
 
-Object.assign(BatchGetItem.prototype, batchGetPrototype);
-BatchGetItem.prototype.constructor = batchGetPrototype;
+Object.assign(DDBServiceBatchGetItem.prototype, batchGetPrototype);
+DDBServiceBatchGetItem.prototype.constructor = batchGetPrototype;
 
-InstanceComposer.registerAsShadowableClass(BatchGetItem, coreConstants.icNameSpace, 'getDDBServiceBatchGetItem');
+InstanceComposer.registerAsShadowableClass(DDBServiceBatchGetItem, coreConstant.icNameSpace, 'DDBServiceBatchGetItem');
 
-module.exports = BatchGetItem;
+module.exports = DDBServiceBatchGetItem;

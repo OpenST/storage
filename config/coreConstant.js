@@ -3,7 +3,7 @@
 /**
  * Load all the core constants from the environment variables OR define them as literals here and export them.
  *
- * @module config/core_constants
+ * @module config/coreConstant
  *
  */
 
@@ -16,7 +16,7 @@ const rootPrefix = '..',
  *
  * @constructor
  */
-const CoreConstants = function() {
+const CoreConstant = function() {
   const oThis = this;
 
   // Generic env variable across NPM packages
@@ -30,7 +30,7 @@ const CoreConstants = function() {
   oThis.DAX_SSL_ENABLED = '';
 };
 
-CoreConstants.prototype = {
+CoreConstant.prototype = {
   // Generic env variable across NPM packages
   DEBUG_ENABLED: null,
 
@@ -59,4 +59,4 @@ CoreConstants.prototype = {
   }
 };
 
-module.exports = new CoreConstants();
+module.exports = new CoreConstant();

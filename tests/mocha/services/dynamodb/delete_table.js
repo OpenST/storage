@@ -3,7 +3,7 @@ const chai = require('chai'),
 
 const rootPrefix = '../../../..',
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('Delete Table', function() {

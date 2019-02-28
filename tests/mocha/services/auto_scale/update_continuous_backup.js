@@ -4,7 +4,7 @@ const chai = require('chai'),
 const rootPrefix = '../../../..',
   OSTStorage = require(rootPrefix + '/index'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper'),
   autoScaleHelper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper');
 

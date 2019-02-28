@@ -3,15 +3,15 @@
 /**
  * DynamoDB service api
  *
- * @module services/dynamodb/table_exists
+ * @module services/dynamodb/TableExist
  *
  */
 
 const rootPrefix = '../..',
-  DDBServiceBaseKlass = require(rootPrefix + '/services/dynamodb/base'),
+  DDBServiceBaseKlass = require(rootPrefix + '/services/dynamodb/Base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
@@ -23,13 +23,13 @@ const InstanceComposer = OSTBase.InstanceComposer;
  *
  * @constructor
  */
-const TableExist = function(params, serviceType) {
+const DDBServiceTableExist = function(params, serviceType) {
   const oThis = this;
 
   DDBServiceBaseKlass.call(oThis, 'describeTable', params, serviceType);
 };
 
-TableExist.prototype = Object.create(DDBServiceBaseKlass.prototype);
+DDBServiceTableExist.prototype = Object.create(DDBServiceBaseKlass.prototype);
 
 const TableExistPrototype = {
   /**
@@ -48,7 +48,7 @@ const TableExistPrototype = {
         internal_error_identifier: 'l_dy_te_validateParams_1',
         api_error_identifier: 'invalid_table_name',
         debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
 
     return responseHelper.successWithData({});
@@ -67,7 +67,7 @@ const TableExistPrototype = {
     return new Promise(async function(onResolve) {
       const describeTableResponse = await oThis
         .ic()
-        .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+        .getInstanceFor(coreConstant.icNameSpace, 'libDynamoDBBase')
         .queryDdb('describeTable', 'raw', oThis.params);
       if (describeTableResponse.isFailure()) {
         return onResolve(responseHelper.successWithData({ response: false, status: 'DELETED' }));
@@ -78,9 +78,9 @@ const TableExistPrototype = {
   }
 };
 
-Object.assign(TableExist.prototype, TableExistPrototype);
-TableExist.prototype.constructor = TableExist;
+Object.assign(DDBServiceTableExist.prototype, TableExistPrototype);
+DDBServiceTableExist.prototype.constructor = DDBServiceTableExist;
 
-InstanceComposer.registerAsShadowableClass(TableExist, coreConstants.icNameSpace, 'getDDBServiceTableExist');
+InstanceComposer.registerAsShadowableClass(DDBServiceTableExist, coreConstant.icNameSpace, 'DDBServiceTableExist');
 
-module.exports = TableExist;
+module.exports = DDBServiceTableExist;

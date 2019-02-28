@@ -1,18 +1,11 @@
 'use strict';
 
-/**
- * DynamoDB Batch Write with retry count
- *
- * @module services/dynamodb/batch_write
- *
- */
-
 const rootPrefix = '../..',
-  base = require(rootPrefix + '/services/dynamodb/base'),
+  base = require(rootPrefix + '/services/dynamodb/Base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
@@ -26,21 +19,21 @@ const InstanceComposer = OSTBase.InstanceComposer;
  *
  * @constructor
  */
-const RetryQuery = function(params, queryType, retryCount, serviceType) {
+const DDBServiceRetryQuery = function(params, queryType, retryCount, serviceType) {
   const oThis = this;
   oThis.serviceType = serviceType;
   if (retryCount) {
     oThis.attemptToPerformCount = retryCount + 1;
   } else {
     let configStrategies = oThis.ic().configStrategy;
-    oThis.attemptToPerformCount = configStrategies.storage.maxRetryCount || coreConstants.defaultRetryCount();
+    oThis.attemptToPerformCount = configStrategies.storage.maxRetryCount || coreConstant.defaultRetryCount();
   }
   oThis.queryType = queryType;
 
   base.call(oThis, oThis.queryType, params, serviceType);
 };
 
-RetryQuery.prototype = Object.create(base.prototype);
+DDBServiceRetryQuery.prototype = Object.create(base.prototype);
 
 const retryQueryPrototype = {
   /**
@@ -54,8 +47,8 @@ const retryQueryPrototype = {
 
     try {
       let waitTime = 0,
-        constantTimeFactor = coreConstants.fixedRetryAfterTime(),
-        variableTimeFactor = coreConstants.variableRetryAfterTime(),
+        constantTimeFactor = coreConstant.fixedRetryAfterTime(),
+        variableTimeFactor = coreConstant.variableRetryAfterTime(),
         response,
         attemptNo = 1;
 
@@ -95,12 +88,12 @@ const retryQueryPrototype = {
 
       return response;
     } catch (err) {
-      logger.error('services/dynamodb/retry_query.js:executeDdbRequest inside catch ', err);
+      logger.error('services/dynamodb/RetryQuery.js:executeDdbRequest inside catch ', err);
       return responseHelper.error({
         internal_error_identifier: 's_dy_ui_executeDdbRequest_1',
         api_error_identifier: 'exception',
         debug_options: { error: err.message },
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
     }
   },
@@ -120,7 +113,7 @@ const retryQueryPrototype = {
       setTimeout(async function() {
         let r = await oThis
           .ic()
-          .getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase')
+          .getInstanceFor(coreConstant.icNameSpace, 'libDynamoDBBase')
           .queryDdb(oThis.methodName, oThis.serviceType, queryParams);
         resolve(r);
       }, waitTime);
@@ -128,9 +121,9 @@ const retryQueryPrototype = {
   }
 };
 
-Object.assign(RetryQuery.prototype, retryQueryPrototype);
-RetryQuery.prototype.constructor = retryQueryPrototype;
+Object.assign(DDBServiceRetryQuery.prototype, retryQueryPrototype);
+DDBServiceRetryQuery.prototype.constructor = retryQueryPrototype;
 
-InstanceComposer.registerAsShadowableClass(RetryQuery, coreConstants.icNameSpace, 'getDDBServiceRetryQuery');
+InstanceComposer.registerAsShadowableClass(DDBServiceRetryQuery, coreConstant.icNameSpace, 'DDBServiceRetryQuery');
 
-module.exports = RetryQuery;
+module.exports = DDBServiceRetryQuery;

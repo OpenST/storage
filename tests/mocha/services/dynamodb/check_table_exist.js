@@ -4,7 +4,7 @@ const chai = require('chai'),
 //Load external files
 const rootPrefix = '../../../..',
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('Check table exists', function() {

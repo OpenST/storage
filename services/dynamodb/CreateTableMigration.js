@@ -7,20 +7,20 @@
  *  2. Enable continuous back up
  *  3. Enable auto scaling
  *
- * @module services/dynamodb/create_table_migration
+ * @module services/dynamodb/CreateTableMigration
  *
  */
 
 const rootPrefix = '../..',
-  DDBServiceBaseKlass = require(rootPrefix + '/services/dynamodb/base'),
+  DDBServiceBaseKlass = require(rootPrefix + '/services/dynamodb/Base'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
-require(rootPrefix + '/services/auto_scale/api');
+require(rootPrefix + '/services/autoScale/api');
 
 /**
  * Constructor for TableExist service class
@@ -37,9 +37,9 @@ require(rootPrefix + '/services/auto_scale/api');
  *
  * @constructor
  */
-const CreateTableMigration = function(params, serviceType) {
+const DDBServiceCreateTableMigration = function(params, serviceType) {
   const oThis = this;
-  oThis.autoScalingObject = oThis.ic().getInstanceFor(coreConstants.icNameSpace, 'getAutoScaleService');
+  oThis.autoScalingObject = oThis.ic().getInstanceFor(coreConstant.icNameSpace, 'autoScaleApiService');
   oThis.createTableConfig = params.createTableConfig;
   //oThis.updateContinuousBackupConfig = params.updateContinuousBackupConfig;
   oThis.autoScalingConfig = params.autoScalingConfig;
@@ -55,7 +55,7 @@ const CreateTableMigration = function(params, serviceType) {
   DDBServiceBaseKlass.call(oThis, 'createTableMigration', params, serviceType);
 };
 
-CreateTableMigration.prototype = Object.create(DDBServiceBaseKlass.prototype);
+DDBServiceCreateTableMigration.prototype = Object.create(DDBServiceBaseKlass.prototype);
 
 const CreateTableMigrationPrototype = {
   /**
@@ -75,7 +75,7 @@ const CreateTableMigrationPrototype = {
         internal_error_identifier: 'l_dy_ctm_validateParams_2',
         api_error_identifier: 'invalid_create_table_config',
         debug_options: {},
-        error_config: coreConstants.ERROR_CONFIG
+        error_config: coreConstant.ERROR_CONFIG
       });
     }
 
@@ -89,7 +89,7 @@ const CreateTableMigrationPrototype = {
           internal_error_identifier: 'l_dy_ctm_validateParams_1',
           api_error_identifier: 'invalid_auto_scale_object',
           debug_options: {},
-          error_config: coreConstants.ERROR_CONFIG
+          error_config: coreConstant.ERROR_CONFIG
         });
       }
 
@@ -98,7 +98,7 @@ const CreateTableMigrationPrototype = {
           internal_error_identifier: 'l_dy_ctm_validateParams_4',
           api_error_identifier: 'invalid_auto_scale_config',
           debug_options: {},
-          error_config: coreConstants.ERROR_CONFIG
+          error_config: coreConstant.ERROR_CONFIG
         });
       }
 
@@ -107,7 +107,7 @@ const CreateTableMigrationPrototype = {
           internal_error_identifier: 'l_dy_ctm_validateParams_5',
           api_error_identifier: 'invalid_register_scalable_target_write',
           debug_options: {},
-          error_config: coreConstants.ERROR_CONFIG
+          error_config: coreConstant.ERROR_CONFIG
         });
       }
 
@@ -116,7 +116,7 @@ const CreateTableMigrationPrototype = {
           internal_error_identifier: 'l_dy_ctm_validateParams_6',
           api_error_identifier: 'invalid_register_scalable_target_read',
           debug_options: {},
-          error_config: coreConstants.ERROR_CONFIG
+          error_config: coreConstant.ERROR_CONFIG
         });
       }
 
@@ -125,7 +125,7 @@ const CreateTableMigrationPrototype = {
           internal_error_identifier: 'l_dy_ctm_validateParams_7',
           api_error_identifier: 'invalid_put_scaling_policy_write',
           debug_options: {},
-          error_config: coreConstants.ERROR_CONFIG
+          error_config: coreConstant.ERROR_CONFIG
         });
       }
 
@@ -134,7 +134,7 @@ const CreateTableMigrationPrototype = {
           internal_error_identifier: 'l_dy_ctm_validateParams_8',
           api_error_identifier: 'invalid_put_scaling_policy_read',
           debug_options: {},
-          error_config: coreConstants.ERROR_CONFIG
+          error_config: coreConstant.ERROR_CONFIG
         });
       }
     } else {
@@ -155,7 +155,7 @@ const CreateTableMigrationPrototype = {
   // TODO Refactor to small methods
   executeDdbRequest: function() {
     const oThis = this,
-      ddbObject = oThis.ic().getInstanceFor(coreConstants.icNameSpace, 'getLibDynamoDBBase'),
+      ddbObject = oThis.ic().getInstanceFor(coreConstant.icNameSpace, 'libDynamoDBBase'),
       configStrategy = oThis.ic().configStrategy;
 
     return new Promise(async function(onResolve) {
@@ -271,13 +271,13 @@ const CreateTableMigrationPrototype = {
   }
 };
 
-Object.assign(CreateTableMigration.prototype, CreateTableMigrationPrototype);
-CreateTableMigration.prototype.constructor = CreateTableMigration;
+Object.assign(DDBServiceCreateTableMigration.prototype, CreateTableMigrationPrototype);
+DDBServiceCreateTableMigration.prototype.constructor = DDBServiceCreateTableMigration;
 
 InstanceComposer.registerAsShadowableClass(
-  CreateTableMigration,
-  coreConstants.icNameSpace,
-  'getDDBServiceCreateTableMigration'
+  DDBServiceCreateTableMigration,
+  coreConstant.icNameSpace,
+  'DDBServiceCreateTableMigration'
 );
 
-module.exports = CreateTableMigration;
+module.exports = DDBServiceCreateTableMigration;

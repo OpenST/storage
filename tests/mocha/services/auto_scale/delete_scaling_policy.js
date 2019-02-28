@@ -8,12 +8,12 @@ const Chai = require('chai'),
 const rootPrefix = '../../../..',
   OSTStorage = require(rootPrefix + '/index'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  coreConstants = require(rootPrefix + '/config/core_constants'),
+  coreConstant = require(rootPrefix + '/config/coreConstant'),
   helper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger');
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger');
 
 const ostStorage = OSTStorage.getInstance(testConstants.CONFIG_STRATEGIES),
-  autoScaleObj = ostStorage.ic.getInstanceFor(coreConstants.icNameSpace,'getAutoScaleService'),
+  autoScaleObj = ostStorage.ic.getInstanceFor(coreConstant.icNameSpace,'autoScaleApiService'),
   dynamodbApiObject = ostStorage.dynamoDBService;
 
 let resourceId = 'table/' + testConstants.transactionLogTableName,
@@ -75,7 +75,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   });
 };
 
-describe('services/auto_scale/api#deleteScalingPolicy', function() {
+describe('services/autoScale/api#deleteScalingPolicy', function() {
   before(async function() {
     this.timeout(1000000);
 

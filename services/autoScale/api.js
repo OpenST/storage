@@ -3,17 +3,17 @@
 /**
  * AutoScale service api
  *
- * @module services/auto_scale/api
+ * @module services/autoScale/api
  *
  */
 
 const rootPrefix = '../..',
   OSTBase = require('@ostdotcom/base'),
-  coreConstants = require(rootPrefix + '/config/core_constants');
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
 const InstanceComposer = OSTBase.InstanceComposer;
 
-require(rootPrefix + '/services/auto_scale/base');
+require(rootPrefix + '/services/autoScale/Base');
 
 /**
  * Constructor for AutoScale api service class
@@ -22,9 +22,9 @@ require(rootPrefix + '/services/auto_scale/base');
  *
  * @constructor
  */
-const AutoScaleService = function() {};
+const AutoScaleApiService = function() {};
 
-AutoScaleService.prototype = {
+AutoScaleApiService.prototype = {
   /**
    * Register scalable Target
    *
@@ -34,7 +34,7 @@ AutoScaleService.prototype = {
    */
   registerScalableTarget: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'AutoScaleServicesBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('registerScalableTarget', params);
     return createAutoScalingGroup.perform();
   },
@@ -48,7 +48,7 @@ AutoScaleService.prototype = {
    */
   putScalingPolicy: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'AutoScaleServicesBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('putScalingPolicy', params);
     return createAutoScalingGroup.perform();
   },
@@ -62,7 +62,7 @@ AutoScaleService.prototype = {
    */
   deleteScalingPolicy: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'AutoScaleServicesBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('deleteScalingPolicy', params);
     return createAutoScalingGroup.perform();
   },
@@ -76,7 +76,7 @@ AutoScaleService.prototype = {
    */
   deregisterScalableTarget: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'AutoScaleServicesBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('deregisterScalableTarget', params);
     return createAutoScalingGroup.perform();
   },
@@ -90,7 +90,7 @@ AutoScaleService.prototype = {
    */
   describeScalableTargets: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'AutoScaleServicesBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('describeScalableTargets', params);
     return createAutoScalingGroup.perform();
   },
@@ -104,14 +104,14 @@ AutoScaleService.prototype = {
    */
   describeScalingPolicies: function(params) {
     const oThis = this,
-      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstants.icNameSpace, 'getServicesAutoScaleBase'),
+      ASServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'AutoScaleServicesBase'),
       createAutoScalingGroup = new ASServiceBaseKlass('describeScalingPolicies', params);
     return createAutoScalingGroup.perform();
   }
 };
 
-AutoScaleService.prototype.constructor = AutoScaleService;
+AutoScaleApiService.prototype.constructor = AutoScaleApiService;
 
-InstanceComposer.registerAsObject(AutoScaleService, coreConstants.icNameSpace, 'getAutoScaleService', true);
+InstanceComposer.registerAsObject(AutoScaleApiService, coreConstant.icNameSpace, 'autoScaleApiService', true);
 
-module.exports = AutoScaleService;
+module.exports = AutoScaleApiService;
