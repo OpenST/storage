@@ -4,6 +4,9 @@ Storage
 [![Travis](https://img.shields.io/travis/ostdotcom/cache.svg?maxAge=600)][travis]
 [![Downloads per month](https://img.shields.io/npm/dm/@ostdotcom/cache.svg?maxAge=3600)][npm]
 
+[npm]: https://www.npmjs.com/package/@ostdotcom/storage
+[travis]: https://travis-ci.org/ostdotcom/storage
+
 
 OST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
 
