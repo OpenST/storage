@@ -21,7 +21,7 @@ const rootPrefix = '../..',
  *
  * @constructor
  */
-const BatchWriteItem = function(params, unprocessed_items_retry_count, serviceType) {
+const DDBServiceBatchWriteItem = function(params, unprocessed_items_retry_count, serviceType) {
   const oThis = this;
 
   oThis.serviceType = serviceType;
@@ -33,7 +33,7 @@ const BatchWriteItem = function(params, unprocessed_items_retry_count, serviceTy
   base.call(oThis, 'batchWriteItem', params, oThis.serviceType);
 };
 
-BatchWriteItem.prototype = Object.create(base.prototype);
+DDBServiceBatchWriteItem.prototype = Object.create(base.prototype);
 
 const batchWritePrototype = {
   /**
@@ -174,9 +174,9 @@ const batchWritePrototype = {
   }
 };
 
-Object.assign(BatchWriteItem.prototype, batchWritePrototype);
-BatchWriteItem.prototype.constructor = batchWritePrototype;
+Object.assign(DDBServiceBatchWriteItem.prototype, batchWritePrototype);
+DDBServiceBatchWriteItem.prototype.constructor = batchWritePrototype;
 
-InstanceComposer.registerAsShadowableClass(BatchWriteItem, coreConstant.icNameSpace, 'DDBServiceBatchWriteItem');
+InstanceComposer.registerAsShadowableClass(DDBServiceBatchWriteItem, coreConstant.icNameSpace, 'DDBServiceBatchWriteItem');
 
-module.exports = BatchWriteItem;
+module.exports = DDBServiceBatchWriteItem;
