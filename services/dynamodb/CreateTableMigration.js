@@ -84,7 +84,7 @@ const CreateTableMigrationPrototype = {
     // }
 
     if (configStrategy.storage.enableAutoscaling == 1) {
-      if (oThis.autoScalingObject.constructor.name !== 'AutoScaleService') {
+      if (oThis.autoScalingObject.constructor.name !== 'AutoScaleApiService') {
         return responseHelper.error({
           internal_error_identifier: 'l_dy_ctm_validateParams_1',
           api_error_identifier: 'invalid_auto_scale_object',
