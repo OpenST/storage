@@ -1,6 +1,6 @@
 {
   "name": "@ostdotcom/storage",
-  "version": "1.0.3-beta.2",
+  "version": "1.0.3-beta.3",
   "description": "OST storage provides data storage and sharding services.",
   "main": "index.js",
   "scripts": {
