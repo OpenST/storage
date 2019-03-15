@@ -17,23 +17,23 @@ describe('Create Table', function() {
     // create ostStorage
     const ostStorage = OStStorage.getInstance(testConstants.CONFIG_STRATEGIES);
     dynamodbApiObject = ostStorage.dynamoDBService;
-    autoScaleObj = ostStorage.ic.getInstanceFor(coreConstant.icNameSpace,'autoScaleApiService');
+    autoScaleObj = ostStorage.ic.getInstanceFor(coreConstant.icNameSpace, 'autoScaleApiService');
 
     const params = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
 
     const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
 
     if (checkTableExistsResponse.data.response === true) {
-      logger.log(testConstants.transactionLogTableName, 'Table exists . Deleting it....');
+      logger.log(testConstants.dummyTestTableName, 'Table exists . Deleting it....');
       await helper.deleteTable(dynamodbApiObject, params, true);
 
       logger.info('Waiting for table to get deleted');
       await helper.waitForTableToGetDeleted(dynamodbApiObject, params);
       logger.info('Table got deleted');
     } else {
-      logger.log(testConstants.transactionLogTableName, 'Table does not exist.');
+      logger.log(testConstants.dummyTestTableName, 'Table does not exist.');
     }
   });
 
@@ -47,7 +47,7 @@ describe('Create Table', function() {
   after(async function() {
     this.timeout(100000);
     const params = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.deleteTable(dynamodbApiObject, params, true);
 

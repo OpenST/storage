@@ -19,7 +19,7 @@ describe('Delete Table', function() {
   it('should create table successfully', async function() {
     // build create table params
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -67,7 +67,7 @@ describe('Delete Table', function() {
   it('should delete table successfully', async function() {
     // build delete table params
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
 
     await helper.deleteTable(ddb_service, deleteTableParams, true);
@@ -76,7 +76,7 @@ describe('Delete Table', function() {
   it('should fail when table name is not passed', async function() {
     // build delete table params
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
 
     await helper.deleteTable(ddb_service, deleteTableParams, false);

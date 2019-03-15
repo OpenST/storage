@@ -13,10 +13,10 @@ const rootPrefix = '../../../..',
   logger = require(rootPrefix + '/lib/logger/customConsoleLogger');
 
 const ostStorage = OSTStorage.getInstance(testConstants.CONFIG_STRATEGIES),
-  autoScaleObj = ostStorage.ic.getInstanceFor(coreConstant.icNameSpace,'autoScaleApiService'),
+  autoScaleObj = ostStorage.ic.getInstanceFor(coreConstant.icNameSpace, 'autoScaleApiService'),
   dynamodbApiObject = ostStorage.dynamoDBService;
 
-let resourceId = 'table/' + testConstants.transactionLogTableName,
+let resourceId = 'table/' + testConstants.dummyTestTableName,
   roleARN = null;
 
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
@@ -27,7 +27,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   it(optionsDesc, async function() {
     this.timeout(100000);
 
-    let policyName = testConstants.transactionLogTableName + '-scaling-policy';
+    let policyName = testConstants.dummyTestTableName + '-scaling-policy';
     if (options.invalid_policy_name) {
       policyName = 'invalidPolicyId';
     } else {
@@ -44,7 +44,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
 
       const scalingPolicy = {
         ServiceNamespace: 'dynamodb',
-        ResourceId: 'table/' + testConstants.transactionLogTableName,
+        ResourceId: 'table/' + testConstants.dummyTestTableName,
         ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
         PolicyName: policyName,
         PolicyType: 'TargetTrackingScaling',
@@ -62,8 +62,8 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
     }
 
     const params = {
-      PolicyName: testConstants.transactionLogTableName + '-scaling-policy',
-      ResourceId: 'table/' + testConstants.transactionLogTableName,
+      PolicyName: testConstants.dummyTestTableName + '-scaling-policy',
+      ResourceId: 'table/' + testConstants.dummyTestTableName,
       ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
       ServiceNamespace: 'dynamodb'
     };

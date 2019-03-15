@@ -75,11 +75,7 @@ MochaTestConstants.prototype = {
     }
   },
 
-  transactionLogTableName: 'shard_00001_transaction_logs',
-
-  shardEntityType: 'tokenBalance',
-
-  shardTableName: 'shard_00001_user_balances'
+  dummyTestTableName: 'shard_00001_dummy_table'
 };
 
 module.exports = new MochaTestConstants();

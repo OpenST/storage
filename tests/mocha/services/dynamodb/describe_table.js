@@ -18,7 +18,7 @@ describe('Describe Dynamodb Table', function() {
   it('should create table successfully', async function() {
     // build create table params
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -65,7 +65,7 @@ describe('Describe Dynamodb Table', function() {
 
   it('should describe table successfully', async function() {
     const describeTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.describeTable(ddb_service, describeTableParams, true);
   });
@@ -78,7 +78,7 @@ describe('Describe Dynamodb Table', function() {
   after(async function() {
     // build delete table params
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
 
     await helper.deleteTable(ddb_service, deleteTableParams, true);
