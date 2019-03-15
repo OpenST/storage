@@ -16,7 +16,7 @@ describe('Check table exists', function() {
 
     // put item
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -41,7 +41,7 @@ describe('Check table exists', function() {
   });
 
   it('check table exist successfully', async function() {
-    const response = await ddb_service.checkTableExist({ TableName: testConstants.transactionLogTableName });
+    const response = await ddb_service.checkTableExist({ TableName: testConstants.dummyTestTableName });
     assert.equal(response.isSuccess(), true, 'check table exist failed');
   });
 
@@ -52,7 +52,7 @@ describe('Check table exists', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug('Update Table Mocha Tests Complete');

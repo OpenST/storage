@@ -17,7 +17,7 @@ describe('Create Table', function() {
 
   it('should delete table successfully if exists', async function() {
     const params = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     const checkTableExistsResponse = await ddb_service.checkTableExist(params);
     if (checkTableExistsResponse.data.response === true) {
@@ -28,7 +28,7 @@ describe('Create Table', function() {
   it('should create table successfully', async function() {
     // build create table params
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -123,7 +123,7 @@ describe('Create Table', function() {
   // it('should enable continous backup successfully', async function () {
   //   // build create table params
   //   const enableContinousBackupParams = {
-  //     TableName: testConstants.transactionLogTableName,
+  //     TableName: testConstants.dummyTestTableName,
   //     PointInTimeRecoverySpecification: {
   //       PointInTimeRecoveryEnabled: true
   //     }
@@ -133,7 +133,7 @@ describe('Create Table', function() {
 
   after(async function() {
     const params = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.deleteTable(ddb_service, params, true);
 

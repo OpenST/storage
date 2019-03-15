@@ -13,10 +13,10 @@ const rootPrefix = '../../../..',
   logger = require(rootPrefix + '/lib/logger/customConsoleLogger');
 
 const ostStorage = OSTStorage.getInstance(testConstants.CONFIG_STRATEGIES),
-  autoScaleObj = ostStorage.ic.getInstanceFor(coreConstant.icNameSpace,'autoScaleApiService'),
+  autoScaleObj = ostStorage.ic.getInstanceFor(coreConstant.icNameSpace, 'autoScaleApiService'),
   dynamodbApiObject = ostStorage.dynamoDBService;
 
-let resourceId = 'table/' + testConstants.transactionLogTableName,
+let resourceId = 'table/' + testConstants.dummyTestTableName,
   roleARN = null;
 
 const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
@@ -27,7 +27,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
   it(optionsDesc, async function() {
     this.timeout(100000);
 
-    let resId = 'table/' + testConstants.transactionLogTableName;
+    let resId = 'table/' + testConstants.dummyTestTableName;
     if (options.invalidResId) {
       resId = 'invalidResId';
     }
@@ -46,7 +46,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
     let scalingPolicy = null;
     if (options.stepScaling) {
       scalingPolicy = {
-        PolicyName: testConstants.transactionLogTableName + '-scaling-policy',
+        PolicyName: testConstants.dummyTestTableName + '-scaling-policy',
         PolicyType: 'StepScaling',
         ResourceId: resId,
         ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
@@ -67,7 +67,7 @@ const createTestCasesForOptions = function(optionsDesc, options, toAssert) {
         ServiceNamespace: 'dynamodb',
         ResourceId: resId,
         ScalableDimension: 'dynamodb:table:WriteCapacityUnits',
-        PolicyName: testConstants.transactionLogTableName + '-scaling-policy',
+        PolicyName: testConstants.dummyTestTableName + '-scaling-policy',
         PolicyType: 'TargetTrackingScaling',
         TargetTrackingScalingPolicyConfiguration: {
           PredefinedMetricSpecification: {

@@ -17,7 +17,7 @@ describe('Update Item in Table', function() {
 
     // put item
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -40,7 +40,7 @@ describe('Update Item in Table', function() {
     await helper.createTable(ddb_service, createTableParams, true);
 
     const insertItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Item: {
         tuid: { S: 'shardTableName' },
         cid: { N: '2' },
@@ -70,7 +70,7 @@ describe('Update Item in Table', function() {
         }
       },
       ReturnValues: 'ALL_NEW',
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       UpdateExpression: 'SET #c = :t'
     };
 
@@ -96,7 +96,7 @@ describe('Update Item in Table', function() {
         }
       },
       ReturnValues: 'ALL_NEW',
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       UpdateExpression: 'SET #c = :t'
     };
 
@@ -105,7 +105,7 @@ describe('Update Item in Table', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug('Update Table Mocha Tests Complete');

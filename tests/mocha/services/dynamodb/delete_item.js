@@ -17,7 +17,7 @@ describe('Delete Item', function() {
 
     // put item
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -42,7 +42,7 @@ describe('Delete Item', function() {
 
   it('should delete item successfully', async function() {
     const insertItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Item: {
         tuid: { S: 'shardTableName' },
         cid: { N: '2' },
@@ -53,7 +53,7 @@ describe('Delete Item', function() {
     await helper.putItem(ddb_service, insertItemParams, true);
 
     const deleteItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Key: {
         tuid: {
           S: 'shardTableName'
@@ -68,7 +68,7 @@ describe('Delete Item', function() {
 
   it('should delete item successfully with unknown key', async function() {
     const insertItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Item: {
         tuid: { S: 'shardTableName' },
         cid: { N: '2' },
@@ -79,7 +79,7 @@ describe('Delete Item', function() {
     await helper.putItem(ddb_service, insertItemParams, true);
 
     const deleteItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Key: {
         tuid: {
           S: 'shardTable'
@@ -109,7 +109,7 @@ describe('Delete Item', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug('Update Table Mocha Tests Complete');

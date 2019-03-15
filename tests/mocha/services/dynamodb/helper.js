@@ -167,7 +167,7 @@ helper.prototype = {
     const listTablesResponse = await ostStorage.listTables(params);
     if (isResultSuccess === true) {
       assert.equal(listTablesResponse.isSuccess(), true);
-      assert.include(listTablesResponse.data.TableNames, testConstants.transactionLogTableName);
+      assert.include(listTablesResponse.data.TableNames, testConstants.dummyTestTableName);
     } else {
       assert.equal(listTablesResponse.isSuccess(), false);
     }
@@ -199,13 +199,13 @@ helper.prototype = {
     if (isResultSuccess) {
       // validate batchGet output count
       assert.equal(
-        batchGetResponse.data.Responses[testConstants.transactionLogTableName].length,
+        batchGetResponse.data.Responses[testConstants.dummyTestTableName].length,
         resultCount,
         'Result count is not equal'
       );
 
       // validate return output is object or not
-      let returnObject = batchGetResponse.data.Responses[testConstants.transactionLogTableName];
+      let returnObject = batchGetResponse.data.Responses[testConstants.dummyTestTableName];
       if (resultCount) {
         assert.typeOf(returnObject[0], 'object');
       }

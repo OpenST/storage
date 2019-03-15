@@ -17,7 +17,7 @@ describe('Query Table', function() {
 
     // put item
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -40,7 +40,7 @@ describe('Query Table', function() {
     await helper.createTable(ddb_service, createTableParams, true);
 
     const insertItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Item: {
         tuid: { S: 'shardTableName' },
         cid: { N: '2' },
@@ -53,7 +53,7 @@ describe('Query Table', function() {
 
   it('query table for item successfully', async function() {
     const queryParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       ExpressionAttributeValues: {
         ':v1': {
           S: 'shardTableName'
@@ -71,7 +71,7 @@ describe('Query Table', function() {
 
   it('query table for item with invalid key successfully', async function() {
     const queryParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       ExpressionAttributeValues: {
         ':v1': {
           S: 'shardTable'
@@ -90,7 +90,7 @@ describe('Query Table', function() {
 
   it('query table for item with key only without using sort key unsuccessfully', async function() {
     const queryParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       ExpressionAttributeValues: {
         ':v1': {
           S: 'shardTable'
@@ -125,7 +125,7 @@ describe('Query Table', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug('Update Table Mocha Tests Complete');

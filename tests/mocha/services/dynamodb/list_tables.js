@@ -18,7 +18,7 @@ describe('List Tables', function() {
   it('should create table successfully', async function() {
     // build create table params
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -72,14 +72,14 @@ describe('List Tables', function() {
   it('should fail when table name is passed in parameter', async function() {
     // build create table params
     const listTablesParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.listTables(ddb_service, listTablesParams, false);
   });
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
 
     await helper.deleteTable(ddb_service, deleteTableParams, true);

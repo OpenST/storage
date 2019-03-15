@@ -122,14 +122,13 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
       this.timeout(100000);
 
       const batchWriteParams = testDataSource.getBatchWriteDataBasedOnParam(1);
-      console.log('123456654', JSON.stringify(batchWriteParams));
       const batchWriteResponse = await helper.performBatchWriteTest(ddb_service, batchWriteParams, true);
       assert.empty(batchWriteResponse.data.UnprocessedItems);
 
       //Happy case
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -161,7 +160,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
       //Happy case
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -192,7 +191,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -255,7 +254,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -318,7 +317,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -357,7 +356,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {

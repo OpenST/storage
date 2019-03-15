@@ -17,7 +17,7 @@
     "OST Storage",
     "DynamoDB"
   ],
-  "author": "OST.COM LTD",
+  "author": "OST.COM LTD.",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/ostdotcom/storage/issues"
