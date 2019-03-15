@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/ostdotcom/storage#readme",
   "dependencies": {
-    "@ostdotcom/base": "1.0.0-beta.1",
+    "@ostdotcom/base": "1.0.0-beta.2",
     "aws-sdk": "2.263.1",
     "amazon-dax-client": "1.1.3",
     "bignumber.js": "4.1.0"
