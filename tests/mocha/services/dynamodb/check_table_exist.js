@@ -4,19 +4,19 @@ const chai = require('chai'),
 //Load external files
 const rootPrefix = '../../../..',
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('Check table exists', function() {
-  let openStStorageObject = null;
+  let ostStorage = null;
 
   before(async function() {
     // create dynamoDbApiObject
-    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+    ostStorage = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
 
     // put item
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -36,12 +36,12 @@ describe('Check table exists', function() {
         WriteCapacityUnits: 1
       }
     };
-    ddb_service = openStStorageObject.dynamoDBService;
+    ddb_service = ostStorage.dynamoDBService;
     await helper.createTable(ddb_service, createTableParams, true);
   });
 
   it('check table exist successfully', async function() {
-    const response = await ddb_service.checkTableExist({ TableName: testConstants.transactionLogTableName });
+    const response = await ddb_service.checkTableExist({ TableName: testConstants.dummyTestTableName });
     assert.equal(response.isSuccess(), true, 'check table exist failed');
   });
 
@@ -52,7 +52,7 @@ describe('Check table exists', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug('Update Table Mocha Tests Complete');

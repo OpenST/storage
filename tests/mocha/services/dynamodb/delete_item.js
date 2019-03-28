@@ -4,20 +4,20 @@ const chai = require('chai'),
 //Load external files
 const rootPrefix = '../../../..',
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('Delete Item', function() {
-  let openStStorageObject = null;
+  let ostStorage = null;
 
   before(async function() {
-    // get openStStorageObject
-    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-    ddb_service = openStStorageObject.dynamoDBService;
+    // get ostStorage
+    ostStorage = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = ostStorage.dynamoDBService;
 
     // put item
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -42,7 +42,7 @@ describe('Delete Item', function() {
 
   it('should delete item successfully', async function() {
     const insertItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Item: {
         tuid: { S: 'shardTableName' },
         cid: { N: '2' },
@@ -53,7 +53,7 @@ describe('Delete Item', function() {
     await helper.putItem(ddb_service, insertItemParams, true);
 
     const deleteItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Key: {
         tuid: {
           S: 'shardTableName'
@@ -68,7 +68,7 @@ describe('Delete Item', function() {
 
   it('should delete item successfully with unknown key', async function() {
     const insertItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Item: {
         tuid: { S: 'shardTableName' },
         cid: { N: '2' },
@@ -79,7 +79,7 @@ describe('Delete Item', function() {
     await helper.putItem(ddb_service, insertItemParams, true);
 
     const deleteItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Key: {
         tuid: {
           S: 'shardTable'
@@ -109,7 +109,7 @@ describe('Delete Item', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug('Update Table Mocha Tests Complete');

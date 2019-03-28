@@ -1,27 +1,26 @@
 /**
- * Index File for openst-storage
+ * Index File for OST Storage
  */
 
 'use strict';
 
 const rootPrefix = '.',
   version = require(rootPrefix + '/package.json').version,
-  InstanceComposer = require(rootPrefix + '/instance_composer');
+  OSTBase = require('@ostdotcom/base'),
+  coreConstant = require(rootPrefix + '/config/coreConstant');
 
-require(rootPrefix + '/lib/models/dynamodb/token_balance');
-require(rootPrefix + '/services/cache_multi_management/token_balance');
+const InstanceComposer = OSTBase.InstanceComposer;
+
 require(rootPrefix + '/services/dynamodb/api');
-require(rootPrefix + '/services/auto_scale/api');
-require(rootPrefix + '/lib/models/shard_helper');
+require(rootPrefix + '/services/autoScale/api');
+require(rootPrefix + '/lib/models/shardHelper');
 
-const OpenSTStorage = function(configStrategy) {
+const OSTStorage = function(configStrategy) {
   const oThis = this,
     instanceComposer = (oThis.ic = new InstanceComposer(configStrategy)),
-    TokenBalanceModel = instanceComposer.getLibDDBTokenBalanceModel(),
-    TokenBalanceCache = instanceComposer.getDDBTokenBalanceCache(),
-    ShardHelper = instanceComposer.getShardHelperKlass(),
-    ddbServiceObj = instanceComposer.getDynamoDBService(),
-    autoScalingObject = instanceComposer.getAutoScaleService();
+    DynamodbShardHelper = instanceComposer.getShadowedClassFor(coreConstant.icNameSpace, 'DynamodbShardHelper'),
+    dynamoDBApiService = instanceComposer.getInstanceFor(coreConstant.icNameSpace, 'dynamoDBApiService'),
+    autoScaleApiService = instanceComposer.getInstanceFor(coreConstant.icNameSpace, 'autoScaleApiService');
 
   if (!configStrategy) {
     throw 'Mandatory argument configStrategy missing';
@@ -30,35 +29,25 @@ const OpenSTStorage = function(configStrategy) {
   oThis.version = version;
 
   const model = (oThis.model = {});
-  model.TokenBalance = TokenBalanceModel;
-  model.ShardHelper = ShardHelper;
+  model.DynamodbShardHelper = DynamodbShardHelper;
 
-  const cache = (oThis.cache = {});
-  cache.TokenBalance = TokenBalanceCache;
-
-  oThis.dynamoDBService = ddbServiceObj;
-  oThis.autoScalingService = autoScalingObject;
+  oThis.dynamoDBService = dynamoDBApiService;
+  oThis.autoScalingService = autoScaleApiService;
 };
 
 const getInstanceKey = function(configStrategy) {
   return [
-    configStrategy.OS_DAX_API_VERSION,
-    configStrategy.OS_DAX_ACCESS_KEY_ID,
-    configStrategy.OS_DAX_REGION,
-    configStrategy.OS_DAX_ENDPOINT,
-    configStrategy.OS_DAX_SSL_ENABLED,
+    configStrategy.storage.apiVersion,
+    configStrategy.storage.apiKey,
+    configStrategy.storage.region,
+    configStrategy.storage.endpoint,
+    configStrategy.storage.enableSsl,
 
-    configStrategy.OS_DYNAMODB_API_VERSION,
-    configStrategy.OS_DYNAMODB_ACCESS_KEY_ID,
-    configStrategy.OS_DYNAMODB_REGION,
-    configStrategy.OS_DYNAMODB_ENDPOINT,
-    configStrategy.OS_DYNAMODB_SSL_ENABLED,
-
-    configStrategy.OS_AUTOSCALING_API_VERSION,
-    configStrategy.OS_AUTOSCALING_ACCESS_KEY_ID,
-    configStrategy.OS_AUTOSCALING_REGION,
-    configStrategy.OS_AUTOSCALING_ENDPOINT,
-    configStrategy.OS_AUTOSCALING_SSL_ENABLED
+    configStrategy.storage.autoScaling.apiVersion,
+    configStrategy.storage.autoScaling.apiKey,
+    configStrategy.storage.autoScaling.region,
+    configStrategy.storage.autoScaling.endpoint,
+    configStrategy.storage.autoScaling.enableSsl
   ].join('-');
 };
 
@@ -73,7 +62,7 @@ Factory.prototype = {
       _instance = instanceMap[instanceKey];
 
     if (!_instance) {
-      _instance = new OpenSTStorage(configStrategy);
+      _instance = new OSTStorage(configStrategy);
       instanceMap[instanceKey] = _instance;
     }
 
@@ -82,8 +71,8 @@ Factory.prototype = {
 };
 
 const factory = new Factory();
-OpenSTStorage.getInstance = function() {
+OSTStorage.getInstance = function() {
   return factory.getInstance.apply(factory, arguments);
 };
 
-module.exports = OpenSTStorage;
+module.exports = OSTStorage;

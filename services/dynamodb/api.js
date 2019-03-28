@@ -8,16 +8,19 @@
  */
 
 const rootPrefix = '../..',
-  InstanceComposer = require(rootPrefix + '/instance_composer');
+  OSTBase = require('@ostdotcom/base'),
+  coreConstant = require(rootPrefix + '/config/coreConstant');
+
+const InstanceComposer = OSTBase.InstanceComposer;
 
 require(rootPrefix + '/lib/dynamodb/base');
-require(rootPrefix + '/services/dynamodb/base');
-require(rootPrefix + '/services/dynamodb/table_exist');
-require(rootPrefix + '/services/dynamodb/wait_for');
-require(rootPrefix + '/services/dynamodb/create_table_migration');
-require(rootPrefix + '/services/dynamodb/batch_get');
-require(rootPrefix + '/services/dynamodb/batch_write');
-require(rootPrefix + '/services/dynamodb/update_item');
+require(rootPrefix + '/services/dynamodb/Base');
+require(rootPrefix + '/services/dynamodb/TableExist');
+require(rootPrefix + '/services/dynamodb/WaitFor');
+require(rootPrefix + '/services/dynamodb/CreateTableMigration');
+require(rootPrefix + '/services/dynamodb/BatchGet');
+require(rootPrefix + '/services/dynamodb/BatchWrite');
+require(rootPrefix + '/services/dynamodb/RetryQuery');
 
 /**
  * Constructor for DynamoDB api service class
@@ -26,9 +29,9 @@ require(rootPrefix + '/services/dynamodb/update_item');
  *
  * @constructor
  */
-const DynamoDBService = function() {};
+const DynamoDBApiService = function() {};
 
-DynamoDBService.prototype = {
+DynamoDBApiService.prototype = {
   /**
    * Create table
    *
@@ -39,7 +42,7 @@ DynamoDBService.prototype = {
    */
   createTable: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceBase'),
       createTableObject = new DDBServiceBaseKlass('createTable', params, 'raw');
     return createTableObject.perform();
   },
@@ -64,7 +67,9 @@ DynamoDBService.prototype = {
    */
   createTableMigration: function(params) {
     const oThis = this,
-      CreateTableMigrationServiceKlass = oThis.ic().getDDBServiceCreateTableMigration(),
+      CreateTableMigrationServiceKlass = oThis
+        .ic()
+        .getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceCreateTableMigration'),
       createTableMigrationObject = new CreateTableMigrationServiceKlass(params, 'raw');
     return createTableMigrationObject.perform();
   },
@@ -79,7 +84,7 @@ DynamoDBService.prototype = {
    */
   updateTable: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceBase'),
       updateTableObject = new DDBServiceBaseKlass('updateTable', params, 'raw');
     return updateTableObject.perform();
   },
@@ -94,7 +99,7 @@ DynamoDBService.prototype = {
    */
   describeTable: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceBase'),
       describeTableObject = new DDBServiceBaseKlass('describeTable', params, 'raw');
     return describeTableObject.perform();
   },
@@ -109,7 +114,7 @@ DynamoDBService.prototype = {
    */
   listTables: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceBase'),
       listTablesObject = new DDBServiceBaseKlass('listTables', params, 'raw');
     return listTablesObject.perform();
   },
@@ -124,7 +129,7 @@ DynamoDBService.prototype = {
    */
   updateContinuousBackups: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceBase'),
       updateContinuousBackupObject = new DDBServiceBaseKlass('updateContinuousBackups', params, 'raw');
     return updateContinuousBackupObject.perform();
   },
@@ -139,7 +144,7 @@ DynamoDBService.prototype = {
    */
   deleteTable: function(params) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
+      DDBServiceBaseKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceBase'),
       deleteTableObject = new DDBServiceBaseKlass('deleteTable', params, 'raw');
     return deleteTableObject.perform();
   },
@@ -155,7 +160,7 @@ DynamoDBService.prototype = {
    */
   batchGetItem: function(params, unprocessedKeysRetryCount) {
     const oThis = this,
-      BatchGetItemKlass = oThis.ic().getDDBServiceBatchGetItem(),
+      BatchGetItemKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceBatchGetItem'),
       bathGetObject = new BatchGetItemKlass(params, unprocessedKeysRetryCount, 'dax');
     return bathGetObject.perform();
   },
@@ -171,7 +176,7 @@ DynamoDBService.prototype = {
    */
   batchWriteItem: function(params, unprocessedItemsRetryCount) {
     const oThis = this,
-      BatchWriteItemKlass = oThis.ic().getDDBServiceBatchWriteItem(),
+      BatchWriteItemKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceBatchWriteItem'),
       batchWriteObject = new BatchWriteItemKlass(params, unprocessedItemsRetryCount, 'dax');
     return batchWriteObject.perform();
   },
@@ -184,10 +189,10 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  query: function(params) {
+  query: function(params, retryCount) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
-      queryObject = new DDBServiceBaseKlass('query', params, 'dax');
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceRetryQuery'),
+      queryObject = new retryQueryKlass(params, 'query', retryCount, 'dax');
     return queryObject.perform();
   },
 
@@ -199,10 +204,10 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  scan: function(params) {
+  scan: function(params, retryCount) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
-      scanObject = new DDBServiceBaseKlass('scan', params, 'dax');
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceRetryQuery'),
+      scanObject = new retryQueryKlass(params, 'scan', retryCount, 'dax');
     return scanObject.perform();
   },
 
@@ -214,10 +219,10 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  putItem: function(params) {
+  putItem: function(params, retryCount) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
-      putItemObject = new DDBServiceBaseKlass('putItem', params, 'dax');
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceRetryQuery'),
+      putItemObject = new retryQueryKlass(params, 'putItem', retryCount, 'dax');
     return putItemObject.perform();
   },
 
@@ -232,8 +237,8 @@ DynamoDBService.prototype = {
    */
   updateItem: function(params, retryCount) {
     const oThis = this,
-      UpdateItemKlass = oThis.ic().getDDBServiceUpdateItem(),
-      updateItemObject = new UpdateItemKlass(params, retryCount, 'dax');
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceRetryQuery'),
+      updateItemObject = new retryQueryKlass(params, 'updateItem', retryCount, 'dax');
     return updateItemObject.perform();
   },
 
@@ -245,10 +250,10 @@ DynamoDBService.prototype = {
    * @return {promise<result>}
    *
    */
-  deleteItem: function(params) {
+  deleteItem: function(params, retryCount) {
     const oThis = this,
-      DDBServiceBaseKlass = oThis.ic().getDDBServiceBaseKlass(),
-      deleteItemObject = new DDBServiceBaseKlass('deleteItem', params, 'dax');
+      retryQueryKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceRetryQuery'),
+      deleteItemObject = new retryQueryKlass(params, 'deleteItem', retryCount, 'dax');
     return deleteItemObject.perform();
   },
 
@@ -262,7 +267,7 @@ DynamoDBService.prototype = {
    */
   tableExistsUsingWaitFor: function(params) {
     const oThis = this,
-      WaitForServiceKlass = oThis.ic().getDDBServiceWaitFor(),
+      WaitForServiceKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceWaitFor'),
       tableExistsObject = new WaitForServiceKlass('tableExists', params, 'raw');
     return tableExistsObject.perform();
   },
@@ -277,7 +282,7 @@ DynamoDBService.prototype = {
    */
   tableNotExistsUsingWaitFor: function(params) {
     const oThis = this,
-      WaitForServiceKlass = oThis.ic().getDDBServiceWaitFor(),
+      WaitForServiceKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceWaitFor'),
       tableExistsObject = new WaitForServiceKlass('tableNotExists', params, 'raw');
     return tableExistsObject.perform();
   },
@@ -292,13 +297,14 @@ DynamoDBService.prototype = {
    */
   checkTableExist: function(params) {
     const oThis = this,
-      TableExistServiceApiKlass = oThis.ic().getDDBServiceTableExist(),
+      TableExistServiceApiKlass = oThis.ic().getShadowedClassFor(coreConstant.icNameSpace, 'DDBServiceTableExist'),
       tableExistObject = new TableExistServiceApiKlass(params, 'raw');
     return tableExistObject.perform();
   }
 };
 
-InstanceComposer.register(DynamoDBService, 'getDynamoDBService', true);
+DynamoDBApiService.prototype.constructor = DynamoDBApiService;
 
-DynamoDBService.prototype.constructor = DynamoDBService;
-module.exports = DynamoDBService;
+InstanceComposer.registerAsObject(DynamoDBApiService, coreConstant.icNameSpace, 'dynamoDBApiService', true);
+
+module.exports = DynamoDBApiService;

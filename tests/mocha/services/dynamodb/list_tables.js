@@ -3,22 +3,22 @@ const chai = require('chai'),
 
 const rootPrefix = '../../../..',
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('List Tables', function() {
-  let openStStorageObject = null;
+  let ostStorage = null;
 
   before(async function() {
-    // get openStStorageObject
-    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-    ddb_service = openStStorageObject.dynamoDBService;
+    // get ostStorage
+    ostStorage = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = ostStorage.dynamoDBService;
   });
 
   it('should create table successfully', async function() {
     // build create table params
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -72,14 +72,14 @@ describe('List Tables', function() {
   it('should fail when table name is passed in parameter', async function() {
     // build create table params
     const listTablesParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.listTables(ddb_service, listTablesParams, false);
   });
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
 
     await helper.deleteTable(ddb_service, deleteTableParams, true);

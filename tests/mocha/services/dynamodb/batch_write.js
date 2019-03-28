@@ -8,14 +8,14 @@ const rootPrefix = '../../../..',
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper'),
   testDataSource = require(rootPrefix + '/tests/mocha/services/dynamodb/testdata/batch_get_write_data');
 
-let openStStorageObject = null;
+let ostStorage = null;
 
 function performTest(ddbServiceObject) {
   describe('Batch write', function() {
     before(async function() {
       this.timeout(100000);
       // get dynamoDB API object
-      openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
+      ostStorage = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
 
       ddb_service = ddbServiceObject;
 
@@ -122,14 +122,13 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
       this.timeout(100000);
 
       const batchWriteParams = testDataSource.getBatchWriteDataBasedOnParam(1);
-      console.log('123456654', JSON.stringify(batchWriteParams));
       const batchWriteResponse = await helper.performBatchWriteTest(ddb_service, batchWriteParams, true);
       assert.empty(batchWriteResponse.data.UnprocessedItems);
 
       //Happy case
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -161,7 +160,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
       //Happy case
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -192,7 +191,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -255,7 +254,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -318,7 +317,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -357,7 +356,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -410,11 +409,11 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
   });
 }
 
-openStStorageObject1 = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-ddb_service1 = openStStorageObject1.dynamoDBService;
+ostStorage1 = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
+ddb_service1 = ostStorage1.dynamoDBService;
 
-openStStorageObject2 = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES_2);
-ddb_service2 = openStStorageObject2.dynamoDBService;
+ostStorage2 = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES_2);
+ddb_service2 = ostStorage2.dynamoDBService;
 
 performTest(ddb_service1);
 performMultipleTest(ddb_service1, ddb_service2);

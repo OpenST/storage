@@ -4,20 +4,20 @@ const chai = require('chai'),
 //Load external files
 const rootPrefix = '../../../..',
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper');
 
 describe('Delete Table', function() {
-  let openStStorageObject = null;
+  let ostStorage = null;
 
   before(async function() {
-    // get openStStorageObject
-    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-    ddb_service = openStStorageObject.dynamoDBService;
+    // get ostStorage
+    ostStorage = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
+    ddb_service = ostStorage.dynamoDBService;
 
     // put item
     const createTableParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       KeySchema: [
         {
           AttributeName: 'tuid',
@@ -42,7 +42,7 @@ describe('Delete Table', function() {
 
   it('should put item successfully', async function() {
     const insertItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Item: {
         tuid: { S: 'shardTableName' },
         cid: { N: '2' },
@@ -55,7 +55,7 @@ describe('Delete Table', function() {
 
   it('should put item with invalid datatype', async function() {
     const insertItemParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       Item: {
         tuid: { S: 'shardTableName' },
         cid: { S: '2' },
@@ -68,7 +68,7 @@ describe('Delete Table', function() {
 
   after(async function() {
     const deleteTableParams = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     await helper.deleteTable(ddb_service, deleteTableParams, true);
     logger.debug('Update Table Mocha Tests Complete');

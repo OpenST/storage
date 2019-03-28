@@ -2,26 +2,26 @@ const chai = require('chai'),
   assert = chai.assert;
 
 const rootPrefix = '../../../..',
-  openStStorage = require(rootPrefix + '/index'),
+  OSTStorage = require(rootPrefix + '/index'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   helper = require(rootPrefix + '/tests/mocha/services/dynamodb/helper'),
   autoScaleHelper = require(rootPrefix + '/tests/mocha/services/auto_scale/helper');
 
 describe('Create Table', function() {
-  let openStStorageObject = null;
+  let ostStorage = null;
   let dynamodbApiObject = null;
 
   before(async function() {
-    // create openStStorageObject
-    openStStorageObject = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-    dynamodbApiObject = openStStorageObject.dynamoDBService;
+    // create ostStorage
+    ostStorage = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
+    dynamodbApiObject = ostStorage.dynamoDBService;
   });
 
   it('should delete table successfully if exists', async function() {
     this.timeout(100000);
     const params = {
-      TableName: testConstants.transactionLogTableName
+      TableName: testConstants.dummyTestTableName
     };
     const checkTableExistsResponse = await dynamodbApiObject.checkTableExist(params);
     if (checkTableExistsResponse.data.response === true) {
@@ -37,7 +37,7 @@ describe('Create Table', function() {
   it('should enable update continuous backup successfully', async function() {
     // build update continuous params
     const enableContinousBackupParams = {
-      TableName: testConstants.transactionLogTableName,
+      TableName: testConstants.dummyTestTableName,
       PointInTimeRecoverySpecification: {
         PointInTimeRecoveryEnabled: true
       }
