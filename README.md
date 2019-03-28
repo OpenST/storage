@@ -1,55 +1,60 @@
-# OpenST Storage
+Storage
+============
+[![Latest version](https://img.shields.io/npm/v/@ostdotcom/storage.svg?maxAge=3600)][npm]
+[![Build Status](https://travis-ci.org/ostdotcom/storage.svg?branch=develop)][travis]
+[![Downloads per month](https://img.shields.io/npm/dm/@ostdotcom/storage.svg?maxAge=3600)][npm]
 
-OpenST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
-While OpenST Storage is available as-is for anyone to use, we caution that this is early stage software and under heavy ongoing development and improvement. Please report bugs and suggested improvements.
+[npm]: https://www.npmjs.com/package/@ostdotcom/storage
+[travis]: https://travis-ci.org/ostdotcom/storage
+
+
+OST Storage contains DB storage libraries and respective services. It also contains data sharding libraries and services. 
 
 ##### Constructor parameters:
 There is 1 parameter required while creating the storage implementer.
 * First parameter is mandatory and it specifies the configuration strategy to be used. An example of the configStrategy is: 
 ```js
-configStrategy = {
-  OST_DEBUG_ENABLED:'1',
-  OS_DYNAMODB_API_VERSION: '2012-08-10',
-  OS_DYNAMODB_ACCESS_KEY_ID: 'x',
-  OS_DYNAMODB_SECRET_ACCESS_KEY: 'x',
-  OS_DYNAMODB_REGION: 'localhost',
-  OS_DYNAMODB_ENDPOINT: 'http://localhost:8000',
-  OS_DYNAMODB_SSL_ENABLED: '0',
-  OS_DYNAMODB_LOGGING_ENABLED: '1',
-  AUTO_SCALE_DYNAMO: '0',
-
-  OS_AUTOSCALING_API_VERSION: '2016-02-06' ,
-  OS_AUTOSCALING_ACCESS_KEY_ID: 'x' ,
-  OS_AUTOSCALING_SECRET_ACCESS_KEY: 'x' ,
-  OS_AUTOSCALING_REGION: 'localhost',
-  OS_AUTOSCALING_ENDPOINT: 'http://localhost:8000',
-  OS_AUTOSCALING_SSL_ENABLED: '0',
-  OS_AUTOSCALING_LOGGING_ENABLED: '1',
-
-  OS_DYNAMODB_TABLE_NAME_PREFIX: 'd_pk_',
-  OST_CACHING_ENGINE: 'memcached',
-  OST_CACHE_CONSISTENT_BEHAVIOR: 1,
-  OST_REDIS_HOST: '127.0.0.1',
-  OST_REDIS_PORT: 6379,  
-  OST_REDIS_PASS: 'st123',
-  OST_REDIS_TLS_ENABLED: 0,
-  OST_DEFAULT_TTL: '36000',
-  OST_CACHE_ENDPOINT: '127.0.0.1:6379',
-  OST_MEMCACHE_SERVERS: '127.0.0.1:11211'
-};
+configStrategy = 
+{
+  "cache": {
+    "engine": "memcached",
+    "servers": [
+      "127.0.0.1:11211"
+    ],
+    "defaultTtl": 36000
+  },
+  "storage": {
+    "endpoint": "http://localhost:8000",
+    "region": "localhost",
+    "apiVersion": "2012-08-10",
+    "apiKey": "X",
+    "apiSecret": "X",
+    "enableSsl": "0",
+    "enableLogging": "0",
+    "enableAutoscaling": "0",
+    "tablePrefix":"X",
+    "maxRetryCount":"1",
+    "autoScaling": {
+      "endpoint": "http://localhost:8000",
+      "region": "localhost",
+      "apiKey": "X",
+      "apiSecret": "X",
+      "apiVersion": "2012-08-10",
+      "enableSsl": "0"
+    }
+  }
+}
 ```
 
 ## DynamoDB Apis
 
 For all DynamoDB methods parameters description please refer [AWS DynamoDB Docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html)  
 
-Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTFoundation/openst-base/blob/master/lib/formatter/response_helper.js) object wrapped in Promise.
-
 #### DynamoDB constructor 
 &nbsp; params [dynamodbConnectionParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#constructor-property)
 ```js
-  const OpenSTStorage = require('@openstfoundation/openst-storage');
-  let storage = OpenSTStorage.getInstance( configStrategy );
+  const OSTStorage = require('@ostdotcom/storage');
+  let storage = OSTStorage.getInstance( configStrategy );
   let ddbServiceObj = storage.dynamoDBService;
 ```
     
@@ -262,8 +267,8 @@ Note: Response of all the apis is in [ResponseHelper](https://github.com/OpenSTF
 &nbsp; AutoScaling params [autoScalingConnectionParams](#autoscaling-constructor)<br/>
 
 ```js
-  const OpenSTStorage = require('@openstfoundation/openst-storage');
-  let storage = OpenSTStorage.getInstance( configStrategy );
+  const OSTStorage = require('@ostdotcom/storage');
+  let storage = OSTStorage.getInstance( configStrategy );
   let ddbServiceObj = storage.dynamoDBService;
   let shardManagementObj = ddbServiceObj.shardManagement();
   let autoScalingObj = storage.autoScalingService;
@@ -354,8 +359,8 @@ For Parameters description please refer [AWS DynamoDB Docs](https://docs.aws.ama
 &nbsp; params [autoScalingConnectionParams](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/ApplicationAutoScaling.html#constructor-property)
 
 ```js
-  const OpenSTStorage = require('@openstfoundation/openst-storage');
-  let storage = OpenSTStorage.getInstance( configStrategy );
+  const OSTStorage = require('@ostdotcom/storage');
+  let storage = OSTStorage.getInstance( configStrategy );
   let autoScalingObj = storage.autoScalingService;
 ```
       

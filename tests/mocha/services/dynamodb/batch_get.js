@@ -29,7 +29,7 @@ function performTest(ddbServiceObject) {
       this.timeout(100000);
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -67,7 +67,7 @@ function performTest(ddbServiceObject) {
       this.timeout(100000);
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -105,7 +105,7 @@ function performTest(ddbServiceObject) {
       this.timeout(100000);
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: []
           }
         }
@@ -118,7 +118,7 @@ function performTest(ddbServiceObject) {
       this.timeout(100000);
       const batchGetParams = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -175,7 +175,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
       this.timeout(100000);
       const batchGetParams1 = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -216,7 +216,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams2 = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -263,7 +263,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
       this.timeout(100000);
       const batchGetParams1 = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -280,7 +280,7 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
 
       const batchGetParams2 = {
         RequestItems: {
-          [testConstants.transactionLogTableName]: {
+          [testConstants.dummyTestTableName]: {
             Keys: [
               {
                 tuid: {
@@ -301,11 +301,11 @@ function performMultipleTest(ddbServiceObject1, ddbServiceObject2) {
   });
 }
 
-openStStorageObject1 = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES);
-ddb_service1 = openStStorageObject1.dynamoDBService;
+ostStorage1 = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES);
+ddb_service1 = ostStorage1.dynamoDBService;
 
-openStStorageObject2 = helper.validateOpenStStorageObject(testConstants.CONFIG_STRATEGIES_2);
-ddb_service2 = openStStorageObject2.dynamoDBService;
+ostStorage2 = helper.validateOstStorageObject(testConstants.CONFIG_STRATEGIES_2);
+ddb_service2 = ostStorage2.dynamoDBService;
 
 performTest(ddb_service1);
 performMultipleTest(ddb_service1, ddb_service2);

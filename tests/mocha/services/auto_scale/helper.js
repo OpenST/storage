@@ -4,9 +4,9 @@ const chai = require('chai'),
   assert = chai.assert;
 
 const rootPrefix = '../../../..',
-  logger = require(rootPrefix + '/lib/logger/custom_console_logger'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   testConstants = require(rootPrefix + '/tests/mocha/services/constants'),
-  autoScaleHelper = require(rootPrefix + '/lib/auto_scale/helper');
+  autoScaleHelper = require(rootPrefix + '/lib/autoScale/helper');
 
 /**
  * Constructor for helper class
@@ -167,20 +167,20 @@ helper.prototype = {
   createTestCaseEnvironment: async function(dynamodbApiObject, autoScaleObj) {
     const oThis = this,
       params = {
-        TableName: testConstants.transactionLogTableName
+        TableName: testConstants.dummyTestTableName
       };
 
     const checkTableExistsResponse1 = await dynamodbApiObject.checkTableExist(params);
 
     if (checkTableExistsResponse1.data.response === true) {
-      logger.log(testConstants.transactionLogTableName, 'Table exists . Deleting it....');
+      logger.log(testConstants.dummyTestTableName, 'Table exists . Deleting it....');
       await oThis.deleteTable(dynamodbApiObject, params, true);
 
       logger.info('Waiting for table to get deleted');
       await oThis.waitForTableToGetDeleted(dynamodbApiObject, params);
       logger.info('Table got deleted');
     } else {
-      logger.log(testConstants.transactionLogTableName, 'Table does not exist.');
+      logger.log(testConstants.dummyTestTableName, 'Table does not exist.');
     }
 
     logger.info('Creating table');
@@ -200,7 +200,7 @@ helper.prototype = {
   cleanTestCaseEnvironment: async function(dynamodbApiObject, autoScaleObj) {
     const oThis = this,
       params = {
-        TableName: testConstants.transactionLogTableName
+        TableName: testConstants.dummyTestTableName
       };
 
     const deleteTableResponse = await oThis.deleteTable(dynamodbApiObject, params, true);
@@ -223,17 +223,17 @@ helper.prototype = {
   createTableMigration: async function(dynamodbApiObject, autoScaleObj) {
     const oThis = this,
       params = {},
-      tableName = testConstants.transactionLogTableName,
-      resourceId = autoScaleHelper.createResourceId(testConstants.transactionLogTableName);
+      tableName = testConstants.dummyTestTableName,
+      resourceId = autoScaleHelper.createResourceId(testConstants.dummyTestTableName);
 
-    params.createTableConfig = oThis.getCreateTableParams(testConstants.transactionLogTableName);
+    params.createTableConfig = oThis.getCreateTableParams(testConstants.dummyTestTableName);
 
     params.updateContinuousBackupConfig = {
       PointInTimeRecoverySpecification: {
         /* required */
         PointInTimeRecoveryEnabled: true || false /* required */
       },
-      TableName: testConstants.transactionLogTableName /* required */
+      TableName: testConstants.dummyTestTableName /* required */
     };
 
     const autoScalingConfig = {},
@@ -331,7 +331,7 @@ helper.prototype = {
    * @return {{TableName: *|string, KeySchema: *[], AttributeDefinitions: *[], ProvisionedThroughput: {ReadCapacityUnits: number, WriteCapacityUnits: number}, GlobalSecondaryIndexes: *[], SSESpecification: {Enabled: boolean}}}
    */
   getCreateTableParams: function(tableName) {
-    tableName = tableName || testConstants.transactionLogTableName;
+    tableName = tableName || testConstants.dummyTestTableName;
     return {
       TableName: tableName,
       KeySchema: [
@@ -384,7 +384,7 @@ helper.prototype = {
    * @return {{TableName: *|string, KeySchema: *[], AttributeDefinitions: *[], ProvisionedThroughput: {ReadCapacityUnits: number, WriteCapacityUnits: number}, GlobalSecondaryIndexes: *[], SSESpecification: {Enabled: boolean}}}
    */
   getCreateTableParamsWithoutSecondaryIndex: function(tableName) {
-    tableName = tableName || testConstants.transactionLogTableName;
+    tableName = tableName || testConstants.dummyTestTableName;
     return {
       TableName: tableName,
       KeySchema: [
