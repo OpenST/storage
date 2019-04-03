@@ -68,8 +68,6 @@ const waitForPrototype = {
         .ic()
         .getInstanceFor(coreConstant.icNameSpace, 'libDynamoDBBase')
         .queryDdb(oThis.methodName, 'raw', oThis.waitForMethod, oThis.params);
-      logger.debug('=======Base.perform.result=======');
-      logger.debug(r);
       return r;
     } catch (err) {
       logger.error('services/dynamodb/Base.js:executeDdbRequest inside catch ', err);
