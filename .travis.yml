@@ -17,15 +17,16 @@ env:
     - OS_CACHING_ENGINE=memcached
     - OST_MEMCACHE_SERVERS=127.0.0.1:11211
 node_js:
-  - "8"
+  - "12"
+  - "10"
 services:
   - memcached
 before_install:
-  - sudo apt-get update 
-  - sudo apt-get install nodejs 
-  - sudo apt-get install npm  
+  - sudo apt-get update
+  - sudo apt-get install nodejs
+  - sudo apt-get install npm
 install:
-  - npm install 
+  - npm install
 before_script:
   - mkdir -p dynamodb
   - wget https://s3.ap-south-1.amazonaws.com/dynamodb-local-mumbai/dynamodb_local_latest.zip -O ./dynamodb/dynamodb_local_latest.zip
