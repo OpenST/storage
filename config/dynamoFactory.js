@@ -8,6 +8,7 @@ const AWS = require('aws-sdk'),
   AWSDaxClient = require('amazon-dax-client'),
   OSTBase = require('@ostdotcom/base'),
   coreConstant = require(rootPrefix + '/config/coreConstant'),
+  logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   util = require(rootPrefix + '/lib/util');
 
 const InstanceComposer = OSTBase.InstanceComposer;
@@ -74,6 +75,7 @@ DynamoConfigFactory.prototype = {
         logger: configStrategies.storage.enableLogging == 1 ? console : '',
         retryDelayOptions: {
           customBackoff: function(retryCount) {
+            logger.debug(`DDB Retry customBackoff called for retryCount: ${retryCount}`);
             return coreConstant.fixedRetryAfterTime() + retryCount * coreConstant.variableRetryAfterTime();
           }
         },
