@@ -1,6 +1,6 @@
 {
   "name": "@ostdotcom/storage",
-  "version": "1.0.4-beta.1",
+  "version": "1.0.4",
   "description": "OST storage provides data storage and sharding services.",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/ostdotcom/storage#readme",
   "dependencies": {
-    "@ostdotcom/base": "1.0.0",
+    "@ostdotcom/base": "^2.0.0",
     "aws-sdk": "2.263.1",
     "amazon-dax-client": "1.1.3",
     "bignumber.js": "4.1.0"
