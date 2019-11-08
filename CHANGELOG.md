@@ -1,3 +1,7 @@
+## Storage v1.0.4
+- Upgraded node version to 10.x
+- Version bump for dependencies.
+
 ## Storage v1.0.3
 - Integrated with new Instance Composer.
 - Migrated to ES6.

@@ -64,13 +64,11 @@ DDBServiceBase.prototype = {
     const oThis = this;
 
     let r = oThis.validateParams();
-    logger.debug('=======Base.validateParams.result=======');
-    logger.debug(r);
+
     if (r.isFailure()) return r;
 
     r = await oThis.executeDdbRequest();
-    logger.debug('=======Base.executeDdbRequest.result=======');
-    logger.debug(r);
+
     return r;
   },
 

@@ -80,9 +80,12 @@ const batchGetPrototype = {
         localResponse = await oThis.batchGetItemAfterWait(batchGetParams, waitTime);
 
         if (!localResponse.isSuccess()) {
-          if (localResponse.internalErrorCode.includes('ResourceNotFoundException')) {
+          if (
+            localResponse.internalErrorCode.includes('ResourceNotFoundException') ||
+            localResponse.internalErrorCode.includes('ProvisionedThroughputExceededException')
+          ) {
             logger.error(
-              'services/dynamodb/BatchGet.js:executeDdbRequest, ResourceNotFoundException : attemptNo: ',
+              `services/dynamodb/BatchGet.js:executeDdbRequest, ${localResponse.internalErrorCode} : attemptNo: `,
               attemptNo
             );
             localResponse.data['UnprocessedKeys'] = batchGetParams['RequestItems'];
@@ -160,9 +163,6 @@ const batchGetPrototype = {
           );
         }
       }
-
-      logger.debug('=======Base.perform.result=======');
-      logger.debug(globalResponse);
 
       return globalResponse;
     } catch (err) {

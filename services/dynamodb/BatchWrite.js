@@ -74,9 +74,12 @@ const batchWritePrototype = {
         response = await oThis.batchWriteItemAfterWait(batchWriteParams, waitTime);
 
         if (!response.isSuccess()) {
-          if (response.internalErrorCode.includes('ResourceNotFoundException')) {
+          if (
+            response.internalErrorCode.includes('ResourceNotFoundException') ||
+            response.internalErrorCode.includes('ProvisionedThroughputExceededException')
+          ) {
             logger.error(
-              'services/dynamodb/BatchWrite.js:executeDdbRequest, ResourceNotFoundException : attemptNo: ',
+              `services/dynamodb/BatchWrite.js:executeDdbRequest, ${response.internalErrorCode} : attemptNo: `,
               attemptNo
             );
             response.data['UnprocessedItems'] = batchWriteParams['RequestItems'];
@@ -139,8 +142,6 @@ const batchWritePrototype = {
         }
       }
 
-      logger.debug('=======Base.perform.result=======');
-      logger.debug(response);
       return response;
     } catch (err) {
       logger.error('services/dynamodb/BatchWrite.js:executeDdbRequest inside catch ', err);
@@ -177,6 +178,10 @@ const batchWritePrototype = {
 Object.assign(DDBServiceBatchWriteItem.prototype, batchWritePrototype);
 DDBServiceBatchWriteItem.prototype.constructor = batchWritePrototype;
 
-InstanceComposer.registerAsShadowableClass(DDBServiceBatchWriteItem, coreConstant.icNameSpace, 'DDBServiceBatchWriteItem');
+InstanceComposer.registerAsShadowableClass(
+  DDBServiceBatchWriteItem,
+  coreConstant.icNameSpace,
+  'DDBServiceBatchWriteItem'
+);
 
 module.exports = DDBServiceBatchWriteItem;
